@@ -1,0 +1,27 @@
+# --- System / OS ---
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.bak
+
+# --- Laravel Core ---
+/vendor/
+/node_modules/
+/bootstrap/cache/*
+/storage/framework/
+/storage/logs/
+/storage/app/public/
+/public/storage
+
+# --- Database ---
+*.sql
+*.sqlite
+*.gz
+
+# --- Cursor Specific ---
+# NEVER ignore .cursor/rules or .cursor/skills!
+# The AI must always have access to your "Contracts."
+.cursor/cache/
+
