@@ -13,15 +13,60 @@ Thumbs.db
 /storage/framework/
 /storage/logs/
 /storage/app/public/
+<<<<<<< HEAD
 /public/storage
+=======
+.env
+.env.backup
+.env.production
+/public/storage
+/public/hot
+package-lock.json
+composer.lock
+
+# --- Build Artifacts (Compiled files) ---
+# Ignore compiled output to force AI to focus on SCSS/JS source files
+/public/build/
+/public/mix-manifest.json
+/public/manifest.json
+/public/css/*.css.map
+/public/js/*.js.map
+# If these folders only contain minified results:
+/public/themes/admin/css/
+/public/themes/frontend/css/
+>>>>>>> d86da41 (add project option)
 
 # --- Database ---
 *.sql
 *.sqlite
 *.gz
 
+<<<<<<< HEAD
+=======
+# --- Assets / Media ---
+# Ignore heavy media in the mockup folder, but keep HTML/CSS/JS
+.cursor/maket/**/*.jpg
+.cursor/maket/**/*.jpeg
+.cursor/maket/**/*.png
+.cursor/maket/**/*.gif
+.cursor/maket/**/*.svg
+.cursor/maket/**/*.pdf
+.cursor/maket/**/*.woff
+.cursor/maket/**/*.woff2
+.cursor/maket/**/*.ttf
+
+>>>>>>> d86da41 (add project option)
 # --- Cursor Specific ---
 # NEVER ignore .cursor/rules or .cursor/skills!
 # The AI must always have access to your "Contracts."
 .cursor/cache/
 
+<<<<<<< HEAD
+=======
+# --- Logs & Temp ---
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.phpunit.result.cache
+>>>>>>> d86da41 (add project option)
