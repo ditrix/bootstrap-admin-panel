@@ -8,6 +8,8 @@ export default defineConfig({
                 'resources/css/app.css',
                 'resources/js/app.js',
                 'resources/themes/admin/assets/css/app.scss',
+                'resources/views/admin/assets/js/scripts.js',
+                'resources/views/admin/assets/js/datatables-simple-demo.js',
             ],
             refresh: true,
         }),
