@@ -3,10 +3,10 @@ alwaysApply: true
 ---
 ## 📄 Формат записи в дневнике
 
-Все времена в этом документе и в дневниковых записях указываются в часовом поясе Europe/Riga.
+Все времена в этом документе и в дневниковых записях указываются в часовом поясе Europe/Kyiv.
 
 ```markdown
-## <HH:MM (Europe/Riga)> <type>[<scope1[,scope2...]>] — <краткое описание>
+## <HH:MM (Europe/Kyiv)> <type>[<scope1[,scope2...]>] — <краткое описание>
 **Entry ID:** <ULID|timestamp>
 **Дата:** <YYYY-MM-DD>
 **Ветка:** <branch-name>
