@@ -30,13 +30,26 @@ Copy `.env.example` to the `.env`
 
 #### 5.2 Configure Basic Settings
 
-Edit `.env` and set the following minimum required values:
+After copying `.env.example` → `.env`, check **Sail-specific** variables at the top of the file (`APP_PORT`, `VITE_PORT`, `WWWGROUP`, `WWWUSER`, `DB_HOST=mysql`, …). On Linux/macOS, match your UID/GID if permission issues appear:
+
+```bash
+id -u   # → WWWUSER
+id -g   # → WWWGROUP
+```
+
+The template already includes the essentials:
 
 ```env
 APP_NAME="Admin"
 APP_ENV=local
 APP_DEBUG=true
 APP_URL=http://localhost
+
+APP_PORT=80
+VITE_PORT=5173
+FORWARD_DB_PORT=3306
+WWWGROUP=1000
+WWWUSER=1000
 
 DB_CONNECTION=mysql
 DB_HOST=mysql
@@ -84,6 +97,13 @@ If you need to run additional migrations:
 ./vendor/bin/sail npm run dev
 ```
 
+Production build (also run inside Sail so Rollup picks the Linux binaries):
+
+```bash
+./vendor/bin/sail npm run build
+```
+
+If `vite build` fails with `Cannot find module '@rollup/rollup-linux-...'`, pull the latest `package.json` / `package-lock.json` (root `optionalDependencies` pin Rollup natives for npm’s optional-deps bug), then `rm -rf node_modules` and `./vendor/bin/sail npm install` again.
 
 #### 7.6 Clear Caches
 

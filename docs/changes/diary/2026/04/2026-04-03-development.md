@@ -141,3 +141,60 @@
 
 ### Follow-up
 - [ ] После `git pull`: при ошибке Rollup optional deps выполнить чистую переустановку `node_modules` / `npm install`
+
+## 18:30 (Europe/Riga) chore[config.sail] — Выравнивание Sail, .env.example и Vite
+**Entry ID:** 01JSAILCFG20260403
+**Дата:** 2026-04-03
+**Ветка:** table_vidget
+
+### Файлы
+- `compose.yaml` (`depends_on` → `mysql` с `condition: service_healthy`)
+- `.env.example` (хост БД `mysql`, пользователь sail, переменные APP_PORT/VITE_PORT/WWW*, MAIL_MAILER=log)
+- `vite.config.js` (`server` для контейнера: host, HMR, polling)
+- `README.md` (раздел про `.env` и WWWUSER/WWWGROUP)
+
+### Что сделано
+Шаблон `.env.example` приведён к сценарию Sail из README (БД в Docker, не 127.0.0.1). В `compose.yaml` приложение ждёт здоровый MySQL перед стартом. В Vite добавлены настройки dev-сервера для работы из контейнера Sail и стабильного watch на смонтированном томе.
+
+### Почему
+Расхождение `.env.example` с `compose.yaml` ломало подключение к БД при `./vendor/bin/sail up`; без `server`/polling HMR и пересборка из Sail часто работали нестабильно.
+
+### Влияние
+- **БД:** только рекомендуемые значения в `.env.example`; существующий `.env` нужно синхронизировать вручную при необходимости
+- **API:** N/A
+- **Производительность:** N/A
+
+### Проверено
+- Тесты: N/A (изменения инфраструктуры/шаблона env)
+- Линтер: N/A
+
+### Follow-up
+- [ ] При необходимости: `id -u` / `id -g` на хосте и выставить `WWWUSER`/`WWWGROUP` в `.env`
+
+## 19:15 (Europe/Riga) fix[config.sail] — Rollup optional deps для Sail / `npm run build`
+**Entry ID:** 01JROLLUPNPM20260403
+**Дата:** 2026-04-03
+**Ветка:** table_vidget
+
+### Файлы
+- `package.json` (`optionalDependencies`: `@rollup/rollup-linux-arm64-gnu`, `linux-x64-gnu`, `darwin-arm64`, `darwin-x64` — версия **4.60.1**, как у `rollup` из Vite 5.4.x)
+- `package-lock.json` (пересобран `npm install`)
+- `README.md` (команда `sail npm run build`, что делать при ошибке Rollup)
+
+### Что сделано
+В корень проекта добавлены явные `optionalDependencies` на нативные пакеты Rollup для Linux (gnu) и macOS, чтобы при установке в контейнере Sail на `linux-arm64` в lockfile/populated `node_modules` попадал `@rollup/rollup-linux-arm64-gnu`, минуя сбой npm с вложенными optional-зависимостями.
+
+### Почему
+`./vendor/bin/sail npm run build` падал с `Cannot find module '@rollup/rollup-linux-arm64-gnu'` после lockfile/установки с другой платформы.
+
+### Влияние
+- **БД:** N/A
+- **API:** N/A
+- **Производительность:** N/A
+
+### Проверено
+- Тесты: N/A
+- Сборка: `npm run build` на хосте — ok; внутри Sail ожидается успех после `sail npm install`
+
+### Follow-up
+- [ ] После крупного обновления Vite: выровнять версии в `optionalDependencies` с `npm ls rollup`
