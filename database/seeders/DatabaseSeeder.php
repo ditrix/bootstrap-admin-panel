@@ -15,6 +15,8 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(AdminSeeder::class);
 
+        $this->call(StaticPageSeeder::class);
+
         Employee::factory(75)->create();
     }
 }

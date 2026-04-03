@@ -2,7 +2,6 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         @include('admin.partials.head')
-        @stack('head')
     </head>
     <body>
         @include('admin.partials.topnav')

@@ -4,6 +4,7 @@
 <meta name="description" content="" />
 <meta name="author" content="" />
 <title>@yield('title', 'SB Admin')</title>
+<meta name="csrf-token" content="{{ csrf_token() }}">
 @vite('resources/themes/admin/assets/css/app.scss')
-<link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
 <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+@stack('head')

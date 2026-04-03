@@ -44,10 +44,25 @@
         <div class="card mb-4">
             <div class="card-header">
                 <i class="fas fa-table me-1"></i>
-                DataTable Example
+                Employees (server-side)
             </div>
             <div class="card-body">
-                @include('admin.partials.employees-datatable', ['employees' => $dashboardEmployees])
+                @include('admin.partials.bootstrap-table-widget', [
+                    'tableId' => $tableId,
+                    'dataUrl' => $dataUrl,
+                    'pageSize' => 10,
+                    'columns' => [
+                        ['field' => 'id', 'title' => 'ID', 'sortable' => true],
+                        ['field' => 'name', 'title' => 'Name', 'sortable' => true],
+                        ['field' => 'position', 'title' => 'Position', 'sortable' => true],
+                        ['field' => 'office', 'title' => 'Office', 'sortable' => true],
+                        ['field' => 'age', 'title' => 'Age', 'sortable' => true],
+                        ['field' => 'start_date', 'title' => 'Start date', 'sortable' => true],
+                        ['field' => 'salary', 'title' => 'Salary', 'sortable' => true],
+                        ['field' => 'created_at', 'title' => 'Created at', 'sortable' => true],
+                        ['field' => 'updated_at', 'title' => 'Updated at', 'sortable' => true],
+                    ],
+                ])
             </div>
         </div>
     </div>
@@ -57,6 +72,4 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
     <script src="{{ \App\Helpers\AdminHelper::maketAsset('assets/demo/chart-area-demo.js') }}"></script>
     <script src="{{ \App\Helpers\AdminHelper::maketAsset('assets/demo/chart-bar-demo.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
-    <script src="{{ \App\Helpers\AdminHelper::maketAsset('js/datatables-simple-demo.js') }}"></script>
 @endpush

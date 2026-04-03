@@ -29,10 +29,11 @@ class AdminPagesTest extends TestCase
         $response->assertOk()
             ->assertViewIs('admin.dashboard')
             ->assertViewHas('cards')
-            ->assertViewHas('dashboardEmployees');
+            ->assertViewHas('tableId')
+            ->assertViewHas('dataUrl');
     }
 
-    public function test_tables_page_renders_with_employees(): void
+    public function test_tables_page_renders_with_bootstrap_table_config(): void
     {
         $admin = $this->actingAdmin();
 
@@ -40,7 +41,8 @@ class AdminPagesTest extends TestCase
 
         $response->assertOk()
             ->assertViewIs('admin.tables')
-            ->assertViewHas('employees');
+            ->assertViewHas('tableId')
+            ->assertViewHas('dataUrl');
     }
 
     public function test_forms_page_renders(): void
@@ -53,7 +55,7 @@ class AdminPagesTest extends TestCase
             ->assertViewIs('admin.forms');
     }
 
-    public function test_admin_employees_api_returns_json_resource(): void
+    public function test_admin_employees_table_api_returns_bootstrap_table_payload(): void
     {
         $admin = $this->actingAdmin();
 
@@ -61,7 +63,8 @@ class AdminPagesTest extends TestCase
 
         $response->assertOk()
             ->assertJsonStructure([
-                'data',
+                'total',
+                'rows',
             ]);
     }
 }

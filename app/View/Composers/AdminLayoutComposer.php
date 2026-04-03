@@ -28,6 +28,7 @@ class AdminLayoutComposer
             request()->routeIs('admin.errors.401') => 'error-401',
             request()->routeIs('admin.errors.404-demo') => 'error-404',
             request()->routeIs('admin.errors.500-demo') => 'error-500',
+            request()->routeIs('admin.static-pages.*') => 'static-pages',
             default => '',
         };
     }

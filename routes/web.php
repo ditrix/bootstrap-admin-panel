@@ -2,7 +2,8 @@
 
 use App\Http\Controllers\Admin\AdminEntryController;
 use App\Http\Controllers\Admin\AdminErrorDemoController;
-use App\Http\Controllers\Admin\Api\EmployeeIndexController;
+use App\Http\Controllers\Admin\Api\EmployeeTableDataController;
+use App\Http\Controllers\Admin\Api\StaticPageTableDataController;
 use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\Admin\Auth\NewPasswordController;
 use App\Http\Controllers\Admin\Auth\PasswordResetLinkController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\FormsController;
 use App\Http\Controllers\Admin\Layout\LightSidenavController;
 use App\Http\Controllers\Admin\Layout\StaticNavigationController;
+use App\Http\Controllers\Admin\StaticPageController;
 use App\Http\Controllers\Admin\TablesController;
 use Illuminate\Support\Facades\Route;
 
@@ -53,6 +55,8 @@ Route::prefix('adm')
             Route::get('/errors/401', [AdminErrorDemoController::class, 'show401'])->name('errors.401');
             Route::get('/errors/404', [AdminErrorDemoController::class, 'show404'])->name('errors.404-demo');
             Route::get('/errors/500', [AdminErrorDemoController::class, 'show500'])->name('errors.500-demo');
-            Route::get('/api/employees', EmployeeIndexController::class)->name('api.employees');
+            Route::get('/api/employees', EmployeeTableDataController::class)->name('api.employees');
+            Route::get('/api/static-pages/table', StaticPageTableDataController::class)->name('api.static-pages.table');
+            Route::resource('static-pages', StaticPageController::class);
         });
     });

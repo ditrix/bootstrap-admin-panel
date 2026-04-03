@@ -2,31 +2,21 @@
 
 namespace App\Services\Admin;
 
-use App\Models\Employee;
+use App\Models\StaticPage;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
-class EmployeeListingService
+class StaticPageListingService
 {
     /**
      * @var list<string>
      */
-    private const SORTABLE = ['id', 'name', 'position', 'office', 'age', 'start_date', 'salary', 'created_at', 'updated_at'];
+    private const SORTABLE = ['id', 'parent_id', 'code', 'title', 'sort_no', 'slug', 'is_active', 'created_at', 'updated_at'];
 
     /**
-     * @return Collection<int, Employee>
-     */
-    public function orderedForDataTable(): Collection
-    {
-        return Employee::query()
-            ->orderBy('name')
-            ->get();
-    }
-
-    /**
-     * @return array{total: int, rows: Collection<int, Employee>}
+     * @return array{total: int, rows: Collection<int, StaticPage>}
      */
     public function paginateForBootstrapTable(Request $request): array
     {
@@ -36,7 +26,7 @@ class EmployeeListingService
         $sort = $request->input('sort');
         $order = strtolower((string) $request->input('order', 'asc')) === 'desc' ? 'desc' : 'asc';
 
-        $query = Employee::query();
+        $query = StaticPage::query();
 
         if ($search !== '') {
             $this->applySearch($query, $search);
@@ -45,7 +35,7 @@ class EmployeeListingService
         if (is_string($sort) && in_array($sort, self::SORTABLE, true)) {
             $query->orderBy($sort, $order);
         } else {
-            $query->orderBy('name');
+            $query->ordered();
         }
 
         $total = (clone $query)->count();
@@ -58,7 +48,7 @@ class EmployeeListingService
     }
 
     /**
-     * @param  Builder<Employee>  $query
+     * @param  Builder<StaticPage>  $query
      */
     private function applySearch(Builder $query, string $search): void
     {
@@ -71,28 +61,28 @@ class EmployeeListingService
         $cast = $this->stringCastType($query);
 
         $query->where(function (Builder $q) use ($like, $cast, $trimmed) {
-            $q->where('name', 'like', $like)
-                ->orWhere('position', 'like', $like)
-                ->orWhere('office', 'like', $like)
+            $q->where('title', 'like', $like)
+                ->orWhere('code', 'like', $like)
+                ->orWhere('slug', 'like', $like)
+                ->orWhere('description', 'like', $like)
                 ->orWhereRaw("CAST(id AS {$cast}) LIKE ?", [$like])
-                ->orWhereRaw("CAST(age AS {$cast}) LIKE ?", [$like])
-                ->orWhereRaw("CAST(salary AS {$cast}) LIKE ?", [$like])
-                ->orWhereRaw("CAST(start_date AS {$cast}) LIKE ?", [$like])
+                ->orWhereRaw("CAST(parent_id AS {$cast}) LIKE ?", [$like])
+                ->orWhereRaw("CAST(sort_no AS {$cast}) LIKE ?", [$like])
+                ->orWhereRaw("CAST(is_active AS {$cast}) LIKE ?", [$like])
                 ->orWhereRaw("CAST(created_at AS {$cast}) LIKE ?", [$like])
                 ->orWhereRaw("CAST(updated_at AS {$cast}) LIKE ?", [$like]);
 
-            if (Str::isAscii($trimmed) && is_numeric($trimmed)) {
-                if (ctype_digit($trimmed)) {
-                    $int = (int) $trimmed;
-                    $q->orWhere('id', $int)->orWhere('age', $int);
-                }
-                $q->orWhere('salary', $trimmed);
+            if (Str::isAscii($trimmed) && ctype_digit($trimmed)) {
+                $int = (int) $trimmed;
+                $q->orWhere('id', $int)
+                    ->orWhere('parent_id', $int)
+                    ->orWhere('sort_no', $int);
             }
         });
     }
 
     /**
-     * @param  Builder<Employee>  $query
+     * @param  Builder<StaticPage>  $query
      */
     private function stringCastType(Builder $query): string
     {

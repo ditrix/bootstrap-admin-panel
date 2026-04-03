@@ -2,15 +2,14 @@
 
 namespace App\Http\Resources\Admin;
 
-use App\Helpers\SalaryHelper;
-use App\Models\Employee;
+use App\Models\StaticPage;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * @mixin Employee
+ * @mixin StaticPage
  */
-class EmployeeResource extends JsonResource
+class StaticPageResource extends JsonResource
 {
     /**
      * @return array<string, mixed>
@@ -19,12 +18,14 @@ class EmployeeResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
-            'position' => $this->position,
-            'office' => $this->office,
-            'age' => $this->age,
-            'start_date' => $this->start_date?->format('Y/m/d'),
-            'salary' => SalaryHelper::formatUsd($this->salary),
+            'parent_id' => $this->parent_id,
+            'code' => $this->code,
+            'title' => $this->title,
+            'description' => $this->description,
+            'content' => $this->content,
+            'sort_no' => $this->sort_no,
+            'slug' => $this->slug,
+            'is_active' => $this->is_active,
             'created_at' => $this->created_at?->format('d.m.Y'),
             'updated_at' => $this->updated_at?->format('d.m.Y'),
         ];

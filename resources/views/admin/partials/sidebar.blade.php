@@ -53,6 +53,10 @@
                 </nav>
             </div>
             <div class="sb-sidenav-menu-heading">Addons</div>
+            <a class="nav-link {{ $activeSidebar === 'static-pages' ? 'active' : '' }}" href="{{ route('admin.static-pages.index') }}">
+                <div class="sb-nav-link-icon"><i class="fas fa-file-alt"></i></div>
+                {{ __('Static pages') }}
+            </a>
             <a class="nav-link {{ $activeSidebar === 'charts' ? 'active' : '' }}" href="{{ route('admin.charts') }}">
                 <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
                 Charts
