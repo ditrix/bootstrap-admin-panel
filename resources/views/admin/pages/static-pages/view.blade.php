@@ -41,24 +41,30 @@
 
 @push('scripts')
     <script>
+
+
+//  https://fontawesome.com/icons/eye?f=classic&s=light  
+// https://fontawesome.com/icons/trash?f=classic&s=light
+
         window.adminStaticPageRowActions = function (value, row) {
             const base = @json(url('/adm/static-pages'));
             return (
-                '<a href="' +
+                /*'<a href="' +
                 base +
                 '/' +
                 row.id +
-                '" class="btn btn-sm btn-info">show</a> ' +
-                '<a href="' +
+                '" class="btn btn-sm btn-info">show</a> ' +*/
+
+               '<a href="' +
                 base +
                 '/' +
                 row.id +
-                '/edit" class="btn btn-sm btn-warning">edit</a> ' +
-                '<button type="button" class="btn btn-sm btn-danger" onclick="adminBootstrapTableDelete(\'' +
+                '/edit" class="btn btn-sm btn-outline-primary"><i class="fas fa-edit"></i></a> ' +
+                '<button type="button" class="btn btn-sm btn-outline-danger" onclick="adminBootstrapTableDelete(\'' +
                 base +
                 '/' +
                 row.id +
-                '\')">remove</button>'
+                '\')"><i class="fas fa-trash"></i></button>'
             );
         };
     </script>

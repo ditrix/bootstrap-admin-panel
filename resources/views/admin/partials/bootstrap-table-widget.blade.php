@@ -22,7 +22,7 @@
     data-page-list="[10, 25, 50, 100]"
     data-search="{{ $search ? 'true' : 'false' }}"
     data-show-refresh="true"
-    class="table table-striped table-bordered"
+    class="table table-bordered"
 >
     <thead>
         <tr>
