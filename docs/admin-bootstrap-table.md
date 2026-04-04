@@ -45,11 +45,11 @@
 
 Подключается с массивом `columns` (`field`, `title`, `sortable`) и опционально `actionsFormatter` — имя глобальной JS-функции для колонки Actions (после всех колонок из массива).
 
-Скрипты: CDN jQuery + bootstrap-table, затем Vite entry `resources/themes/admin/assets/js/admin-bootstrap-table.js` (глобальный `adminBootstrapTableDelete(url)` — POST + `_method: DELETE`, CSRF из `<meta name="csrf-token">` в `admin/partials/head.blade.php`).
+Скрипты: CDN jQuery + bootstrap-table (только JS), затем Vite entry `resources/themes/admin/assets/js/admin-bootstrap-table.js` (глобальный `adminBootstrapTableDelete(url)` — POST + `_method: DELETE`, CSRF из `<meta name="csrf-token">` в `admin/partials/head.blade.php`).
 
 ## Стили темы
 
-SCSS: `resources/themes/admin/assets/css/blocks/_bootstrap-table.scss`, подключён в `app.scss` темы админки.
+SCSS: `resources/themes/admin/assets/css/blocks/_bootstrap-table.scss` (вёрстка плагина + оформление как у макета SB Admin), подключён в `app.scss`. Таблица в виджете: обёртка `admin-bootstrap-table`, класс сетки `admin-bootstrap-table__grid` (без `bootstrap-table.min.css` с CDN).
 
 ## Static pages (CRUD)
 

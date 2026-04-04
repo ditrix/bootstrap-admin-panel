@@ -8,10 +8,7 @@
     'actionsFormatter' => null,
 ])
 
-@pushOnce('head', 'bootstrap-table-css')
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.1/dist/bootstrap-table.min.css" rel="stylesheet">
-@endPushOnce
-
+<div class="admin-bootstrap-table">
 <table
     id="{{ $tableId }}"
     data-toggle="table"
@@ -22,7 +19,7 @@
     data-page-list="[10, 25, 50, 100]"
     data-search="{{ $search ? 'true' : 'false' }}"
     data-show-refresh="true"
-    class="table table-bordered"
+    class="admin-bootstrap-table__grid"
 >
     <thead>
         <tr>
@@ -42,6 +39,7 @@
         </tr>
     </thead>
 </table>
+</div>
 
 @pushOnce('scripts', 'bootstrap-table-cdn')
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>

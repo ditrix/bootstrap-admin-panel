@@ -4,3 +4,4 @@
 - 2026-03-30 — Стили SB Admin разнесены по блокам `layout/auth/error/nav/subnav/datatable` → [../../diary/2026/03/2026-03-30-main.md#01J0SCSSBLOCKS20260330]
 - 2026-03-30 — Возвращено fixed-поведение для `sb-topnav` и `layoutSidenav_nav`, скролл оставлен только контентной области → [../../diary/2026/03/2026-03-30-main.md#01J0FIXEDLAYOUT20260330]
 - 2026-04-03 — Блок `blocks/_bootstrap-table.scss`, общий JS delete в виджете таблицы → [../../diary/2026/04/2026-04-03-development.md#01JBTABLE20260403]
+- 2026-04-04 — `_bootstrap-table.scss`: полный набор стилей плагина + оформление как SB Admin → [../../diary/2026/04/2026-04-04-table_vidget.md#01JBTABLESTYLE20260404]
