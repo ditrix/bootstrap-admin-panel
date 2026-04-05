@@ -1,6 +1,29 @@
 /**
  * Admin bootstrap-table helpers (loaded after jQuery and bootstrap-table).
  */
+const $ = window.jQuery;
+
+if ($) {
+    $(() => {
+        $('table.admin-bootstrap-table__grid').on('post-header.bs.table', function () {
+            const $wrap = $(this).closest('.bootstrap-table');
+            const $searchInput = $wrap.find('.fixed-table-toolbar input.search-input');
+            if ($searchInput.length) {
+                $searchInput.attr({ type: 'text', inputmode: 'search', autocomplete: 'off' });
+            }
+            const $btn = $wrap.find('.fixed-table-toolbar button[name="clearSearch"]');
+            if (!$btn.length) {
+                return;
+            }
+            $btn.empty();
+            $btn.append(document.createTextNode('\u00d7'));
+            $btn.attr('title', 'Clear');
+            $btn.attr('aria-label', 'Clear search');
+            $btn.addClass('admin-bootstrap-table__search-clear');
+        });
+    });
+}
+
 window.adminBootstrapTableDelete = async function (url) {
     if (!window.confirm('Delete this record?')) {
         return;

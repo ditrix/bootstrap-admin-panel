@@ -18,7 +18,9 @@
     data-page-size="{{ $pageSize }}"
     data-page-list="[10, 25, 50, 100]"
     data-search="{{ $search ? 'true' : 'false' }}"
-    data-show-refresh="true"
+    data-show-refresh="false"
+    data-show-search-clear-button="true"
+    data-show-button-icons="false"
     class="admin-bootstrap-table__grid"
 >
     <thead>

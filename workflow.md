@@ -1,5 +1,15 @@
 # Workflow
 
+## 2026-04-04 — bootstrap-table: поиск «поле + ×», без refresh, без focus-shadow
+
+**Статус:** готово.
+
+**Контекст:** По промпту `table_input_style`: отключён refresh, включена кнопка очистки поиска bootstrap-table, подпись «×» через `post-header`, стили input-group и `box-shadow: none` на фокусе внутри `.admin-bootstrap-table`. Сборка: `./vendor/bin/sail npm run build`.
+
+**Следующий шаг:** при необходимости прогнать страницы с таблицей в браузере.
+
+---
+
 ## 2026-04-03 — npm / Rollup: чистая установка в Sail
 
 **Статус:** готово.
