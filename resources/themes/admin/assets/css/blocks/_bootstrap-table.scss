@@ -97,6 +97,17 @@
         box-shadow: inset 0 0 0 9999px var(--bs-table-accent-bg, transparent);
     }
 
+    .bootstrap-table .fixed-table-container table.admin-bootstrap-table__grid tbody td:has(.admin-bootstrap-table-boolean) {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .bootstrap-table .fixed-table-container table.admin-bootstrap-table__grid tbody td .admin-bootstrap-table-boolean {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
     .bootstrap-table .fixed-table-container table.admin-bootstrap-table__grid thead th {
         vertical-align: bottom;
         padding: 0;

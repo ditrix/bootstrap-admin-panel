@@ -31,6 +31,12 @@
                     @if (! empty($column['sortable']))
                         data-sortable="true"
                     @endif
+                    @if (! empty($column['formatter']))
+                        data-formatter="{{ $column['formatter'] }}"
+                    @endif
+                    @if (($column['escape'] ?? true) === false)
+                        data-escape="false"
+                    @endif
                 >
                     {{ $column['title'] }}
                 </th>
