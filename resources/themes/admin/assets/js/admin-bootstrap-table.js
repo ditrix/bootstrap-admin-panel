@@ -1,6 +1,20 @@
 /**
  * Admin bootstrap-table helpers (loaded after jQuery and bootstrap-table).
  */
+window.adminBootstrapTableBooleanIcon = function (value) {
+    const truthy =
+        value === true ||
+        value === 1 ||
+        value === '1' ||
+        String(value).toLowerCase() === 'true';
+
+    if (truthy) {
+        return '<span class="admin-bootstrap-table-boolean"><i style="color:green" class="dripicons-checkmark" aria-hidden="true"></i></span>';
+    }
+
+    return '<span class="admin-bootstrap-table-boolean"><i style="color:red" class="dripicons-cross" aria-hidden="true"></i></span>';
+};
+
 const $ = window.jQuery;
 
 if ($) {
