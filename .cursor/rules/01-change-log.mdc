@@ -8,6 +8,7 @@ alwaysApply: true
 ```markdown
 ## <HH:MM (Europe/Kyiv)> <type>[<scope1[,scope2...]>] — <краткое описание>
 **Entry ID:** <ULID|timestamp>
+**Agent:** <Agent Name|Model ID>
 **Дата:** <YYYY-MM-DD>
 **Ветка:** <branch-name>
 
@@ -97,6 +98,7 @@ alwaysApply: true
 ```markdown
 ## 12:05 (Europe/Riga) feat[model.order,db.orders.migration] — tracking_code для Order
 **Entry ID:** 01JAXXXXXXXTRACK
+**Agent:** Gemini-3-Flash
 **Дата:** 2025-10-09
 **Ветка:** feature/order-tracking
 
@@ -222,6 +224,7 @@ alwaysApply: true
 ```markdown
 ## <HH:MM (Europe/Riga)> merge[<главные-скоупы>] — Merge <source-branch> → <target-branch>
 **Entry ID:** <ULID|timestamp>
+**Agent:** <Agent Name|Model ID>
 **Дата:** <YYYY-MM-DD>
 **Merge:** <source-branch> → <target-branch>
 
@@ -293,6 +296,7 @@ alwaysApply: true
 
 После завершения:
 - [ ] Определены ВСЕ релевантные скоупы
+- [ ] оле Agent заполнено корректно.
 - [ ] Запись добавлена в diary (в конец)
 - [ ] Обновлены ВСЕ tags/ (в конец)
 - [ ] Отправлено: «✅ Документация обновлена: …»
