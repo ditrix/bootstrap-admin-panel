@@ -15,3 +15,4 @@
 - 2026-04-06 — `register.blade.php`: убран alert для `session('status')` → [../../diary/2026/04/2026-04-06-modals_alers.md#01JREGREDIRECT20260406]
 - 2026-04-07 — Merge `modals_alers` → `development` (fast-forward) → [../../diary/2026/04/2026-04-07-development.md#01JMRGMODALS20260407]
 - 2026-04-06 — Виджет bootstrap-table: i18n для delete/fallback, prop `actionsTitle`; static pages formatter — валидация числового id → [../../diary/2026/04/2026-04-06-review_refactoring.md#01JCRREFVIEW20260406]
+- 2026-04-06 — Merge `review_refactoring` → `development` (fast-forward): bootstrap-table review правки и статические страницы → [../../diary/2026/04/2026-04-06-development.md#01JMRGREVREFDEV20260406]

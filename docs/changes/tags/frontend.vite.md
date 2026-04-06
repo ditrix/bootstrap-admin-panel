@@ -9,3 +9,4 @@
 - 2026-04-07 — Merge `modals_alers` → `development` → [../../diary/2026/04/2026-04-07-development.md#01JMRGMODALS20260407]
 - 2026-04-07 — Документация: `public/hot` и отсутствие стилей при выключенном Vite dev-сервере → [../../diary/2026/04/2026-04-07-development.md#01JVITEHOTRUN20260407]
 - 2026-04-06 — `admin-bootstrap-table.js`: строки confirm/fallback из Blade data-атрибутов виджета → [../../diary/2026/04/2026-04-06-review_refactoring.md#01JCRREFVIEW20260406]
+- 2026-04-06 — Merge `review_refactoring` → `development` (fast-forward): code review и hardening удаления в bootstrap-table → [../../diary/2026/04/2026-04-06-development.md#01JMRGREVREFDEV20260406]

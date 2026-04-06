@@ -1,5 +1,15 @@
 # Workflow
 
+## 2026-04-06 — Merge `review_refactoring` → `development`
+
+**Статус:** готово (fast-forward).
+
+**Контекст:** Выполнен merge ветки `review_refactoring` в `development` после commit с hardening `adminBootstrapTableDelete` (fallback на `confirm`, обработка сетевых ошибок и отсутствия CSRF). Merge задокументирован в `docs/changes/diary/2026/04/2026-04-06-development.md`, обновлены теги `frontend.vite` и `views.admin`.
+
+**Следующий шаг:** `git push origin review_refactoring` и `git push origin development`; затем `npm run build` перед ручной UI-проверкой удаления в таблицах.
+
+---
+
 ## 2026-04-06 — Code review (повторный прогон, ветка `review_refactoring`)
 
 **Статус:** готово.

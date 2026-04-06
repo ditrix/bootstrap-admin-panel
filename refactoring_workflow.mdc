@@ -53,3 +53,25 @@ alwaysApply: true
 - `php artisan test` — 22 passed.
 
 **Следующий шаг:** при изменениях фронтенд-ассетов выполнить `npm run build` перед проверкой в браузере.
+
+## 2026-04-06 — Сессия: commit и merge в `development`
+
+**Статус:** выполнено.
+
+**Контекст:**
+
+- Выполнен commit в `review_refactoring` с правками `admin-bootstrap-table.js` и обновлением `workflow.md`/`refactoring_workflow.mdc`.
+- Выполнен merge `review_refactoring` → `development` в формате fast-forward (до `90a7856`), без конфликтов.
+
+**Что сделано:**
+
+1. Создан commit `fix(admin-ui): harden bootstrap-table delete flow`.
+2. Выполнен merge в `development`.
+3. Добавлена merge-запись `docs/changes/diary/2026/04/2026-04-06-development.md`.
+4. Обновлены теги `docs/changes/tags/frontend.vite.md` и `docs/changes/tags/views.admin.md`.
+
+**Неуспешные попытки / откаты:**
+
+- Откаты не требовались.
+
+**Следующий шаг:** отправить изменения в remote (`review_refactoring`, `development`).
