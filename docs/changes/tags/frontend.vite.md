@@ -6,3 +6,4 @@
 - 2026-04-06 — Vite input `admin-chart-demos.js` (демо графиков Chart.js 2.x, глобальный `Chart` с CDN) → [../../diary/2026/04/2026-04-06-codeclean.md#01JMAKETRMV20260406]
 - 2026-04-06 — Merge `code_clean` → `development` → [../../diary/2026/04/2026-04-06-codeclean.md#01JMRGDEV20260406]
 - 2026-04-06 — Бандл `sb-admin-scripts.js` включает `admin-ui.js` (notify + modal) → [../../diary/2026/04/2026-04-06-modals_alers.md#01JNOTIFYALR20260406]
+- 2026-04-07 — Merge `modals_alers` → `development` → [../../diary/2026/04/2026-04-07-development.md#01JMRGMODALS20260407]

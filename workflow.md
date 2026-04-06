@@ -1,5 +1,15 @@
 # Workflow
 
+## 2026-04-07 — Merge `modals_alers` → `development`
+
+**Статус:** готово (fast-forward).
+
+**Контекст:** Локально `development` обновлена до `modals_alers`; перед merge удалены неотслеживаемые `.cursor/*`, блокировавшие checkout. Задокументировано: `docs/changes/diary/2026/04/2026-04-07-development.md`.
+
+**Следующий шаг:** `git push origin development`; при необходимости полный `php artisan test` и `npm run build`.
+
+---
+
 ## 2026-04-06 — Удаление в bootstrap-table: JSON + adminNotify
 
 **Статус:** готово.
