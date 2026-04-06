@@ -53,6 +53,17 @@ composer.lock
 # NEVER ignore .cursor/rules or .cursor/skills!
 # The AI must always have access to your "Contracts."
 .cursor/cache/
+.cursor/index/
+
+
+# Явно разрешаем важные папки Cursor (на всякий случай)
+!.cursor/
+!.cursor/**
+!.cursor/rules/**
+!.cursor/skills/**
+!.cursor/promts/**
+!.cursor/tasks/**
+!.cursor/workflow.mdc
 
 # --- Logs & Temp ---
 *.log
