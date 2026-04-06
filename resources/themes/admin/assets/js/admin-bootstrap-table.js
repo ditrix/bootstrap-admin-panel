@@ -15,6 +15,23 @@ window.adminBootstrapTableBooleanIcon = function (value) {
     return '<span class="admin-bootstrap-table-boolean"><i style="color:red" class="dripicons-cross" aria-hidden="true"></i></span>';
 };
 
+function adminBootstrapTableStrings() {
+    const el = document.getElementById('admin-bootstrap-table-i18n');
+    if (!el || !el.dataset) {
+        return {
+            deleteConfirm: 'Delete this record?',
+            fallbackDone: 'Done.',
+            fallbackFailed: 'Request failed.',
+        };
+    }
+
+    return {
+        deleteConfirm: el.dataset.deleteConfirm || 'Delete this record?',
+        fallbackDone: el.dataset.fallbackDone || 'Done.',
+        fallbackFailed: el.dataset.fallbackFailed || 'Request failed.',
+    };
+}
+
 const $ = window.jQuery;
 
 if ($) {
@@ -39,9 +56,10 @@ if ($) {
 }
 
 window.adminBootstrapTableDelete = async function (url) {
+    const strings = adminBootstrapTableStrings();
     const confirmed = await window.adminUiDialog({
         type: 'yes_no',
-        message: 'Delete this record?',
+        message: strings.deleteConfirm,
     });
     if (!confirmed) {
         return;
@@ -69,7 +87,7 @@ window.adminBootstrapTableDelete = async function (url) {
         // Response may be empty or non-JSON.
     }
 
-    const fallbackMessage = response.ok ? 'Done.' : 'Request failed.';
+    const fallbackMessage = response.ok ? strings.fallbackDone : strings.fallbackFailed;
     const message = typeof payload?.message === 'string' ? payload.message : fallbackMessage;
 
     if (typeof window.adminNotify === 'function') {

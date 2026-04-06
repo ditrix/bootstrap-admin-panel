@@ -46,6 +46,10 @@
 // https://fontawesome.com/icons/trash?f=classic&s=light
 
         window.adminStaticPageRowActions = function (value, row) {
+            const id = Number(row.id);
+            if (!Number.isInteger(id) || id < 1) {
+                return '';
+            }
             const base = @json(url('/adm/static-pages'));
             return (
                 /*'<a href="' +
@@ -57,12 +61,12 @@
                '<a href="' +
                 base +
                 '/' +
-                row.id +
+                id +
                 '/edit" class="btn btn-sm btn-outline-primary"><i class="fas fa-edit"></i></a> ' +
                 '<button type="button" class="btn btn-sm btn-outline-danger" onclick="adminBootstrapTableDelete(\'' +
                 base +
                 '/' +
-                row.id +
+                id +
                 '\')"><i class="fas fa-trash"></i></button>'
             );
         };

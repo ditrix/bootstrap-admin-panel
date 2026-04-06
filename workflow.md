@@ -1,5 +1,15 @@
 # Workflow
 
+## 2026-04-06 — Code review (ветка `review_refactoring`)
+
+**Статус:** готово.
+
+**Контекст:** По таску `7_code_review_code_refactoring`: обзор кода после modals/bootstrap-table/регистрации; точечные правки — i18n для `adminBootstrapTableDelete`, переводимый заголовок колонки действий, проверка `id` в formatter static pages. Детали и выводы — `refactoring_workflow.mdc`, дневник `docs/changes/diary/2026/04/2026-04-06-review_refactoring.md`.
+
+**Следующий шаг:** при деплое фронта — `npm run build`; при merge в `development` — push и при необходимости полный прогон тестов в CI.
+
+---
+
 ## 2026-04-07 — Merge `modals_alers` → `development`
 
 **Статус:** готово (fast-forward).

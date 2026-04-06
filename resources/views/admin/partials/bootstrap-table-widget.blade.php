@@ -6,9 +6,18 @@
     'search' => true,
     'columns' => [],
     'actionsFormatter' => null,
+    'actionsTitle' => __('Actions'),
 ])
 
 <div class="admin-bootstrap-table">
+    <div
+        id="admin-bootstrap-table-i18n"
+        class="d-none"
+        aria-hidden="true"
+        data-delete-confirm="{{ __('Delete this record?') }}"
+        data-fallback-done="{{ __('Done.') }}"
+        data-fallback-failed="{{ __('Request failed.') }}"
+    ></div>
 <table
     id="{{ $tableId }}"
     data-toggle="table"
@@ -42,7 +51,7 @@
                 </th>
             @endforeach
             @if ($actionsFormatter !== null && $actionsFormatter !== '')
-                <th data-field="actions" data-formatter="{{ $actionsFormatter }}">Actions</th>
+                <th data-field="actions" data-formatter="{{ $actionsFormatter }}">{{ $actionsTitle }}</th>
             @endif
         </tr>
     </thead>
