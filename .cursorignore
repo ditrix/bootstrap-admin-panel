@@ -70,4 +70,6 @@ composer.lock
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.phpunit.result.cache
+.phpunit.result.cache# macOS - никогда не коммитим
+.DS_Store
+**/.DS_Store
