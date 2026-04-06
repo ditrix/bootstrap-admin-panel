@@ -76,7 +76,7 @@
 ### Ветки
 - **Source:** code_clean
 - **Target:** development
-- **Merge commit:** fast-forward (единый линейный история до `e372652`)
+- **Merge commit:** fast-forward (линейная история до `e372652`)
 
 ### Файлы
 - См. коммит `e372652` и fast-forward на `development` (25 файлов: тема, Vite, удаление `public/maket`, дневник/теги).
