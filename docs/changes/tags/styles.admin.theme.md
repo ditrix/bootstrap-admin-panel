@@ -7,3 +7,4 @@
 - 2026-04-04 — `_bootstrap-table.scss`: полный набор стилей плагина + оформление как SB Admin → [../../diary/2026/04/2026-04-04-table_vidget.md#01JBTABLESTYLE20260404]
 - 2026-04-06 — JS темы: `assets/js/sb-admin-scripts.js` (layout SB Admin, сборка Vite) → [../../diary/2026/04/2026-04-06-codeclean.md#01JSBADMSCRIPTS20260406]
 - 2026-04-06 — Тема: `assets/js/admin-chart-demos.js`, `assets/img/error-404-monochrome.svg` → [../../diary/2026/04/2026-04-06-codeclean.md#01JMAKETRMV20260406]
+- 2026-04-06 — Merge `code_clean` → `development` → [../../diary/2026/04/2026-04-06-codeclean.md#01JMRGDEV20260406]

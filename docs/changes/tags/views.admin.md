@@ -9,3 +9,4 @@
 - 2026-04-04 — Виджет bootstrap-table: обёртка `admin-bootstrap-table`, класс `admin-bootstrap-table__grid`, без CDN CSS плагина → [../../diary/2026/04/2026-04-04-table_vidget.md#01JBTABLESTYLE20260404]
 - 2026-04-06 — Layout SB Admin: `sb-admin-scripts.js` через Vite; auth/error без лишнего `scripts.js` → [../../diary/2026/04/2026-04-06-codeclean.md#01JSBADMSCRIPTS20260406]
 - 2026-04-06 — Dashboard/Charts: `admin-chart-demos.js` через Vite; 404 — `themeAssetDataUri` для SVG темы → [../../diary/2026/04/2026-04-06-codeclean.md#01JMAKETRMV20260406]
+- 2026-04-06 — Merge `code_clean` → `development` (fast-forward) → [../../diary/2026/04/2026-04-06-codeclean.md#01JMRGDEV20260406]
