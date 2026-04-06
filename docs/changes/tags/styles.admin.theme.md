@@ -8,3 +8,5 @@
 - 2026-04-06 — JS темы: `assets/js/sb-admin-scripts.js` (layout SB Admin, сборка Vite) → [../../diary/2026/04/2026-04-06-codeclean.md#01JSBADMSCRIPTS20260406]
 - 2026-04-06 — Тема: `assets/js/admin-chart-demos.js`, `assets/img/error-404-monochrome.svg` → [../../diary/2026/04/2026-04-06-codeclean.md#01JMAKETRMV20260406]
 - 2026-04-06 — Merge `code_clean` → `development` → [../../diary/2026/04/2026-04-06-codeclean.md#01JMRGDEV20260406]
+- 2026-04-06 — `blocks/_admin-ui.scss`: стек тостов + оформление модалки подтверждения → [../../diary/2026/04/2026-04-06-modals_alers.md#01JNOTIFYALR20260406]
+- 2026-04-06 — `admin-bootstrap-table.js`: тосты после DELETE (success/error) → [../../diary/2026/04/2026-04-06-modals_alers.md#01JBTDELNOTIFY20260406]

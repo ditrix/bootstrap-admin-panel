@@ -1,5 +1,45 @@
 # Workflow
 
+## 2026-04-06 — Удаление в bootstrap-table: JSON + adminNotify
+
+**Статус:** готово.
+
+**Контекст:** `StaticPageController@destroy` отдаёт JSON для запросов с `wantsJson`; `adminBootstrapTableDelete` вызывает `adminNotify` (success/danger), reload с задержкой 400 ms при успехе.
+
+**Следующий шаг:** для новых таблиц с DELETE — повторить JSON-ответы в контроллерах.
+
+---
+
+## 2026-04-06 — Регистрация админа: запись в БД + тесты
+
+**Статус:** готово.
+
+**Контекст:** `RegisterController@store` создаёт `Administrator` (имя из first/last name); `RegisterAccountRequest` — unique email; feature-тесты: вход после регистрации и отказ при дубликате email.
+
+**Следующий шаг:** при необходимости отключить публичную регистрацию — middleware/флаг.
+
+---
+
+## 2026-04-06 — Auth: без modals/admin-ui (промпт `auth_no_modal`)
+
+**Статус:** готово.
+
+**Контекст:** Layout `auth` снова только Bootstrap + `@stack('scripts')`; login / password-request / register — `alert alert-*` в карточке; `RegisterController` без `status_notify_variant`.
+
+**Следующий шаг:** N/A.
+
+---
+
+## 2026-04-06 — admin-ui: тосты + модалки подтверждения (modals_alers)
+
+**Статус:** готово.
+
+**Контекст:** Задача `6_notify_alerts`: flash через `adminNotify`, `window.confirm` заменён на `adminUiDialog`; общие partials `ui-shell` / `admin-ui-flash`; SCSS `_admin-ui.scss`. После правок фронта — `npm run build` (при отсутствии `@rollup/rollup-darwin-arm64` в node_modules — `npm i` или Sail).
+
+**Следующий шаг:** при необходимости прогнать страницы с таблицей и auth во всплывающих уведомлениях.
+
+---
+
 ## 2026-04-06 — удалены `maket/` и `public/maket/`
 
 **Статус:** готово.

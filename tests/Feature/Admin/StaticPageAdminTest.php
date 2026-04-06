@@ -102,4 +102,31 @@ class StaticPageAdminTest extends TestCase
         $this->assertNotNull(StaticPage::query()->find($parent->id));
         $this->assertNotNull(StaticPage::query()->find($child->id));
     }
+
+    public function test_static_page_destroy_returns_json_message_on_success(): void
+    {
+        $admin = $this->actingAdmin();
+        $page = StaticPage::factory()->create();
+
+        $response = $this->actingAs($admin, 'admin')
+            ->deleteJson(route('admin.static-pages.destroy', $page));
+
+        $response->assertOk()
+            ->assertJsonPath('message', __('Static page deleted.'));
+        $this->assertDatabaseMissing('static_pages', ['id' => $page->id]);
+    }
+
+    public function test_static_page_destroy_returns_json_error_when_children_exist(): void
+    {
+        $admin = $this->actingAdmin();
+        $parent = StaticPage::factory()->create();
+        StaticPage::factory()->childOf($parent)->create();
+
+        $response = $this->actingAs($admin, 'admin')
+            ->deleteJson(route('admin.static-pages.destroy', $parent));
+
+        $response->assertUnprocessable()
+            ->assertJsonPath('message', __('Cannot delete a page that has child pages.'));
+        $this->assertNotNull(StaticPage::query()->find($parent->id));
+    }
 }

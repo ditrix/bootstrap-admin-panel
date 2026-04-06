@@ -10,3 +10,6 @@
 - 2026-04-06 — Layout SB Admin: `sb-admin-scripts.js` через Vite; auth/error без лишнего `scripts.js` → [../../diary/2026/04/2026-04-06-codeclean.md#01JSBADMSCRIPTS20260406]
 - 2026-04-06 — Dashboard/Charts: `admin-chart-demos.js` через Vite; 404 — `themeAssetDataUri` для SVG темы → [../../diary/2026/04/2026-04-06-codeclean.md#01JMAKETRMV20260406]
 - 2026-04-06 — Merge `code_clean` → `development` (fast-forward) → [../../diary/2026/04/2026-04-06-codeclean.md#01JMRGDEV20260406]
+- 2026-04-06 — Партиалы `ui-shell` / `admin-ui-flash`, layouts sb-admin + auth: тосты вместо alert → [../../diary/2026/04/2026-04-06-modals_alers.md#01JNOTIFYALR20260406]
+- 2026-04-06 — Layout `auth`: снова без `ui-shell`/Vite тостов; формы auth — inline `alert` → [../../diary/2026/04/2026-04-06-modals_alers.md#01JAUTHNOMODAL20260406]
+- 2026-04-06 — `register.blade.php`: убран alert для `session('status')` → [../../diary/2026/04/2026-04-06-modals_alers.md#01JREGREDIRECT20260406]

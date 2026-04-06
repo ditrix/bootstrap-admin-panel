@@ -39,7 +39,11 @@ if ($) {
 }
 
 window.adminBootstrapTableDelete = async function (url) {
-    if (!window.confirm('Delete this record?')) {
+    const confirmed = await window.adminUiDialog({
+        type: 'yes_no',
+        message: 'Delete this record?',
+    });
+    if (!confirmed) {
         return;
     }
     const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
@@ -57,7 +61,24 @@ window.adminBootstrapTableDelete = async function (url) {
             Accept: 'application/json',
         },
     });
+
+    let payload = null;
+    try {
+        payload = await response.json();
+    } catch {
+        // Response may be empty or non-JSON.
+    }
+
+    const fallbackMessage = response.ok ? 'Done.' : 'Request failed.';
+    const message = typeof payload?.message === 'string' ? payload.message : fallbackMessage;
+
+    if (typeof window.adminNotify === 'function') {
+        window.adminNotify(message, response.ok ? 'success' : 'danger');
+    }
+
     if (response.ok) {
-        window.location.reload();
+        window.setTimeout(() => {
+            window.location.reload();
+        }, 400);
     }
 };

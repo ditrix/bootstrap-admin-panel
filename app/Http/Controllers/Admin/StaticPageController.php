@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StaticPage\StoreStaticPageRequest;
 use App\Http\Requests\Admin\StaticPage\UpdateStaticPageRequest;
 use App\Models\StaticPage;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class StaticPageController extends Controller
@@ -62,18 +64,27 @@ class StaticPageController extends Controller
             ->with('success', __('Static page updated.'));
     }
 
-    public function destroy(StaticPage $staticPage): RedirectResponse
+    public function destroy(Request $request, StaticPage $staticPage): JsonResponse|RedirectResponse
     {
         if (StaticPage::query()->where('parent_id', $staticPage->getKey())->exists()) {
+            $message = __('Cannot delete a page that has child pages.');
+            if ($request->wantsJson()) {
+                return response()->json(['message' => $message], 422);
+            }
+
             return redirect()
                 ->route('admin.static-pages.index')
-                ->with('error', __('Cannot delete a page that has child pages.'));
+                ->with('error', $message);
         }
 
         $staticPage->delete();
+        $message = __('Static page deleted.');
+        if ($request->wantsJson()) {
+            return response()->json(['message' => $message]);
+        }
 
         return redirect()
             ->route('admin.static-pages.index')
-            ->with('success', __('Static page deleted.'));
+            ->with('success', $message);
     }
 }

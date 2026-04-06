@@ -4,6 +4,8 @@
  * Licensed under MIT (https://github.com/StartBootstrap/startbootstrap-sb-admin/blob/master/LICENSE)
  */
 
+import './admin-ui.js';
+
 window.addEventListener('DOMContentLoaded', () => {
     const sidebarToggle = document.body.querySelector('#sidebarToggle');
     if (sidebarToggle) {
