@@ -57,28 +57,43 @@ if ($) {
 
 window.adminBootstrapTableDelete = async function (url) {
     const strings = adminBootstrapTableStrings();
-    const confirmed = await window.adminUiDialog({
-        type: 'yes_no',
-        message: strings.deleteConfirm,
-    });
+    const confirmed =
+        typeof window.adminUiDialog === 'function'
+            ? await window.adminUiDialog({
+                  type: 'yes_no',
+                  message: strings.deleteConfirm,
+              })
+            : window.confirm(strings.deleteConfirm);
     if (!confirmed) {
         return;
     }
     const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
     if (!token) {
+        if (typeof window.adminNotify === 'function') {
+            window.adminNotify(strings.fallbackFailed, 'danger');
+        }
         return;
     }
     const body = new FormData();
     body.append('_token', token);
     body.append('_method', 'DELETE');
-    const response = await fetch(url, {
-        method: 'POST',
-        body,
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest',
-            Accept: 'application/json',
-        },
-    });
+    let response = null;
+    try {
+        response = await fetch(url, {
+            method: 'POST',
+            body,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                Accept: 'application/json',
+            },
+        });
+    } catch {
+        if (typeof window.adminNotify === 'function') {
+            window.adminNotify(strings.fallbackFailed, 'danger');
+        }
+
+        return;
+    }
 
     let payload = null;
     try {

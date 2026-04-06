@@ -1,5 +1,15 @@
 # Workflow
 
+## 2026-04-06 — Code review (повторный прогон, ветка `review_refactoring`)
+
+**Статус:** готово.
+
+**Контекст:** По таску `7_code_review_code_refactoring` повторно проверен последний набор рефакторинга и найден UX-риск в `adminBootstrapTableDelete`: отсутствие fallback при недоступном `adminUiDialog` и необработанная сетевая ошибка `fetch`. В `resources/themes/admin/assets/js/admin-bootstrap-table.js` добавлены fallback на `window.confirm`, обработка ошибок сети и уведомление при отсутствии CSRF-токена. Проверено: `vendor/bin/pint --dirty` и `php artisan test` (22 passed).
+
+**Следующий шаг:** при следующем изменении фронтенд-ассетов запустить `npm run build` и проверить удаление записей в таблице через UI.
+
+---
+
 ## 2026-04-06 — Code review (ветка `review_refactoring`)
 
 **Статус:** готово.

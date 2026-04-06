@@ -25,3 +25,31 @@ alwaysApply: true
 **Проверено:** `./vendor/bin/php artisan test` (после правок).
 
 **Следующий шаг:** при новых таблицах с delete — повторять контракт JSON в `destroy` и безопасную сборку URL в formatter.
+
+## 2026-04-06 — Сессия: повторный review по таску 7
+
+**Статус:** выполнено (найден и исправлен 1 риск).
+
+**Контекст:**
+
+- Повторно проверены файлы последнего review-коммита (`admin-bootstrap-table.js`, `bootstrap-table-widget.blade.php`, `static-pages/view.blade.php`) и связанный backend (`StaticPageController`, auth + feature-тесты).
+- В `adminBootstrapTableDelete` найден edge-case: при отсутствии `window.adminUiDialog` и при сетевом исключении `fetch` возможен плохой UX (ошибка/тишина без уведомления).
+
+**Что сделано:**
+
+1. Добавлен fallback на `window.confirm`, если `window.adminUiDialog` недоступен.
+2. Добавлен `try/catch` вокруг `fetch` с `adminNotify(..., 'danger')` при ошибке сети.
+3. Добавлен `adminNotify` при отсутствии CSRF-токена.
+
+**Неуспешные попытки / откаты:**
+
+- `vendor/bin/pint --dirty && php artisan test` в sandbox завершилось ошибкой (`vendor/bin/pint` недоступен).
+- `php artisan test` в sandbox завершилось ошибкой доступа к `vendor/autoload.php`.
+- Повторный запуск вне sandbox (`required_permissions: all`) прошёл успешно. Откаты не требовались.
+
+**Проверено:**
+
+- `vendor/bin/pint --dirty` — pass.
+- `php artisan test` — 22 passed.
+
+**Следующий шаг:** при изменениях фронтенд-ассетов выполнить `npm run build` перед проверкой в браузере.
