@@ -114,3 +114,21 @@ Files are uploaded through Laravel storage and reusable admin UI components.
 - Keep upload handling reusable across modules.
 - Do not hardcode storage logic in controllers.
 - Prefer Laravel `Storage` abstractions over manual file system work.
+
+
+## Pattern 5 - Query Filtering (Scopes)
+### Description
+Query Scopes are the standard way to encapsulate reusable SQL logic and filters within the Model layer.
+
+### Features
+- **Readability**: Controllers use `$model->active()` instead of `$model->where('status', 1)`.
+- **Reusability**: One scope can be used in Web, Admin, and API layers.
+- **Maintainability**: If the logic for "active" changes, it’s updated only in the Model.
+
+### Implementation
+- **Local Scopes**: Prefixed with `scope`, e.g., `scopePublished(Builder $query)`.
+- **Dynamic Scopes**: Scopes that accept parameters, e.g., `scopeOfType(Builder $query, string $type)`.
+
+### Guidance
+- Never write complex `where` clauses directly in Controllers.
+- If a filter is used more than once, it MUST be a Scope.

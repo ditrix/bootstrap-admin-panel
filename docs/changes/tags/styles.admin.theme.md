@@ -11,3 +11,4 @@
 - 2026-04-06 — `blocks/_admin-ui.scss`: стек тостов + оформление модалки подтверждения → [../../diary/2026/04/2026-04-06-modals_alers.md#01JNOTIFYALR20260406]
 - 2026-04-06 — `admin-bootstrap-table.js`: тосты после DELETE (success/error) → [../../diary/2026/04/2026-04-06-modals_alers.md#01JBTDELNOTIFY20260406]
 - 2026-04-07 — Merge `modals_alers` → `development` → [../../diary/2026/04/2026-04-07-development.md#01JMRGMODALS20260407]
+- 2026-04-07 — Симптом «нет стилей» при `public/hot` без запущенного Vite (см. дневник) → [../../diary/2026/04/2026-04-07-development.md#01JVITEHOTRUN20260407]

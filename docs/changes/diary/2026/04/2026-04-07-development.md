@@ -47,3 +47,33 @@
 ### Follow-up
 - [ ] `git push origin development` при необходимости
 - [ ] `npm run build` после обновления JS/CSS
+
+---
+
+## 12:05 (Europe/Kyiv) docs[frontend.vite,styles.admin.theme] — Диагностика: стили админки и `public/hot`
+**Entry ID:** 01JVITEHOTRUN20260407
+**Agent:** Cursor Agent
+**Дата:** 2026-04-07
+**Ветка:** development
+
+### Файлы
+- `docs/changes/diary/2026/04/2026-04-07-development.md` (эта запись)
+- `docs/changes/tags/frontend.vite.md`, `docs/changes/tags/styles.admin.theme.md` (+ по строке)
+
+### Что сделано
+Зафиксирована типичная причина «пропали стили» после локальных правок или обновления окружения: при наличии файла `public/hot` Laravel `@vite` подключает ассеты с dev-сервера (`npm run dev`), а не с `public/build`. Если Vite не запущен или порт недоступен с браузера, CSS/JS не грузятся, хотя `npm run build` успешен и бандл админской темы содержит Bootstrap. Рекомендация: для просмотра без HMR — удалить `public/hot` и держать актуальной сборку `npm run build`; для разработки — запускать `npm run dev`.
+
+### Почему
+Нужна явная запись в дневнике и тегах, чтобы не тратить время на повторную диагностику.
+
+### Влияние
+- **БД:** N/A
+- **API:** N/A
+- **Производительность:** N/A
+
+### Проверено
+- Тесты: N/A
+- Линтер: N/A
+
+### Follow-up
+- [ ] При пустой странице без стилей: проверить `public/hot` и процесс `npm run dev`
