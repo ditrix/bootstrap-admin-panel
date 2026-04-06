@@ -7,3 +7,5 @@
 - 2026-04-03 — Колонки `created_at`/`updated_at` в employee/static-pages таблицах → [../../diary/2026/04/2026-04-03-development.md#01JBTSORTSEARCH20260403]
 - 2026-04-03 — Виджет bootstrap-table: `admin-bootstrap-table.js` через Vite; карточка на `tables` → [../../diary/2026/04/2026-04-03-development.md#01JVITEABSBT20260403]
 - 2026-04-04 — Виджет bootstrap-table: обёртка `admin-bootstrap-table`, класс `admin-bootstrap-table__grid`, без CDN CSS плагина → [../../diary/2026/04/2026-04-04-table_vidget.md#01JBTABLESTYLE20260404]
+- 2026-04-06 — Layout SB Admin: `sb-admin-scripts.js` через Vite; auth/error без лишнего `scripts.js` → [../../diary/2026/04/2026-04-06-codeclean.md#01JSBADMSCRIPTS20260406]
+- 2026-04-06 — Dashboard/Charts: `admin-chart-demos.js` через Vite; 404 — `themeAssetDataUri` для SVG темы → [../../diary/2026/04/2026-04-06-codeclean.md#01JMAKETRMV20260406]

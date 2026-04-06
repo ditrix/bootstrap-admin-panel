@@ -8,7 +8,7 @@
             <div class="col-lg-6">
                 <div class="text-center mt-4">
                     @if ($page->usesIllustration())
-                        <img class="mb-4 img-error" src="{{ \App\Helpers\AdminHelper::maketAsset('assets/img/error-404-monochrome.svg') }}" alt="404" />
+                        <img class="mb-4 img-error" src="{{ \App\Helpers\AdminHelper::themeAssetDataUri('img/error-404-monochrome.svg') }}" alt="404" />
                     @endif
                     <p class="lead">{{ $page->lead() }}</p>
                     <a href="{{ route('admin.dashboard') }}">

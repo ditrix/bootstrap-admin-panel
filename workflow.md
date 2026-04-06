@@ -1,5 +1,35 @@
 # Workflow
 
+## 2026-04-06 — удалены `maket/` и `public/maket/`
+
+**Статус:** готово.
+
+**Контекст:** Графики dashboard/charts — `admin-chart-demos.js` (Vite) + Chart.js 2.8 с CDN; 404 — SVG в `resources/themes/admin/assets/img/` и `AdminHelper::themeAssetDataUri()`. Каталоги макета удалены. Сборка: `./vendor/bin/sail npm run build`.
+
+**Следующий шаг:** при появлении ссылок на `maket` в старых доках — считать устаревшим.
+
+---
+
+## 2026-04-06 — codeclean: `maket/js/scripts.js` → тема + Vite (Sail)
+
+**Статус:** готово.
+
+**Контекст:** По промпту `codeclean.md`: код SB Admin для `#sidebarToggle` перенесён в `resources/themes/admin/assets/js/sb-admin-scripts.js`, добавлен input в `vite.config.js`, в `sb-admin` / `sb-admin-static` — `@vite([...])`. С `auth` / `error` убрано бесполезное подключение (нет сайдбара). Удалены `maket/js/scripts.js` и `public/maket/js/scripts.js`. Сборка: `./vendor/bin/sail npm install` (при ошибке Rollup linux в контейнере) и `./vendor/bin/sail npm run build`.
+
+**Следующий шаг:** при смене ветки/клоне — в Sail снова `npm run build`; опционально перенос chart/datatables demo с `public/maket`.
+
+---
+
+## 2026-04-06 — /adm: Vite manifest для admin-bootstrap-table.js
+
+**Статус:** готово.
+
+**Контекст:** `ViteException: Unable to locate file in Vite manifest: resources/themes/admin/assets/js/admin-bootstrap-table.js` — entry уже был в `vite.config.js`, но `public/build/manifest.json` был от старой сборки (в нём не было этого ключа). На хосте дополнительно отсутствовал `@rollup/rollup-darwin-arm64` (optional deps npm); выполнено `npm install`, затем `npm run build` — в манифесте появился `admin-bootstrap-table`.
+
+**Следующий шаг:** в разработке можно `npm run dev` вместо build; после изменений фронта — снова `npm run build` (папка `public/build` в `.gitignore`).
+
+---
+
 ## 2026-04-04 — bootstrap-table: поиск «поле + ×», без refresh, без focus-shadow
 
 **Статус:** готово.

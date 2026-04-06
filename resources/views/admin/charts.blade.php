@@ -51,7 +51,5 @@
 
 @push('scripts')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
-    <script src="{{ \App\Helpers\AdminHelper::maketAsset('assets/demo/chart-area-demo.js') }}"></script>
-    <script src="{{ \App\Helpers\AdminHelper::maketAsset('assets/demo/chart-bar-demo.js') }}"></script>
-    <script src="{{ \App\Helpers\AdminHelper::maketAsset('assets/demo/chart-pie-demo.js') }}"></script>
+    @vite(['resources/themes/admin/assets/js/admin-chart-demos.js'])
 @endpush
