@@ -65,3 +65,37 @@
 
 ### Follow-up
 - [ ] N/A
+
+---
+
+## 16:45 (Europe/Kyiv) merge[views.admin,frontend.vite] — code_clean → development
+**Entry ID:** 01JMRGDEV20260406
+**Дата:** 2026-04-06
+**Merge:** code_clean → development
+
+### Ветки
+- **Source:** code_clean
+- **Target:** development
+- **Merge commit:** fast-forward (единый линейный история до `e372652`)
+
+### Файлы
+- См. коммит `e372652` и fast-forward на `development` (25 файлов: тема, Vite, удаление `public/maket`, дневник/теги).
+
+### Что смерджено
+В `development` перенесены refactor админской статики: `AdminHelper`, JS темы и демо графиков через Vite, отказ от каталога `public/maket`, обновления Blade и документации изменений.
+
+### Конфликты
+- **Были конфликты:** нет
+
+### Влияние
+- **БД:** N/A
+- **API:** N/A
+- **Производительность:** N/A
+
+### Проверено
+- Тесты: до merge — `tests/Feature/Admin/`
+- Линтер: Pint; сборка: Sail `npm run build`
+- Конфликты: N/A
+
+### Follow-up
+- [ ] При необходимости: `git push origin development`
