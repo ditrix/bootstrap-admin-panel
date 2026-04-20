@@ -10,3 +10,5 @@
 - 2026-04-07 — Документация: `public/hot` и отсутствие стилей при выключенном Vite dev-сервере → [../../diary/2026/04/2026-04-07-development.md#01JVITEHOTRUN20260407]
 - 2026-04-06 — `admin-bootstrap-table.js`: строки confirm/fallback из Blade data-атрибутов виджета → [../../diary/2026/04/2026-04-06-review_refactoring.md#01JCRREFVIEW20260406]
 - 2026-04-06 — Merge `review_refactoring` → `development` (fast-forward): code review и hardening удаления в bootstrap-table → [../../diary/2026/04/2026-04-06-development.md#01JMRGREVREFDEV20260406]
+- 2026-04-01 — Добавлены JS entrypoints админки из `resources/views/admin/assets/js/*` и Blade подключен на `@vite` → [../../diary/2026/04/2026-04-01-architecture_js_scripts.md#20260401T165100RIGA]
+- 2026-04-01 — Установлен `jquery` через Sail и подключен в Vite admin entrypoint → [../../diary/2026/04/2026-04-01-architecture_js_scripts.md#20260401T171900RIGA]
