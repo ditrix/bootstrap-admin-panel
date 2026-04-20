@@ -50,7 +50,7 @@
             if (!Number.isInteger(id) || id < 1) {
                 return '';
             }
-            const base = @json(url('/adm/static-pages'));
+            const base = @json(route('admin.static-pages.index'));
             return (
                 /*'<a href="' +
                 base +

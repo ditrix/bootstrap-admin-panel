@@ -28,7 +28,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::prefix('adm')
+Route::prefix('admin')
     ->name('admin.')
     ->group(function (): void {
         Route::get('/', AdminEntryController::class)->name('entry');

@@ -13,7 +13,7 @@ class AdminAuthTest extends TestCase
 
     public function test_adm_entry_shows_login_when_guest(): void
     {
-        $response = $this->get('/adm');
+        $response = $this->get('/admin');
 
         $response->assertOk()
             ->assertViewIs('admin.auth.login');
@@ -27,7 +27,7 @@ class AdminAuthTest extends TestCase
             'password' => Hash::make('secret'),
         ]);
 
-        $response = $this->actingAs($admin, 'admin')->get('/adm');
+        $response = $this->actingAs($admin, 'admin')->get('/admin');
 
         $response->assertRedirect(route('admin.dashboard'));
     }
@@ -40,7 +40,7 @@ class AdminAuthTest extends TestCase
             'password' => Hash::make('secret'),
         ]);
 
-        $response = $this->post('/adm/login', [
+        $response = $this->post('/admin/login', [
             'email' => 'auth@example.com',
             'password' => 'secret',
         ]);
@@ -57,7 +57,7 @@ class AdminAuthTest extends TestCase
             'password' => Hash::make('secret'),
         ]);
 
-        $response = $this->from(route('admin.entry'))->post('/adm/login', [
+        $response = $this->from(route('admin.entry'))->post('/admin/login', [
             'email' => 'bad@example.com',
             'password' => 'wrong',
         ]);
@@ -75,7 +75,7 @@ class AdminAuthTest extends TestCase
             'password' => Hash::make('secret'),
         ]);
 
-        $response = $this->actingAs($admin, 'admin')->post('/adm/logout');
+        $response = $this->actingAs($admin, 'admin')->post('/admin/logout');
 
         $response->assertRedirect(route('admin.entry'));
         $this->assertGuest('admin');
@@ -83,14 +83,14 @@ class AdminAuthTest extends TestCase
 
     public function test_protected_admin_route_redirects_guest_to_login_entry(): void
     {
-        $response = $this->get('/adm/dashboard');
+        $response = $this->get('/admin/dashboard');
 
         $response->assertRedirect(route('admin.entry'));
     }
 
     public function test_register_creates_administrator_and_login_succeeds(): void
     {
-        $response = $this->post('/adm/register', [
+        $response = $this->post('/admin/register', [
             'first_name' => 'New',
             'last_name' => 'User',
             'email' => 'newuser@example.com',
@@ -105,7 +105,7 @@ class AdminAuthTest extends TestCase
         ]);
         $this->assertGuest('admin');
 
-        $login = $this->post('/adm/login', [
+        $login = $this->post('/admin/login', [
             'email' => 'newuser@example.com',
             'password' => 'Password1!',
         ]);
@@ -125,7 +125,7 @@ class AdminAuthTest extends TestCase
             'password' => Hash::make('secret'),
         ]);
 
-        $response = $this->from(route('admin.register'))->post('/adm/register', [
+        $response = $this->from(route('admin.register'))->post('/admin/register', [
             'first_name' => 'Other',
             'last_name' => 'Person',
             'email' => 'dup@example.com',
