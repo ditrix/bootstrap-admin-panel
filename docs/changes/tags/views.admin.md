@@ -16,3 +16,5 @@
 - 2026-04-07 — Merge `modals_alers` → `development` (fast-forward) → [../../diary/2026/04/2026-04-07-development.md#01JMRGMODALS20260407]
 - 2026-04-06 — Виджет bootstrap-table: i18n для delete/fallback, prop `actionsTitle`; static pages formatter — валидация числового id → [../../diary/2026/04/2026-04-06-review_refactoring.md#01JCRREFVIEW20260406]
 - 2026-04-06 — Merge `review_refactoring` → `development` (fast-forward): bootstrap-table review правки и статические страницы → [../../diary/2026/04/2026-04-06-development.md#01JMRGREVREFDEV20260406]
+- 2026-04-01 — Перенесены админские JS-подключения с `maket/js/*` на Vite (`resources/views/admin/assets/js/*`) → [../../diary/2026/04/2026-04-01-architecture_js_scripts.md#20260401T165100RIGA]
+- 2026-04-01 — Подключен jQuery через Vite entrypoint админки (`window.$`, `window.jQuery`) → [../../diary/2026/04/2026-04-01-architecture_js_scripts.md#20260401T171900RIGA]
