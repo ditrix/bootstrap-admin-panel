@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\FormsController;
 use App\Http\Controllers\Admin\Layout\LightSidenavController;
 use App\Http\Controllers\Admin\Layout\StaticNavigationController;
+use App\Http\Controllers\Admin\CategoryTreeController;
 use App\Http\Controllers\Admin\StaticPageController;
 use App\Http\Controllers\Admin\TablesController;
 use Illuminate\Support\Facades\Route;
@@ -58,5 +59,7 @@ Route::prefix('admin')
             Route::get('/api/employees', EmployeeTableDataController::class)->name('api.employees');
             Route::get('/api/static-pages/table', StaticPageTableDataController::class)->name('api.static-pages.table');
             Route::resource('static-pages', StaticPageController::class);
+            Route::get('/category-tree', [CategoryTreeController::class, 'index'])->name('category-tree.index');
+            Route::post('/category-tree/save-order', [CategoryTreeController::class, 'saveOrder'])->name('category-tree.save-order');
         });
     });

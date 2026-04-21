@@ -6,14 +6,15 @@ alwaysApply: true
 
 ## Контекст
 
+- **Актуальное состояние репозитория** (префикс URL админки, стек, слои, маршруты, guard `admin`): `.cursor/TECH-DOCUMENTATION.md`.
 - Референс по **серверной** логике сохранения порядка/родителя и идее сериализации дерева: `.cursor/docs/tree-drag-drop-implemeted_in_kohana.md` (в Kohana поле порядка — `sort`; в нашей БД — **`sort_no`**, как у `StaticPage`).
 - **Не требуется** копировать дизайн и дополнительный функционал со скриншотов/макетов CMS: в скоупе только отображение дерева и перетаскивание узлов за ручку ☰.
 - **Перед началом работы:** подтянуть в рабочую ветку изменения из ветки, где уже подключены **Bootstrap** и **SCSS** админ-темы (разметка дерева — на Bootstrap-классах; кастом — в **`resources/themes/admin/assets/css/`**, подключение через **`app.scss`** и блоки, как в остальной админке и Vite).
 
 ## Стек реализации (целевой)
 
-- **Backend:** Laravel, архитектура как в проекте: Controller → FormRequest → Service (логика дерева и массового обновления порядка/родителя) → Model → Blade (см. `.cursor/skills/PATTERNS.md` — *Pattern 2 - Tree CRUD*).
-- **Frontend:** Blade (рекурсивный partial для `<ol>`/`<li>`), **Bootstrap** (классы по принятой в проекте версии), **jQuery** (инициализация, делегирование, AJAX), **SortableJS** (вложенное дерево: nested Sortable или эквивалент), стили дерева в **SCSS** (`resources/themes/admin/assets/css/blocks/…`, импорт в `app.scss`), сборка через **Vite** как у прочих admin-ассетов.
+- **Backend:** Laravel **10** (PHP **^8.1**), архитектура как в проекте: Controller → FormRequest → Service (логика дерева и массового обновления порядка/родителя) → Model → Blade (см. `.cursor/skills/PATTERNS.md` — *Pattern 2 - Tree CRUD*). Форм-реквесты — в `app/Http/Requests/Admin/...` (при необходимости вложенная папка сущности, по аналогии с `StaticPage/StoreStaticPageRequest`).
+- **Frontend:** Blade (рекурсивный partial для `<ol>`/`<li>`), **Bootstrap 5** (в проекте **5.3.x**; в layout админки дополнительно CDN **Bootstrap 5.2.3** для JS темы — см. TECH-DOC §2.2–2.3), **jQuery** (инициализация, делегирование, AJAX), **SortableJS** (вложенное дерево: nested Sortable или эквивалент), стили дерева в **SCSS** (`resources/themes/admin/assets/css/blocks/…`, импорт в `app.scss`), сборка через **Vite 5** как у прочих admin-ассетов.
 
 Исключение: не переносить `jquery.nestable` с Kohana; перенести **идеи** (сериализация дерева, сохранение на сервере), UI и DnD — через SortableJS + явная ручка.
 
@@ -35,7 +36,9 @@ alwaysApply: true
 
 ## Маршруты и UI
 
-- Страница дерева в зоне админки (префикс как у текущих маршрутов, например `/admin/...`), пункт в сайдбаре админки.
+- Админка: префикс URL **`/admin`**, имена маршрутов с префиксом **`admin.*`**; регистрация — в **`routes/web.php`** (отдельного `admin-web.php` в репозитории нет). Страница дерева и **POST** сохранения структуры — в группе с **`middleware('auth:admin')`** (guard **`admin`**, модель **`Administrator`** — см. TECH-DOC §4–5).
+- Пункт в **`resources/views/admin/partials/sidebar.blade.php`**. Подсветка активного пункта: при необходимости расширить **`App\View\Composers\AdminLayoutComposer::resolveActiveSidebar()`** (как для `admin.static-pages.*` и др. — TECH-DOC §7.5, §8).
+- Основной layout страницы дерева: **`resources/views/admin/layouts/sb-admin.blade.php`** (или согласованный существующий layout админки).
 - **Содержимое строки узла (наглядно):** иконка-ручка **☰**, затем **`CategoryTree.id`** и **`CategoryTree.title`**. Поля **`is_active`** и **timestamps** в строке не выводить (они есть в БД/модели для последующего развития). Без чекбоксов, свёртки, лишних виджетов — минимальная вёрстка дерева в стиле админ-темы (отступы по уровню).
 
 ## Критерии приёмки
@@ -80,3 +83,4 @@ alwaysApply: true
 ## Документация изменений
 
 - После реализации: записи в `docs/changes/diary/` и теги в `docs/changes/tags/` по правилу `.cursor/rules/01-change-log.mdc`.
+- При существенных изменениях маршрутов, моделей или структуры админки — обновить **`.cursor/TECH-DOCUMENTATION.md`** (и при необходимости справки в `docs/`, например если появится отдельный API-эндпоинт, по аналогии с `docs/admin-bootstrap-table.md`).

@@ -6,7 +6,7 @@
 
 ## 1. Назначение проекта
 
-- Веб-приложение на Laravel с **отдельной зоной администратора** по префиксу URL `/adm`.
+- Веб-приложение на Laravel с **отдельной зоной администратора** по префиксу URL `/admin`.
 - Включает **демо-страницы** макета (дашборд, графики, таблицы, формы, варианты layout), **CRUD статических страниц** с древовидной связью `parent_id`, и **таблицу сотрудников** (`employees`) как пример серверной пагинации для Bootstrap Table.
 - Публичная часть минимальна: маршрут `/` отдаёт приветственную страницу `welcome`.
 
@@ -50,20 +50,22 @@
 ```
 app/
   Console/Kernel.php
+  Enums/                   # например AdminErrorPage (демо-страницы ошибок)
   Exceptions/Handler.php
-  Helpers/                 # например SalaryHelper
+  Helpers/                 # SalaryHelper, AdminHelper (ассеты темы)
   Http/
     Controllers/Admin/     # веб-админка
     Controllers/Admin/Api/ # JSON для таблиц (bootstrap-table)
     Controllers/Admin/Auth/
     Controllers/Admin/Layout/
     Middleware/
-    Requests/Admin/...
+    Requests/Admin/...     # в т.ч. Auth/*, StaticPage/* (Store/Update)
     Resources/Admin/...    # JsonResource для строк таблиц
   Models/                  # User, Administrator, Employee, StaticPage
   Notifications/
   Providers/
   Services/Admin/          # листинги, дашборд
+  View/Composers/          # AdminLayoutComposer (sidebar, пользователь)
 bootstrap/app.php          # классическое создание приложения Laravel 10
 config/
 database/
@@ -84,7 +86,7 @@ tests/
   Feature/, Unit/
 ```
 
-**Отличие от «эталонного» описания в `.cursor/skills/ARCHITECTURE.md`:** в этом репозитории нет разделения `routes/admin-web.php` / `admin-api.php` — админские маршруты сгруппированы в `routes/web.php` под префиксом `adm`. Представления лежат в `resources/views/admin/`, а не в `resources/admin/views/`.
+**Отличие от «эталонного» описания в `.cursor/skills/ARCHITECTURE.md`:** в этом репозитории нет разделения `routes/admin-web.php` / `admin-api.php` — админские маршруты сгруппированы в `routes/web.php` под префиксом `admin`. Представления лежат в `resources/views/admin/`, а не в `resources/admin/views/`.
 
 ---
 
@@ -100,23 +102,27 @@ tests/
 |-------|------|----------|
 | GET | `/` | `welcome` |
 
-### 4.3 Админка: префикс `adm`, имя маршрутов `admin.*`
+### 4.3 Админка: префикс `admin`, имя маршрутов `admin.*`
 
-Группа: `Route::prefix('adm')->name('admin.')`.
+Группа: `Route::prefix('admin')->name('admin.')`.
 
 | Условие | Маршруты |
 |---------|----------|
-| Без middleware auth | `GET /adm` → `AdminEntryController`: если уже залогинен в guard `admin` — редирект на дашборд, иначе форма логина |
-| `guest:admin` | логин, регистрация, запрос/сброс пароля |
-| `auth:admin` | дашборд, демо-layout, charts/tables/forms/blank, демо ошибок, API таблиц, resource `static-pages` |
+| Без middleware auth | `GET /admin` → `AdminEntryController`: если уже залогинен в guard `admin` — редирект на дашборд, иначе форма логина |
+| `guest:admin` | `POST` логина, регистрация, запрос/сброс пароля (страницы сброса/регистрации по `GET`) |
+| `auth:admin` | дашборд, демо-layout (`/admin/layouts/static`, `/admin/layouts/sidenav-light`), charts/tables/forms/blank, демо страниц ошибок (`/admin/errors/401|404|500`), API таблиц, resource `static-pages` |
 
 Имена важных маршрутов:
 
-- `admin.entry` — входная точка `/adm`
-- `admin.dashboard` — `/adm/dashboard`
-- `admin.api.employees` — `GET /adm/api/employees` (JSON для таблицы)
-- `admin.api.static-pages.table` — `GET /adm/api/static-pages/table`
+- `admin.entry` — входная точка `/admin`
+- `admin.dashboard` — `/admin/dashboard`
+- `admin.api.employees` — `GET /admin/api/employees` (JSON для таблицы)
+- `admin.api.static-pages.table` — `GET /admin/api/static-pages/table`
 - `admin.static-pages.*` — стандартный `Route::resource` для CRUD статических страниц
+- `admin.category-tree.index` — `GET /admin/category-tree`
+- `admin.category-tree.save-order` — `POST /admin/category-tree/save-order`
+- `admin.layouts.static`, `admin.layouts.sidenav-light` — варианты демо-layout
+- `admin.errors.401`, `admin.errors.404-demo`, `admin.errors.500-demo` — демо ошибок (Blade)
 
 Полный список — в `routes/web.php`.
 
@@ -141,9 +147,9 @@ tests/
 
 ### 5.3 Поведение middleware
 
-- `auth:admin` для защищённых маршрутов под `/adm/...`.
+- `auth:admin` для защищённых маршрутов под `/admin/...`.
 - `guest:admin` для страниц входа/регистрации/сброса пароля.
-- `Authenticate::redirectTo`: для путей `adm` / `adm/*` редирект на `route('admin.entry')`, для JSON-запросов — без редиректа.
+- `Authenticate::redirectTo`: для путей `admin` / `admin/*` редирект на `route('admin.entry')`, для JSON-запросов — без редиректа.
 - `RedirectIfAuthenticated`: при уже выполненном входе под `admin` — редирект на `admin.dashboard`.
 
 ### 5.4 Тестовый администратор
@@ -171,11 +177,26 @@ tests/
 
 Удаление: в `StaticPageController::destroy` запрещено, если есть дочерние страницы (`parent_id` указывает на текущую запись).
 
-### 6.3 `administrators`
+### 6.3 `category_trees`
+
+Поля: `parent_id` (по умолчанию `0`, индекс), `title`, `sort_no`, `is_active`, timestamps.
+
+Модель `CategoryTree`:
+
+- связи `parent()` / `children()`
+- scope `ordered()` — сортировка по `sort_no`, затем `id`
+
+Дерево формируется группировкой всех записей по `parent_id`; `parent_id = 0` — корневые узлы. Сервис `CategoryTreeService` содержит `buildGroupedTree()` и рекурсивный `saveOrder()` для пересчёта `parent_id` + `sort_no` после drag-and-drop.
+
+Маршруты:
+- `admin.category-tree.index` — `GET /admin/category-tree`
+- `admin.category-tree.save-order` — `POST /admin/category-tree/save-order` (JSON body `{ nodes: [...] }`)
+
+### 6.4 `administrators`
 
 Стандартные поля пользователя админки (в т.ч. `remember_token`); отдельная миграция под таблицу.
 
-### 6.4 Прочее
+### 6.5 Прочее
 
 - `users` — стандартная Laravel-таблица (для guard `web`).
 - Таблицы сброса паролей: `password_reset_tokens`, `administrator_password_reset_tokens`.
@@ -192,7 +213,7 @@ tests/
 ### 7.2 FormRequest
 
 Расположение: `app/Http/Requests/Admin/...`  
-Примеры: `StoreStaticPageRequest`, `UpdateStaticPageRequest`, запросы для auth.
+Примеры: `StaticPage/StoreStaticPageRequest`, `StaticPage/UpdateStaticPageRequest`, запросы в `Auth/` для входа и сброса пароля.
 
 ### 7.3 Сервисы
 
@@ -208,7 +229,16 @@ tests/
 
 - `EmployeeResource`, `StaticPageResource` — нормализация полей для JSON (даты, формат salary).
 
-### 7.5 Формат ответа для Bootstrap Table
+### 7.5 Enum и вспомогательные классы админки
+
+| Класс | Роль |
+|-------|------|
+| `App\Enums\AdminErrorPage` | Метаданные для демо-страниц ошибок 401/404/500 (`AdminErrorDemoController`) |
+| `App\Helpers\AdminHelper` | `themeAssetDataUri()` — data URI для файлов из `resources/themes/admin/assets/` (иллюстрации в ошибках) |
+
+`App\View\Composers\AdminLayoutComposer` вешается в `AppServiceProvider` на layout’ы `admin.layouts.sb-admin`, `admin.layouts.sb-admin-static`, `admin.layout-sidenav-light` и передаёт в шаблоны `adminUser` и `activeSidebar` (подсветка пункта меню по имени маршрута).
+
+### 7.6 Формат ответа для Bootstrap Table
 
 Эндпоинты `EmployeeTableDataController` и `StaticPageTableDataController` возвращают:
 
@@ -227,7 +257,8 @@ tests/
 
 ### 8.1 Основной layout
 
-- `resources/views/admin/layouts/sb-admin.blade.php` — фиксированный topnav, боковое меню, контент, подключение Vite для `sb-admin-scripts.js`, flash-сообщения, `@stack('scripts')`.
+- `resources/views/admin/layouts/sb-admin.blade.php` — фиксированный topnav, боковое меню, контент, подключение Vite для `sb-admin-scripts.js`, flash-сообщения, `@stack('scripts')`, общий UI-оверлей из `admin.partials.ui-shell`.
+- Дополнительно: `layouts/sb-admin-static.blade.php`, `layout-sidenav-light.blade.php` (корень `resources/views/admin/`), `layouts/auth.blade.php`, `layouts/error.blade.php` — варианты макетов и страниц ошибок.
 
 ### 8.2 Частичные шаблоны
 
@@ -236,7 +267,8 @@ tests/
 ### 8.3 Модули страниц
 
 - Статические страницы: `resources/views/admin/pages/static-pages/` (`view` как index-список с таблицей, `create`, `edit`, `show`).
-- Демо: `admin/dashboard`, `charts`, `tables`, `forms`, `blank`, варианты layout в `Layout/*`.
+- Дерево каталога: `resources/views/admin/pages/category-tree/index.blade.php` + рекурсивный partial `partials/tree-node.blade.php`. Вложенный `<ol class="ct-list--nested">` рендерится для каждого узла (в т.ч. пустой), что обеспечивает корректный drop при смене уровня вложенности. SortableJS (CDN) инициализируется на всех `<ol>` через plain JS + `document.addEventListener('DOMContentLoaded')`. Во время drag класс `ct-is-dragging` на `#ct-root` раскрывает пустые drop-зоны через SCSS.
+- Демо: `admin/dashboard`, `charts`, `tables`, `forms`, `blank`, варианты layout (`layout-static.blade.php`, `layout-sidenav-light.blade.php` и контроллеры в `Layout/`), демо ошибок в `admin/errors/`.
 
 ### 8.4 Сборка Vite
 
@@ -251,13 +283,15 @@ tests/
 
 Сервер разработки: `host: 0.0.0.0`, порт `5173`, HMR `localhost`, `watch.usePolling: true` (удобно для Docker/Sail).
 
+**Важно для inline-скриптов в `@push('scripts')`:** Vite-бандлы подключаются как `type="module"` (defer), поэтому `window.jQuery` и другие глобалы из Vite-бандлов **недоступны** в момент выполнения обычных inline-скриптов. Паттерн для inline-JS: plain JavaScript + `document.addEventListener('DOMContentLoaded', ...)` + `fetch` вместо `$.ajax`. CDN-библиотеки (SortableJS, Bootstrap CDN) загружаются синхронно и доступны немедленно.
+
 ---
 
 ## 9. Тестирование
 
 - Фреймворк: **PHPUnit 10** (`phpunit.xml`).
 - Окружение тестов: `APP_ENV=testing`, БД **sqlite `:memory:`**, `SESSION_DRIVER=array`, и т.д.
-- Примеры: `tests/Feature/Admin/AdminAuthTest.php`, `AdminPagesTest.php`, `tests/Unit/Services/AdminDashboardServiceTest.php`, `tests/Unit/Helpers/SalaryHelperTest.php`.
+- Примеры: `tests/Feature/Admin/AdminAuthTest.php`, `AdminPagesTest.php`, `StaticPageAdminTest.php`, `tests/Unit/Services/AdminDashboardServiceTest.php`, `tests/Unit/Helpers/SalaryHelperTest.php`.
 
 Запуск (в проектах с Sail обычно): `./vendor/bin/sail artisan test` или фильтр по имени теста — по соглашению команды.
 
@@ -292,10 +326,11 @@ tests/
 | `.cursor/skills/ADMIN_PANEL_PATTERN.md` | Паттерны админ-модулей, таблицы, формы |
 | `.cursor/skills/SKILLS.md` | Соглашения по слоям и именованию |
 | `README.md` | Установка, Sail, Vite, troubleshooting Rollup |
+| `docs/admin-bootstrap-table.md` | Справка по bootstrap-table в админке (маршруты API, JSON, виджет Blade) |
 
 ---
 
 ## 13. Версия документа
 
-- Составлено по состоянию репозитория **bootstrap-admin-panel** (Laravel **10**, PHP **^8.1**).
+- Составлено по состоянию репозитория **bootstrap-admin-panel** (Laravel **10**, PHP **^8.1**). Префикс URL админки: **`/admin`**.
 - При существенных изменениях маршрутов, моделей или стека имеет смысл обновить этот файл и раздел «Связанная документация».

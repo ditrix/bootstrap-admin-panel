@@ -2,13 +2,13 @@
 
 Краткий справочник по таблицам с подгрузкой данных с сервера и модулю Static pages.
 
-## Маршруты (префикс `/adm`, `auth:admin`)
+## Маршруты (префикс `/admin`, защита `auth:admin`)
 
-| Назначение | Метод | Имя маршрута |
-|------------|-------|----------------|
-| JSON для сотрудников (демо) | `GET` | `admin.api.employees` |
-| JSON для статических страниц | `GET` | `admin.api.static-pages.table` |
-| Список Static pages (Blade + таблица) | `GET` | `admin.static-pages.index` |
+| Назначение | Метод | Имя маршрута | Путь |
+|------------|-------|----------------|------|
+| JSON для сотрудников (демо) | `GET` | `admin.api.employees` | `/admin/api/employees` |
+| JSON для статических страниц | `GET` | `admin.api.static-pages.table` | `/admin/api/static-pages/table` |
+| Список Static pages (Blade + таблица) | `GET` | `admin.static-pages.index` | `/admin/static-pages` |
 
 Контроллеры: `App\Http\Controllers\Admin\Api\EmployeeTableDataController`, `StaticPageTableDataController`.
 

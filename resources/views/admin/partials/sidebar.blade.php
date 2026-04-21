@@ -57,6 +57,10 @@
                 <div class="sb-nav-link-icon"><i class="fas fa-file-alt"></i></div>
                 {{ __('Static pages') }}
             </a>
+            <a class="nav-link {{ $activeSidebar === 'category-tree' ? 'active' : '' }}" href="{{ route('admin.category-tree.index') }}">
+                <div class="sb-nav-link-icon"><i class="fas fa-sitemap"></i></div>
+                {{ __('Category Tree') }}
+            </a>
             <a class="nav-link {{ $activeSidebar === 'charts' ? 'active' : '' }}" href="{{ route('admin.charts') }}">
                 <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
                 Charts
