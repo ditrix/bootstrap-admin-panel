@@ -18,3 +18,5 @@
 - 2026-04-06 — Merge `review_refactoring` → `development` (fast-forward): bootstrap-table review правки и статические страницы → [../../diary/2026/04/2026-04-06-development.md#01JMRGREVREFDEV20260406]
 - 2026-04-01 — Перенесены админские JS-подключения с `maket/js/*` на Vite (`resources/views/admin/assets/js/*`) → [../../diary/2026/04/2026-04-01-architecture_js_scripts.md#20260401T165100RIGA]
 - 2026-04-01 — Подключен jQuery через Vite entrypoint админки (`window.$`, `window.jQuery`) → [../../diary/2026/04/2026-04-01-architecture_js_scripts.md#20260401T171900RIGA]
+- 2026-04-21 — Страница дерева каталога: `pages/category-tree/index.blade.php`, рекурсивный partial `tree-node.blade.php`, пункт сайдбара → [../../diary/2026/04/2026-04-21-catalog_tree.md#01JRZ2K4TY0001CATEGORYTREE]
+- 2026-04-21 — Fix DnD: plain JS вместо jQuery IIFE, всегда рендерить вложенный `<ol>`, `ct-is-dragging` + drop-зона 32px → [../../diary/2026/04/2026-04-21-catalog_tree.md#01JRZ4QCAT002DNDFIX]
