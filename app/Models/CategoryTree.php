@@ -21,6 +21,8 @@ class CategoryTree extends Model
         'parent_id',
         'sort_no',
         'title',
+        'slug',
+        'description',
         'is_active',
     ];
 

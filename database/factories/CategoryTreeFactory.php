@@ -27,6 +27,8 @@ class CategoryTreeFactory extends Factory
             'parent_id' => $parentId,
             'sort_no' => $sortNo,
             'title' => fake()->words(fake()->numberBetween(2, 4), true),
+            'slug' => null,
+            'description' => fake()->optional(0.3)->paragraph(),
             'is_active' => fake()->boolean(80),
         ];
     }
