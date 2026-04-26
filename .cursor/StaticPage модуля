@@ -179,22 +179,18 @@ tests/
 
 ### 6.3 `category_trees`
 
-Поля: `parent_id` (по умолчанию `0`, индекс), `title`, `slug` (nullable, unique), `description` (nullable, text), `sort_no`, `is_active`, timestamps.
+Поля: `parent_id` (по умолчанию `0`, индекс), `title`, `sort_no`, `is_active`, timestamps.
 
 Модель `CategoryTree`:
 
 - связи `parent()` / `children()`
 - scope `ordered()` — сортировка по `sort_no`, затем `id`
 
-Дерево формируется группировкой всех записей по `parent_id`; `parent_id = 0` — корневые узлы. Сервис `CategoryTreeService` содержит `buildGroupedTree()` и рекурсивный `saveOrder()` для пересчёта `parent_id` + `sort_no` после drag-and-drop, а также `allNodesOrderedForMeta()` (данные для UI) и `deleteNodeReparentingChildren()`: операция выполняется в одной транзакции БД; прямые дочерние узлы при удалении переносятся к родителю удаляемой записи (с новым `sort_no` в конце списка среди соседей, порядок детей относительно друг друга сохраняется), затем удаляемая запись удаляется.
-
-Редактирование узла — в модальном окне (Bootstrap) на странице дерева; валидация в `UpdateCategoryTreeRequest` (в т.ч. запрет циклов в иерархии по `parent_id`). Удаление — `adminBootstrapTableDelete` (подтверждение через `admin-ui`), тост `adminNotify` по результату.
+Дерево формируется группировкой всех записей по `parent_id`; `parent_id = 0` — корневые узлы. Сервис `CategoryTreeService` содержит `buildGroupedTree()` и рекурсивный `saveOrder()` для пересчёта `parent_id` + `sort_no` после drag-and-drop.
 
 Маршруты:
 - `admin.category-tree.index` — `GET /admin/category-tree`
 - `admin.category-tree.save-order` — `POST /admin/category-tree/save-order` (JSON body `{ nodes: [...] }`)
-- `admin.category-tree.update` — `PUT /admin/category-tree/{category_tree}` (form/json; ответ JSON с `message` при `Accept: application/json`)
-- `admin.category-tree.destroy` — `DELETE /admin/category-tree/{category_tree}` (JSON `message` при `Accept: application/json`, иначе редирект)
 
 ### 6.4 `administrators`
 
@@ -226,7 +222,6 @@ tests/
 | `EmployeeListingService` | Пагинация, поиск, сортировка для сотрудников; метод `paginateForBootstrapTable()` |
 | `StaticPageListingService` | Аналогично для `StaticPage` |
 | `AdminDashboardService` | Карточки на дашборде (в т.ч. счётчик сотрудников) |
-| `CategoryTreeService` | Группировка дерева, сохранение порядка DnD, перенос детей при удалении, выборка узлов для UI |
 
 Поиск реализован через `LIKE` и при необходимости `CAST` полей в строку; для SQLite используется `TEXT`, для остальных драйверов — `CHAR` (метод `stringCastType`).
 

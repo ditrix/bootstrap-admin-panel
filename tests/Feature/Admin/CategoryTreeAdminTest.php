@@ -15,8 +15,8 @@ class CategoryTreeAdminTest extends TestCase
     private function actingAdmin(): Administrator
     {
         return Administrator::query()->create([
-            'name'     => 'Tree Tester',
-            'email'    => 'category-tree@example.com',
+            'name' => 'Tree Tester',
+            'email' => 'category-tree@example.com',
             'password' => Hash::make('secret'),
         ]);
     }
@@ -30,7 +30,8 @@ class CategoryTreeAdminTest extends TestCase
 
         $response->assertOk()
             ->assertViewIs('admin.pages.category-tree.index')
-            ->assertViewHas('tree');
+            ->assertViewHas('tree')
+            ->assertViewHas('nodesMeta');
     }
 
     public function test_category_tree_index_requires_auth(): void
@@ -51,7 +52,7 @@ class CategoryTreeAdminTest extends TestCase
         // New structure: root2 first, root1 second with child moved to root2
         $nodes = [
             [
-                'id'       => $root2->id,
+                'id' => $root2->id,
                 'children' => [
                     ['id' => $child->id],
                 ],
@@ -111,7 +112,7 @@ class CategoryTreeAdminTest extends TestCase
         // Move B under A; C becomes second root
         $nodes = [
             [
-                'id'       => $a->id,
+                'id' => $a->id,
                 'children' => [['id' => $b->id]],
             ],
             ['id' => $c->id],
@@ -124,5 +125,131 @@ class CategoryTreeAdminTest extends TestCase
         $this->assertDatabaseHas('category_trees', ['id' => $a->id, 'parent_id' => 0, 'sort_no' => 0]);
         $this->assertDatabaseHas('category_trees', ['id' => $b->id, 'parent_id' => $a->id, 'sort_no' => 0]);
         $this->assertDatabaseHas('category_trees', ['id' => $c->id, 'parent_id' => 0, 'sort_no' => 1]);
+    }
+
+    public function test_update_returns_json_with_message(): void
+    {
+        $admin = $this->actingAdmin();
+        $node = CategoryTree::factory()->create([
+            'parent_id' => 0,
+            'title' => 'Node A',
+            'slug' => 'node-a',
+            'description' => 'Desc',
+        ]);
+
+        $response = $this->actingAs($admin, 'admin')
+            ->putJson(route('admin.category-tree.update', $node), [
+                'parent_id' => 0,
+                'title' => 'Node A updated',
+                'slug' => 'node-a-upd',
+                'description' => 'New desc',
+                'is_active' => false,
+            ]);
+
+        $response->assertOk()
+            ->assertJsonPath('message', __('Category tree node updated.'));
+        $node->refresh();
+        $this->assertSame('Node A updated', $node->title);
+        $this->assertSame('node-a-upd', $node->slug);
+        $this->assertSame('New desc', $node->description);
+        $this->assertFalse($node->is_active);
+    }
+
+    public function test_delete_reparents_direct_children_to_grandparent(): void
+    {
+        $admin = $this->actingAdmin();
+        $root = CategoryTree::factory()->create(['parent_id' => 0, 'sort_no' => 0, 'title' => 'R']);
+        $mid = CategoryTree::factory()->childOf($root, 0)->create(['title' => 'M']);
+        $leaf = CategoryTree::factory()->childOf($mid, 0)->create(['title' => 'L']);
+
+        $response = $this->actingAs($admin, 'admin')
+            ->deleteJson(route('admin.category-tree.destroy', $mid));
+
+        $response->assertOk()
+            ->assertJsonPath('message', __('Category tree node deleted.'));
+
+        $this->assertDatabaseMissing('category_trees', ['id' => $mid->id]);
+        $this->assertDatabaseHas('category_trees', [
+            'id' => $leaf->id,
+            'parent_id' => $root->id,
+        ]);
+    }
+
+    public function test_delete_leaf_removes_node(): void
+    {
+        $admin = $this->actingAdmin();
+        $node = CategoryTree::factory()->create(['parent_id' => 0, 'title' => 'Only']);
+
+        $this->actingAs($admin, 'admin')
+            ->deleteJson(route('admin.category-tree.destroy', $node))
+            ->assertOk()
+            ->assertJsonPath('message', __('Category tree node deleted.'));
+
+        $this->assertDatabaseMissing('category_trees', ['id' => $node->id]);
+    }
+
+    public function test_update_rejects_parent_cycle(): void
+    {
+        $admin = $this->actingAdmin();
+        $a = CategoryTree::factory()->create(['parent_id' => 0, 'title' => 'A']);
+        $b = CategoryTree::factory()->childOf($a, 0)->create(['title' => 'B']);
+        $c = CategoryTree::factory()->childOf($b, 0)->create(['title' => 'C']);
+
+        $response = $this->actingAs($admin, 'admin')
+            ->putJson(route('admin.category-tree.update', $a), [
+                'parent_id' => $c->id,
+                'title' => 'A',
+                'slug' => null,
+                'description' => null,
+                'is_active' => true,
+            ]);
+
+        $response->assertUnprocessable();
+    }
+
+    public function test_update_rejects_duplicate_slug(): void
+    {
+        $admin = $this->actingAdmin();
+        CategoryTree::factory()->create([
+            'parent_id' => 0,
+            'title' => 'First',
+            'slug' => 'taken-slug',
+        ]);
+        $other = CategoryTree::factory()->create([
+            'parent_id' => 0,
+            'title' => 'Second',
+            'slug' => 'other-slug',
+        ]);
+
+        $response = $this->actingAs($admin, 'admin')
+            ->putJson(route('admin.category-tree.update', $other), [
+                'parent_id' => 0,
+                'title' => 'Second',
+                'slug' => 'taken-slug',
+                'description' => null,
+                'is_active' => true,
+            ]);
+
+        $response->assertUnprocessable();
+    }
+
+    public function test_delete_reparents_multiple_children_preserving_relative_order(): void
+    {
+        $admin = $this->actingAdmin();
+        $root = CategoryTree::factory()->create(['parent_id' => 0, 'sort_no' => 0, 'title' => 'R']);
+        $mid = CategoryTree::factory()->childOf($root, 0)->create(['title' => 'M']);
+        $leafFirst = CategoryTree::factory()->childOf($mid, 0)->create(['title' => 'L1']);
+        $leafSecond = CategoryTree::factory()->childOf($mid, 1)->create(['title' => 'L2']);
+
+        $this->actingAs($admin, 'admin')
+            ->deleteJson(route('admin.category-tree.destroy', $mid))
+            ->assertOk();
+
+        $leafFirst->refresh();
+        $leafSecond->refresh();
+
+        $this->assertSame($root->id, $leafFirst->parent_id);
+        $this->assertSame($root->id, $leafSecond->parent_id);
+        $this->assertLessThan($leafSecond->sort_no, $leafFirst->sort_no);
     }
 }

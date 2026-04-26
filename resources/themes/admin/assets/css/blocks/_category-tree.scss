@@ -80,6 +80,21 @@
 .ct-title {
     font-size: 0.875rem;
     flex-grow: 1;
+    min-width: 0;
+}
+
+.ct-active {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+}
+
+.ct-node-actions {
+    flex-shrink: 0;
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
 }
 
 // During drag: reveal empty nested drop-zones
