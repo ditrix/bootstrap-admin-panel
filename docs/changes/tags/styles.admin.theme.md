@@ -15,3 +15,4 @@
 - 2026-04-21 — `blocks/_category-tree.scss`: стили дерева (ct-list, ct-item, ct-node, ct-handle); импорт в `app.scss` → [../../diary/2026/04/2026-04-21-catalog_tree.md#01JRZ2K4TY0001CATEGORYTREE]
 - 2026-04-21 — `_category-tree.scss`: `ct-is-dragging` — drop-зоны 32px + dashed border во время drag → [../../diary/2026/04/2026-04-21-catalog_tree.md#01JRZ4QCAT002DNDFIX]
 - 2026-04-26 — `_category-tree.scss`: `ct-node-actions`, `ct-active` → [../../diary/2026/04/2026-04-26-catalog-tree-crud.md#01JCTREE20260426CRUD]
+- 2026-04-26 — `blocks/_main-menu.scss` (mm-list, mm-node, …), импорт в `app.scss` → [../../diary/2026/04/2026-04-26-configuration-module.md#01JCFGMOD20260426]

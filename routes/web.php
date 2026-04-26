@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AdminEntryController;
 use App\Http\Controllers\Admin\AdminErrorDemoController;
+use App\Http\Controllers\Admin\AdministratorController;
 use App\Http\Controllers\Admin\Api\EmployeeTableDataController;
 use App\Http\Controllers\Admin\Api\StaticPageTableDataController;
 use App\Http\Controllers\Admin\Auth\LoginController;
@@ -15,6 +16,8 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\FormsController;
 use App\Http\Controllers\Admin\Layout\LightSidenavController;
 use App\Http\Controllers\Admin\Layout\StaticNavigationController;
+use App\Http\Controllers\Admin\MainMenuItemController;
+use App\Http\Controllers\Admin\SeoRedirectController;
 use App\Http\Controllers\Admin\StaticPageController;
 use App\Http\Controllers\Admin\TablesController;
 use Illuminate\Support\Facades\Route;
@@ -63,5 +66,12 @@ Route::prefix('admin')
             Route::post('/category-tree/save-order', [CategoryTreeController::class, 'saveOrder'])->name('category-tree.save-order');
             Route::put('/category-tree/{category_tree}', [CategoryTreeController::class, 'update'])->name('category-tree.update');
             Route::delete('/category-tree/{category_tree}', [CategoryTreeController::class, 'destroy'])->name('category-tree.destroy');
+            Route::get('/main-menu', [MainMenuItemController::class, 'index'])->name('main-menu.index');
+            Route::post('/main-menu', [MainMenuItemController::class, 'store'])->name('main-menu.store');
+            Route::post('/main-menu/save-order', [MainMenuItemController::class, 'saveOrder'])->name('main-menu.save-order');
+            Route::put('/main-menu/{main_menu_item}', [MainMenuItemController::class, 'update'])->name('main-menu.update');
+            Route::delete('/main-menu/{main_menu_item}', [MainMenuItemController::class, 'destroy'])->name('main-menu.destroy');
+            Route::resource('seo-redirects', SeoRedirectController::class)->except(['show']);
+            Route::resource('administrators', AdministratorController::class)->except(['show']);
         });
     });

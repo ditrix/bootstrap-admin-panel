@@ -25,6 +25,7 @@ class AdminAuthTest extends TestCase
             'name' => 'Tester',
             'email' => 't@example.com',
             'password' => Hash::make('secret'),
+            'is_active' => true,
         ]);
 
         $response = $this->actingAs($admin, 'admin')->get('/admin');
@@ -38,6 +39,7 @@ class AdminAuthTest extends TestCase
             'name' => 'Tester',
             'email' => 'auth@example.com',
             'password' => Hash::make('secret'),
+            'is_active' => true,
         ]);
 
         $response = $this->post('/admin/login', [
@@ -55,6 +57,7 @@ class AdminAuthTest extends TestCase
             'name' => 'Tester',
             'email' => 'bad@example.com',
             'password' => Hash::make('secret'),
+            'is_active' => true,
         ]);
 
         $response = $this->from(route('admin.entry'))->post('/admin/login', [
@@ -73,6 +76,7 @@ class AdminAuthTest extends TestCase
             'name' => 'Tester',
             'email' => 'out@example.com',
             'password' => Hash::make('secret'),
+            'is_active' => true,
         ]);
 
         $response = $this->actingAs($admin, 'admin')->post('/admin/logout');
@@ -117,12 +121,32 @@ class AdminAuthTest extends TestCase
         );
     }
 
+    public function test_login_rejects_inactive_account_with_valid_password(): void
+    {
+        Administrator::query()->create([
+            'name' => 'Inactive',
+            'email' => 'inactive@example.com',
+            'password' => Hash::make('secret'),
+            'is_active' => false,
+        ]);
+
+        $response = $this->from(route('admin.entry'))->post('/admin/login', [
+            'email' => 'inactive@example.com',
+            'password' => 'secret',
+        ]);
+
+        $response->assertRedirect(route('admin.entry'));
+        $response->assertSessionHasErrors('email');
+        $this->assertGuest('admin');
+    }
+
     public function test_register_rejects_duplicate_email(): void
     {
         Administrator::query()->create([
             'name' => 'Existing',
             'email' => 'dup@example.com',
             'password' => Hash::make('secret'),
+            'is_active' => true,
         ]);
 
         $response = $this->from(route('admin.register'))->post('/admin/register', [

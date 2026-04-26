@@ -23,6 +23,7 @@ class Administrator extends Authenticatable
         'name',
         'email',
         'password',
+        'is_active',
     ];
 
     /**
@@ -39,6 +40,7 @@ class Administrator extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'is_active' => 'boolean',
     ];
 
     public function sendPasswordResetNotification($token): void

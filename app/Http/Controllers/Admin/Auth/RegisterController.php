@@ -25,6 +25,7 @@ class RegisterController extends Controller
             'email' => $data['email'],
             'password' => $data['password'],
             'email_verified_at' => now(),
+            'is_active' => true,
         ]);
 
         return redirect()->route('admin.entry');

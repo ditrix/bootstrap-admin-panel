@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
-use App\Models\CategoryTree;
 use App\Models\Employee;
 use Illuminate\Database\Seeder;
 
@@ -20,6 +19,8 @@ class DatabaseSeeder extends Seeder
         $this->call(StaticPageSeeder::class);
 
         $this->call(CategoryTreeSeeder::class);
+
+        $this->call(ConfigurationModuleSeeder::class);
 
         Employee::factory(75)->create();
     }
