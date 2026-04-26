@@ -14,6 +14,11 @@ use Illuminate\View\View;
 
 class CategoryTreeController extends Controller
 {
+    /**
+     * Numeric placeholder for generating the client-side URL template (replaced with "__ID__" in JS).
+     */
+    private const UPDATE_ROUTE_PLACEHOLDER_TREE_ID = 2147483646;
+
     public function __construct(private readonly CategoryTreeService $service) {}
 
     public function index(): View
@@ -43,9 +48,11 @@ class CategoryTreeController extends Controller
             ])
             ->all();
 
-        $updateUrlTemplate = str_replace('999999999', '__ID__', route('admin.category-tree.update', [
-            'category_tree' => 999999999,
-        ]));
+        $updateUrlTemplate = str_replace(
+            (string) self::UPDATE_ROUTE_PLACEHOLDER_TREE_ID,
+            '__ID__',
+            route('admin.category-tree.update', ['category_tree' => self::UPDATE_ROUTE_PLACEHOLDER_TREE_ID]),
+        );
 
         return view('admin.pages.category-tree.index', [
             'tree' => $tree,

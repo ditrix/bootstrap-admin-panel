@@ -21,3 +21,4 @@
 - 2026-04-21 — Страница дерева каталога: `pages/category-tree/index.blade.php`, рекурсивный partial `tree-node.blade.php`, пункт сайдбара → [../../diary/2026/04/2026-04-21-catalog_tree.md#01JRZ2K4TY0001CATEGORYTREE]
 - 2026-04-21 — Fix DnD: plain JS вместо jQuery IIFE, всегда рендерить вложенный `<ol>`, `ct-is-dragging` + drop-зона 32px → [../../diary/2026/04/2026-04-21-catalog_tree.md#01JRZ4QCAT002DNDFIX]
 - 2026-04-26 — Category tree: модалка редактирования, `admin-bootstrap-table.js`+i18n для delete, кнопки/иконка активности в `tree-node` → [../../diary/2026/04/2026-04-26-catalog-tree-crud.md#01JCTREE20260426CRUD]
+- 2026-04-26 — Category tree: в submit модалки показ первой ошибки валидации (422) в `adminNotify` → [../../diary/2026/04/2026-04-26-catalog-tree-crud.md#01JCTREE20260426REVIEW]

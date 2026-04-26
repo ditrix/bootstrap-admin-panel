@@ -59,28 +59,30 @@ class CategoryTreeService
      */
     public function deleteNodeReparentingChildren(CategoryTree $node): void
     {
-        $newParentId = (int) $node->parent_id;
+        CategoryTree::query()->getConnection()->transaction(function () use ($node): void {
+            $newParentId = (int) $node->parent_id;
 
-        $children = CategoryTree::query()
-            ->where('parent_id', $node->getKey())
-            ->orderBy('sort_no')
-            ->orderBy('id')
-            ->get();
+            $children = CategoryTree::query()
+                ->where('parent_id', $node->getKey())
+                ->orderBy('sort_no')
+                ->orderBy('id')
+                ->get();
 
-        $maxSortAmongSiblings = (int) CategoryTree::query()
-            ->where('parent_id', $newParentId)
-            ->where('id', '!=', $node->getKey())
-            ->max('sort_no');
+            $maxSortAmongSiblings = (int) CategoryTree::query()
+                ->where('parent_id', $newParentId)
+                ->where('id', '!=', $node->getKey())
+                ->max('sort_no');
 
-        $nextSort = $maxSortAmongSiblings + 1;
-        foreach ($children as $child) {
-            $child->update([
-                'parent_id' => $newParentId,
-                'sort_no' => $nextSort,
-            ]);
-            $nextSort++;
-        }
+            $nextSort = $maxSortAmongSiblings + 1;
+            foreach ($children as $child) {
+                $child->update([
+                    'parent_id' => $newParentId,
+                    'sort_no' => $nextSort,
+                ]);
+                $nextSort++;
+            }
 
-        $node->delete();
+            $node->delete();
+        });
     }
 }

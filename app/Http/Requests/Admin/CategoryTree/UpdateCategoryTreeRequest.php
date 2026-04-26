@@ -12,7 +12,7 @@ class UpdateCategoryTreeRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        return $this->route('category_tree') instanceof CategoryTree;
     }
 
     protected function prepareForValidation(): void
@@ -29,8 +29,8 @@ class UpdateCategoryTreeRequest extends FormRequest
      */
     public function rules(): array
     {
+        /** @var CategoryTree $categoryTree */
         $categoryTree = $this->route('category_tree');
-        \assert($categoryTree instanceof CategoryTree);
 
         return [
             'parent_id' => [

@@ -296,7 +296,21 @@
                         });
                     })
                     .then(function (r) {
-                        const msg = (r.body && r.body.message) ? r.body.message : (r.response.ok ? '{{ __('Done.') }}' : '{{ __('Request failed.') }}');
+                        let msg;
+                        if (r.body && r.body.errors && typeof r.body.errors === 'object') {
+                            const keys = Object.keys(r.body.errors);
+                            if (keys.length > 0) {
+                                const first = r.body.errors[keys[0]];
+                                if (Array.isArray(first) && typeof first[0] === 'string') {
+                                    msg = first[0];
+                                }
+                            }
+                        }
+                        if (!msg) {
+                            msg = (r.body && r.body.message)
+                                ? r.body.message
+                                : (r.response.ok ? '{{ __('Done.') }}' : '{{ __('Request failed.') }}');
+                        }
                         if (typeof window.adminNotify === 'function') {
                             window.adminNotify(msg, r.response.ok ? 'success' : 'danger');
                         }

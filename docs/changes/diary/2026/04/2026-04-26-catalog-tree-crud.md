@@ -35,3 +35,36 @@
 
 ### Follow-up
 - N/A
+
+## 21:15 (Europe/Kyiv) refactor[service.admin.category-tree,controller.admin.category-tree,request.admin.category-tree,views.admin,tests.feature.admin] — Ревью задачи 10: транзакция удаления, шаблон URL, валидация в UI
+
+**Entry ID:** 01JCTREE20260426REVIEW
+**Agent:** GPT-5.2
+**Дата:** 2026-04-26
+**Ветка:** catalog_tree_sortable_js
+
+### Файлы
+- `app/Services/Admin/CategoryTreeService.php`
+- `app/Http/Controllers/Admin/CategoryTreeController.php`
+- `app/Http/Requests/Admin/CategoryTree/UpdateCategoryTreeRequest.php`
+- `resources/views/admin/pages/category-tree/index.blade.php`
+- `tests/Feature/Admin/CategoryTreeAdminTest.php`
+- `.cursor/TECH-DOCUMENTATION.md`
+
+### Что сделано
+`deleteNodeReparentingChildren()` обёрнут в транзакцию соединения модели. В контроллере вместо «магического» id для шаблона URL обновления введена именованная константа-плейсхолдер. В `UpdateCategoryTreeRequest` убран `assert`, в `authorize()` проверяется `instanceof CategoryTree`. В JS модалки редактирования при ответе 422 в `adminNotify` показывается первая ошибка из `errors`. Добавлены тесты: дублирующий `slug` и сохранение относительного порядка у нескольких детей при удалении родителя. В TECH-DOCUMENTATION уточнены транзакция и порядок детей при удалении.
+
+### Почему
+Сеньорское ревью: атомарность БД при переносе детей + удалении, предсказуемость шаблона маршрута, корректная авторизация запроса, UX при ошибках валидации, покрытие граничных сценариев тестами.
+
+### Влияние
+- **БД:** N/A (логика та же, гарантия целостности при сбоях между шагами)
+- **API:** N/A
+- **Производительность:** N/A
+
+### Проверено
+- Тесты: обновлены `CategoryTreeAdminTest` (12 passed)
+- Линтер: Pint (dirty)
+
+### Follow-up
+- N/A

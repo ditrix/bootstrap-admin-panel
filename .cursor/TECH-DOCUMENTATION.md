@@ -186,7 +186,7 @@ tests/
 - связи `parent()` / `children()`
 - scope `ordered()` — сортировка по `sort_no`, затем `id`
 
-Дерево формируется группировкой всех записей по `parent_id`; `parent_id = 0` — корневые узлы. Сервис `CategoryTreeService` содержит `buildGroupedTree()` и рекурсивный `saveOrder()` для пересчёта `parent_id` + `sort_no` после drag-and-drop, а также `allNodesOrderedForMeta()` (данные для UI) и `deleteNodeReparentingChildren()`: прямые дочерние узлы при удалении переносятся к родителю удаляемой записи (с новым `sort_no` в конце списка среди соседей), затем удаляемая запись удаляется.
+Дерево формируется группировкой всех записей по `parent_id`; `parent_id = 0` — корневые узлы. Сервис `CategoryTreeService` содержит `buildGroupedTree()` и рекурсивный `saveOrder()` для пересчёта `parent_id` + `sort_no` после drag-and-drop, а также `allNodesOrderedForMeta()` (данные для UI) и `deleteNodeReparentingChildren()`: операция выполняется в одной транзакции БД; прямые дочерние узлы при удалении переносятся к родителю удаляемой записи (с новым `sort_no` в конце списка среди соседей, порядок детей относительно друг друга сохраняется), затем удаляемая запись удаляется.
 
 Редактирование узла — в модальном окне (Bootstrap) на странице дерева; валидация в `UpdateCategoryTreeRequest` (в т.ч. запрет циклов в иерархии по `parent_id`). Удаление — `adminBootstrapTableDelete` (подтверждение через `admin-ui`), тост `adminNotify` по результату.
 
