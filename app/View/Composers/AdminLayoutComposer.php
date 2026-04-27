@@ -30,6 +30,9 @@ class AdminLayoutComposer
             request()->routeIs('admin.errors.500-demo') => 'error-500',
             request()->routeIs('admin.static-pages.*') => 'static-pages',
             request()->routeIs('admin.category-tree.*') => 'category-tree',
+            request()->routeIs('admin.seo-redirects.*') => 'settings-redirects',
+            request()->routeIs('admin.main-menu.*') => 'settings-main-menu',
+            request()->routeIs('admin.administrators.*') => 'settings-administrators',
             default => '',
         };
     }

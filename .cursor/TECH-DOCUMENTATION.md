@@ -7,7 +7,8 @@
 ## 1. Назначение проекта
 
 - Веб-приложение на Laravel с **отдельной зоной администратора** по префиксу URL `/admin`.
-- Включает **демо-страницы** макета (дашборд, графики, таблицы, формы, варианты layout), **CRUD статических страниц** с древовидной связью `parent_id`, и **таблицу сотрудников** (`employees`) как пример серверной пагинации для Bootstrap Table.
+- Включает **демо-страницы** макета (дашборд, графики, таблицы, формы, варианты layout), **CRUD статических страниц** с древовидной связью `parent_id`, **дерево категорий (Category tree)** c DnD, группу **Settings** в сайдбаре: **Main menu** (дерево до 3 уровней), **301 Redirects** (табличный CRUD + глобальный middleware 301), **Users** (CRUD администраторов), и **таблицу сотрудников** (`employees`) как пример серверной пагинации для Bootstrap Table.
+- **Публичные GET-редиректы 301** по путям из `seo_redirects` обрабатывает глобальный middleware (исключение `admin/*`); до применения маршрута проверяется `Schema::hasTable('seo_redirects')` (например, тесты без миграций).
 - Публичная часть минимальна: маршрут `/` отдаёт приветственную страницу `welcome`.
 
 ---
@@ -58,20 +59,20 @@ app/
     Controllers/Admin/Api/ # JSON для таблиц (bootstrap-table)
     Controllers/Admin/Auth/
     Controllers/Admin/Layout/
-    Middleware/
-    Requests/Admin/...     # в т.ч. Auth/*, StaticPage/* (Store/Update)
+    Middleware/            # в т.ч. ApplySeoRedirectMiddleware (глобально в Kernel)
+    Requests/Admin/...     # в т.ч. Auth/*, StaticPage/*, CategoryTree/*, MainMenu/*, SeoRedirect/*, Administrator/*
     Resources/Admin/...    # JsonResource для строк таблиц
-  Models/                  # User, Administrator, Employee, StaticPage
+  Models/                  # User, Administrator, Employee, StaticPage, CategoryTree, MainMenuItem, SeoRedirect
   Notifications/
   Providers/
-  Services/Admin/          # листинги, дашборд
+  Services/Admin/          # листинги, дашборд, CategoryTreeService, MainMenuItemService
   View/Composers/          # AdminLayoutComposer (sidebar, пользователь)
 bootstrap/app.php          # классическое создание приложения Laravel 10
 config/
 database/
   factories/
   migrations/
-  seeders/                 # AdminSeeder, StaticPageSeeder, DatabaseSeeder
+  seeders/                 # AdminSeeder, StaticPageSeeder, CategoryTreeSeeder, ConfigurationModuleSeeder, DatabaseSeeder
 public/
 resources/
   css/app.css
@@ -110,7 +111,7 @@ tests/
 |---------|----------|
 | Без middleware auth | `GET /admin` → `AdminEntryController`: если уже залогинен в guard `admin` — редирект на дашборд, иначе форма логина |
 | `guest:admin` | `POST` логина, регистрация, запрос/сброс пароля (страницы сброса/регистрации по `GET`) |
-| `auth:admin` | дашборд, демо-layout (`/admin/layouts/static`, `/admin/layouts/sidenav-light`), charts/tables/forms/blank, демо страниц ошибок (`/admin/errors/401|404|500`), API таблиц, resource `static-pages` |
+| `auth:admin` | дашборд, демо-layout, charts/tables/forms/blank, демо ошибок, API таблиц, resource `static-pages`, `category-tree`, группа **Settings:** `main-menu` (с `store`/`save-order`), resource `seo-redirects` (без `show`), resource `administrators` (без `show`) |
 
 Имена важных маршрутов:
 
@@ -123,6 +124,11 @@ tests/
 - `admin.category-tree.save-order` — `POST /admin/category-tree/save-order`
 - `admin.layouts.static`, `admin.layouts.sidenav-light` — варианты демо-layout
 - `admin.errors.401`, `admin.errors.404-demo`, `admin.errors.500-demo` — демо ошибок (Blade)
+- `admin.main-menu.*` — `GET/POST /admin/main-menu`, `POST /admin/main-menu/save-order`, `PUT/DELETE /admin/main-menu/{main_menu_item}`
+- `admin.seo-redirects.*` — CRUD 301-редиректов
+- `admin.administrators.*` — CRUD администраторов
+
+**Глобальный HTTP-middleware** (массив `$middleware` в `app/Http/Kernel.php`, не в группе `web`): `ApplySeoRedirectMiddleware` — на GET-запросы вне `admin` ищет активный `SeoRedirect` по пути, отдаёт 301; если таблицы `seo_redirects` ещё нет — `Schema::hasTable` пропускает обработку.
 
 Полный список — в `routes/web.php`.
 
@@ -154,7 +160,7 @@ tests/
 
 ### 5.4 Тестовый администратор
 
-`Database\Seeders\AdminSeeder` создаёт/обновляет запись с email `admin@mail.com` и паролем `password` (хэш через `Hash::make`). Подключение сидера — в `DatabaseSeeder` при необходимости.
+`Database\Seeders\AdminSeeder` создаёт/обновляет запись с email `admin@mail.com` и паролем `password` (хэш через `Hash::make`). `Database\Seeders\ConfigurationModuleSeeder` — по **10** демо-записей через фабрики: `MainMenuItem`, `SeoRedirect`, `Administrator` (после сидеров Static/Category, до массовой фабрики `Employee` в `DatabaseSeeder`). Подключение — в `DatabaseSeeder`.
 
 ---
 
@@ -196,11 +202,21 @@ tests/
 - `admin.category-tree.update` — `PUT /admin/category-tree/{category_tree}` (form/json; ответ JSON с `message` при `Accept: application/json`)
 - `admin.category-tree.destroy` — `DELETE /admin/category-tree/{category_tree}` (JSON `message` при `Accept: application/json`, иначе редирект)
 
-### 6.4 `administrators`
+### 6.4 `main_menu_items`
 
-Стандартные поля пользователя админки (в т.ч. `remember_token`); отдельная миграция под таблицу.
+Поля: `parent_id` (0 — корень), `sort_no`, `title`, `slug` (nullable, unique), `is_active`, timestamps.
 
-### 6.5 Прочее
+Поведение: как у **Category tree**, с ограничением **не более 3 уровней** вложенности (валидация в `SaveMainMenuItemOrderRequest`, `Update`/`Store`). Сервис `MainMenuItemService` — `buildGroupedTree()`, `saveOrder()`, `deleteNodeReparentingChildren()`, `allNodesOrderedForMeta()`. UI: `resources/views/admin/pages/main-menu/`, SortableJS, префикс классов `mm-`, SCSS `blocks/_main-menu.scss`, создание узла — форма/модалка `POST` `admin.main-menu.store`.
+
+### 6.5 `seo_redirects`
+
+Поля: `slug_from` (unique, путь без ведущего слеша), `slug_to` (до 2000 символов), `is_active`, timestamps. Список в админке: Blade-таблица, удаление — `adminBootstrapTableDelete` + JSON-ответ контроллера при `Accept: application/json` (как у `StaticPage`).
+
+### 6.6 `administrators`
+
+Стандартные поля пользователя админки (в т.ч. `remember_token`); колонка **`is_active`** (boolean, default true). **Вход** в guard `admin`: `LoginRequest` передаёт в `attempt` также `is_active => true` (Eloquent-фильтр). **CRUD** в разделе Settings → Users: пароли в формах с partial `admin/partials/admin-password-fields.blade.php` (переключатель видимости), удаление «себя» отклоняется. Для `destroy` при AJAX возвращается JSON (`422` при запрете удаления), иначе редирект + flash; flash успеха/ошибки выводятся через `admin-ui-flash` + `adminNotify`, без дублирующих Bootstrap `alert` на index-страницах.
+
+### 6.7 Прочее
 
 - `users` — стандартная Laravel-таблица (для guard `web`).
 - Таблицы сброса паролей: `password_reset_tokens`, `administrator_password_reset_tokens`.
@@ -217,7 +233,7 @@ tests/
 ### 7.2 FormRequest
 
 Расположение: `app/Http/Requests/Admin/...`  
-Примеры: `StaticPage/StoreStaticPageRequest`, `StaticPage/UpdateStaticPageRequest`, запросы в `Auth/` для входа и сброса пароля.
+Примеры: `StaticPage/StoreStaticPageRequest`, `StaticPage/UpdateStaticPageRequest`, `CategoryTree/*`, `MainMenu/*`, `SeoRedirect/*`, `Administrator/*`, `Auth/*` (вход, сброс пароля).
 
 ### 7.3 Сервисы
 
@@ -227,6 +243,7 @@ tests/
 | `StaticPageListingService` | Аналогично для `StaticPage` |
 | `AdminDashboardService` | Карточки на дашборде (в т.ч. счётчик сотрудников) |
 | `CategoryTreeService` | Группировка дерева, сохранение порядка DnD, перенос детей при удалении, выборка узлов для UI |
+| `MainMenuItemService` | То же для главного меню, максимальная глубина дерева 3 |
 
 Поиск реализован через `LIKE` и при необходимости `CAST` полей в строку; для SQLite используется `TEXT`, для остальных драйверов — `CHAR` (метод `stringCastType`).
 
@@ -241,7 +258,7 @@ tests/
 | `App\Enums\AdminErrorPage` | Метаданные для демо-страниц ошибок 401/404/500 (`AdminErrorDemoController`) |
 | `App\Helpers\AdminHelper` | `themeAssetDataUri()` — data URI для файлов из `resources/themes/admin/assets/` (иллюстрации в ошибках) |
 
-`App\View\Composers\AdminLayoutComposer` вешается в `AppServiceProvider` на layout’ы `admin.layouts.sb-admin`, `admin.layouts.sb-admin-static`, `admin.layout-sidenav-light` и передаёт в шаблоны `adminUser` и `activeSidebar` (подсветка пункта меню по имени маршрута).
+`App\View\Composers\AdminLayoutComposer` вешается в `AppServiceProvider` на layout’ы `admin.layouts.sb-admin`, `admin.layouts.sb-admin-static`, `admin.layout-sidenav-light` и передаёт в шаблоны `adminUser` и `activeSidebar` (по `request()->routeIs()`: `static-pages`, `category-tree`, `settings-redirects`, `settings-main-menu`, `settings-administrators` и др.). В `sidebar` для вложенных разделов (Layouts, Pages, **Settings**) класс `collapsed` на триггере снимается, если активен дочерний маршрут, чтобы chevron оставался в «открытом» состоянии.
 
 ### 7.6 Формат ответа для Bootstrap Table
 
@@ -262,7 +279,7 @@ tests/
 
 ### 8.1 Основной layout
 
-- `resources/views/admin/layouts/sb-admin.blade.php` — фиксированный topnav, боковое меню, контент, подключение Vite для `sb-admin-scripts.js`, flash-сообщения, `@stack('scripts')`, общий UI-оверлей из `admin.partials.ui-shell`.
+- `resources/views/admin/layouts/sb-admin.blade.php` — фиксированный topnav, боковое меню, контент, подключение Vite для `sb-admin-scripts.js`, `admin.partials.admin-ui-flash` (flash `success` / `error` / `status` → `adminNotify` на `DOMContentLoaded`), `@stack('scripts')`, общий UI-оверлей из `admin.partials.ui-shell`.
 - Дополнительно: `layouts/sb-admin-static.blade.php`, `layout-sidenav-light.blade.php` (корень `resources/views/admin/`), `layouts/auth.blade.php`, `layouts/error.blade.php` — варианты макетов и страниц ошибок.
 
 ### 8.2 Частичные шаблоны
@@ -273,6 +290,9 @@ tests/
 
 - Статические страницы: `resources/views/admin/pages/static-pages/` (`view` как index-список с таблицей, `create`, `edit`, `show`).
 - Дерево каталога: `resources/views/admin/pages/category-tree/index.blade.php` + рекурсивный partial `partials/tree-node.blade.php`. Вложенный `<ol class="ct-list--nested">` рендерится для каждого узла (в т.ч. пустой), что обеспечивает корректный drop при смене уровня вложенности. SortableJS (CDN) инициализируется на всех `<ol>` через plain JS + `document.addEventListener('DOMContentLoaded')`. Во время drag класс `ct-is-dragging` на `#ct-root` раскрывает пустые drop-зоны через SCSS.
+- **Main menu:** `pages/main-menu/` — то же DnD-поведение с префиксом `mm-`, `blocks/_main-menu.scss`.
+- **301 Redirects / Administrators:** `pages/seo-redirects/`, `pages/administrators/` — таблицы, удаление кнопкой `adminBootstrapTableDelete(url)`; на странице — блок `#admin-bootstrap-table-i18n` с текстом подтверждения, подключение `admin-bootstrap-table.js` через Vite; подтверждение — `adminUiDialog` (fallback `window.confirm` в `admin-bootstrap-table.js`), результат — `adminNotify` + перезагрузка при успехе.
+- Сайдбар: `partials/sidebar` — сворачиваемая группа **Settings** (Redirects, Main menu, Users) с иконкой шестерёнки.
 - Демо: `admin/dashboard`, `charts`, `tables`, `forms`, `blank`, варианты layout (`layout-static.blade.php`, `layout-sidenav-light.blade.php` и контроллеры в `Layout/`), демо ошибок в `admin/errors/`.
 
 ### 8.4 Сборка Vite
@@ -296,7 +316,7 @@ tests/
 
 - Фреймворк: **PHPUnit 10** (`phpunit.xml`).
 - Окружение тестов: `APP_ENV=testing`, БД **sqlite `:memory:`**, `SESSION_DRIVER=array`, и т.д.
-- Примеры: `tests/Feature/Admin/AdminAuthTest.php`, `AdminPagesTest.php`, `StaticPageAdminTest.php`, `tests/Unit/Services/AdminDashboardServiceTest.php`, `tests/Unit/Helpers/SalaryHelperTest.php`.
+- Примеры: `AdminAuthTest`, `AdminPagesTest`, `StaticPageAdminTest`, `CategoryTreeAdminTest`, `MainMenuItemAdminTest`, `SeoRedirectAdminTest`, `AdministratorAdminTest`, `tests/Unit/Services/AdminDashboardServiceTest`, `tests/Unit/Helpers/SalaryHelperTest`.
 
 Запуск (в проектах с Sail обычно): `./vendor/bin/sail artisan test` или фильтр по имени теста — по соглашению команды.
 
@@ -338,4 +358,5 @@ tests/
 ## 13. Версия документа
 
 - Составлено по состоянию репозитория **bootstrap-admin-panel** (Laravel **10**, PHP **^8.1**). Префикс URL админки: **`/admin`**.
+- **2026-04-26 (актуализация):** модуль **Settings** (Main menu, 301 Redirects, Users/Administrators), глобальный middleware редиректов, `ConfigurationModuleSeeder`, тесты перечислены в §9; уточнены сайдбар, `admin-ui-flash`, `adminBootstrapTableDelete`.
 - При существенных изменениях маршрутов, моделей или стека имеет смысл обновить этот файл и раздел «Связанная документация».

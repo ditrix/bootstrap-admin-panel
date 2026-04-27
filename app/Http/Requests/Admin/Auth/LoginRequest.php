@@ -32,7 +32,10 @@ class LoginRequest extends FormRequest
     public function authenticate(): void
     {
         if (! Auth::guard('admin')->attempt(
-            $this->only('email', 'password'),
+            array_merge(
+                $this->only('email', 'password'),
+                ['is_active' => true],
+            ),
             $this->boolean('remember')
         )) {
             throw ValidationException::withMessages([
