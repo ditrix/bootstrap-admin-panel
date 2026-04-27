@@ -22,6 +22,29 @@ class SeoRedirectAdminTest extends TestCase
         ]);
     }
 
+    public function test_index_shows_bootstrap_table_view(): void
+    {
+        $admin = $this->actingAdmin();
+
+        $this->actingAs($admin, 'admin')
+            ->get(route('admin.seo-redirects.index'))
+            ->assertOk()
+            ->assertViewHas('tableId')
+            ->assertViewHas('dataUrl');
+    }
+
+    public function test_seo_redirects_table_api_returns_bootstrap_table_payload(): void
+    {
+        $admin = $this->actingAdmin();
+        SeoRedirect::factory()->count(4)->create();
+
+        $response = $this->actingAs($admin, 'admin')->getJson(route('admin.api.seo-redirects.table'));
+
+        $response->assertOk()
+            ->assertJsonPath('total', 4)
+            ->assertJsonCount(4, 'rows');
+    }
+
     public function test_index_requires_auth(): void
     {
         $this->get(route('admin.seo-redirects.index'))

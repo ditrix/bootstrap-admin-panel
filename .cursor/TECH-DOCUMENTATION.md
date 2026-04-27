@@ -7,7 +7,7 @@
 ## 1. Назначение проекта
 
 - Веб-приложение на Laravel с **отдельной зоной администратора** по префиксу URL `/admin`.
-- Включает **демо-страницы** макета (дашборд, графики, таблицы, формы, варианты layout), **CRUD статических страниц** с древовидной связью `parent_id`, **дерево категорий (Category tree)** c DnD, группу **Settings** в сайдбаре: **Main menu** (дерево до 3 уровней), **301 Redirects** (табличный CRUD + глобальный middleware 301), **Users** (CRUD администраторов), и **таблицу сотрудников** (`employees`) как пример серверной пагинации для Bootstrap Table.
+- Включает **демо-страницы** макета (дашборд, графики, таблицы, формы, варианты layout), **CRUD статических страниц** с древовидной связью `parent_id`, **дерево категорий (Category tree)** c DnD, группу **Settings** в сайдбаре: **Main menu** (древовидный DnD без фиксированного лимита глубины), **301 Redirects** (табличный CRUD + глобальный middleware 301), **Users** (CRUD администраторов), и **таблицу сотрудников** (`employees`) как пример серверной пагинации для Bootstrap Table.
 - **Публичные GET-редиректы 301** по путям из `seo_redirects` обрабатывает глобальный middleware (исключение `admin/*`); до применения маршрута проверяется `Schema::hasTable('seo_redirects')` (например, тесты без миграций).
 - Публичная часть минимальна: маршрут `/` отдаёт приветственную страницу `welcome`.
 
@@ -206,7 +206,7 @@ tests/
 
 Поля: `parent_id` (0 — корень), `sort_no`, `title`, `slug` (nullable, unique), `is_active`, timestamps.
 
-Поведение: как у **Category tree**, с ограничением **не более 3 уровней** вложенности (валидация в `SaveMainMenuItemOrderRequest`, `Update`/`Store`). Сервис `MainMenuItemService` — `buildGroupedTree()`, `saveOrder()`, `deleteNodeReparentingChildren()`, `allNodesOrderedForMeta()`. UI: `resources/views/admin/pages/main-menu/`, SortableJS, префикс классов `mm-`, SCSS `blocks/_main-menu.scss`, создание узла — форма/модалка `POST` `admin.main-menu.store`.
+Поведение: как у **Category tree** по DnD и сохранению порядка. Ограничение глубины снято. Сервис `MainMenuItemService` — `buildGroupedTree()`, `saveOrder()`, `deleteNodeReparentingChildren()`, `allNodesOrderedForMeta()`. UI: `resources/views/admin/pages/main-menu/`, SortableJS, префикс классов `mm-`, SCSS `blocks/_main-menu.scss`, создание узла — форма/модалка `POST` `admin.main-menu.store`.
 
 ### 6.5 `seo_redirects`
 

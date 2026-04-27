@@ -132,7 +132,33 @@ class PageResource extends JsonResource
 ```
 
 ## Blade Template Example
-Admin list pages are usually Blade-first and enhanced with AJAX DataTables.
+
+### bootstrap-admin-panel: табличный список в админке (стандарт)
+Используй общий виджет и отдельный JSON-endpoint; ориентир по коду: `resources/views/admin/pages/static-pages/view.blade.php`, `docs/admin-bootstrap-table.md`.
+
+```blade
+@include('admin.partials.bootstrap-table-widget', [
+    'tableId' => 'my-module-bootstrap-table',
+    'dataUrl' => route('admin.api.my-module.table'),
+    'pageSize' => 10,
+    'columns' => [
+        ['field' => 'id', 'title' => 'ID', 'sortable' => true],
+        // …
+    ],
+    'actionsFormatter' => 'adminMyModuleRowActions',
+])
+
+@push('scripts')
+    <script>
+        window.adminMyModuleRowActions = function (value, row) { /* edit / adminBootstrapTableDelete */ };
+    </script>
+@endpush
+```
+
+### Reference / legacy: DataTables (не копировать в новые модули этого репозитория)
+Ниже — условный пример из reference-архитектуры; **в bootstrap-admin-panel** для новых списков используй bootstrap-table (см. выше).
+
+Admin list pages in some reference projects use Blade-first markup enhanced with jQuery DataTables.
 
 ```blade
 <table id="blogs-dt" class="table dt-responsive nowrap">

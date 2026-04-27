@@ -3,7 +3,9 @@
 use App\Http\Controllers\Admin\AdminEntryController;
 use App\Http\Controllers\Admin\AdminErrorDemoController;
 use App\Http\Controllers\Admin\AdministratorController;
+use App\Http\Controllers\Admin\Api\AdministratorTableDataController;
 use App\Http\Controllers\Admin\Api\EmployeeTableDataController;
+use App\Http\Controllers\Admin\Api\SeoRedirectTableDataController;
 use App\Http\Controllers\Admin\Api\StaticPageTableDataController;
 use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\Admin\Auth\NewPasswordController;
@@ -61,6 +63,8 @@ Route::prefix('admin')
             Route::get('/errors/500', [AdminErrorDemoController::class, 'show500'])->name('errors.500-demo');
             Route::get('/api/employees', EmployeeTableDataController::class)->name('api.employees');
             Route::get('/api/static-pages/table', StaticPageTableDataController::class)->name('api.static-pages.table');
+            Route::get('/api/administrators/table', AdministratorTableDataController::class)->name('api.administrators.table');
+            Route::get('/api/seo-redirects/table', SeoRedirectTableDataController::class)->name('api.seo-redirects.table');
             Route::resource('static-pages', StaticPageController::class);
             Route::get('/category-tree', [CategoryTreeController::class, 'index'])->name('category-tree.index');
             Route::post('/category-tree/save-order', [CategoryTreeController::class, 'saveOrder'])->name('category-tree.save-order');

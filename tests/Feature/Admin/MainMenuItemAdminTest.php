@@ -62,7 +62,7 @@ class MainMenuItemAdminTest extends TestCase
         ]);
     }
 
-    public function test_store_rejects_parent_at_max_depth_for_new_node(): void
+    public function test_store_allows_node_under_deep_parent(): void
     {
         $admin = $this->actingAdmin();
         $a = MainMenuItem::factory()->create(['parent_id' => 0, 'title' => 'A']);
@@ -70,7 +70,6 @@ class MainMenuItemAdminTest extends TestCase
         $c = MainMenuItem::factory()->childOf($b, 0)->create(['title' => 'C']);
 
         $response = $this->actingAs($admin, 'admin')
-            ->from(route('admin.main-menu.index'))
             ->post(route('admin.main-menu.store'), [
                 'parent_id' => $c->id,
                 'title' => 'D',
@@ -78,10 +77,15 @@ class MainMenuItemAdminTest extends TestCase
                 'is_active' => true,
             ]);
 
-        $response->assertSessionHasErrors('parent_id');
+        $response->assertRedirect(route('admin.main-menu.index'));
+        $this->assertDatabaseHas('main_menu_items', [
+            'title' => 'D',
+            'slug' => 'd',
+            'parent_id' => $c->id,
+        ]);
     }
 
-    public function test_save_order_rejects_more_than_three_levels(): void
+    public function test_save_order_accepts_deep_tree(): void
     {
         $admin = $this->actingAdmin();
         $a = MainMenuItem::factory()->create(['parent_id' => 0, 'sort_no' => 0, 'title' => 'A']);
@@ -111,7 +115,7 @@ class MainMenuItemAdminTest extends TestCase
         $response = $this->actingAs($admin, 'admin')
             ->postJson(route('admin.main-menu.save-order'), ['nodes' => $nodes]);
 
-        $response->assertUnprocessable();
+        $response->assertOk()->assertJsonPath('success', true);
     }
 
     public function test_update_returns_json_with_message(): void

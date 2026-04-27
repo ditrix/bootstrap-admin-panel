@@ -74,9 +74,6 @@ class UpdateMainMenuItemRequest extends FormRequest
 
                 return;
             }
-            if ($this->exceedsMaxDepth($item, $parentId, $all)) {
-                $v->errors()->add('parent_id', __('The main menu may have at most :n levels.', ['n' => 3]));
-            }
         });
     }
 
@@ -97,71 +94,6 @@ class UpdateMainMenuItemRequest extends FormRequest
         }
 
         return false;
-    }
-
-    /**
-     * @param  Collection<int, MainMenuItem>  $all
-     */
-    private function exceedsMaxDepth(MainMenuItem $item, int $newParentId, Collection $all): bool
-    {
-        $oldNodeDepth = $this->absoluteDepthFromRoot($item->id, $all);
-        $newNodeDepth = $newParentId === 0
-            ? 1
-            : $this->absoluteDepthFromRoot($newParentId, $all) + 1;
-        $delta = $newNodeDepth - $oldNodeDepth;
-        $subtree = $this->collectSubtreeIds($item->id, $all);
-        $maxOldInSubtree = 0;
-        foreach ($subtree as $id) {
-            $maxOldInSubtree = max($maxOldInSubtree, $this->absoluteDepthFromRoot($id, $all));
-        }
-        $newMax = $maxOldInSubtree + $delta;
-
-        return $newMax > 3;
-    }
-
-    /**
-     * @param  Collection<int, MainMenuItem>  $all
-     * @return array<int, int>
-     */
-    private function collectSubtreeIds(int $rootId, Collection $all): array
-    {
-        $ids = [];
-        $queue = [$rootId];
-        for ($i = 0; $i < count($queue); $i++) {
-            $id = $queue[$i];
-            $ids[] = $id;
-            foreach ($all as $m) {
-                if ((int) $m->parent_id === $id) {
-                    $queue[] = (int) $m->id;
-                }
-            }
-        }
-
-        return $ids;
-    }
-
-    /**
-     * @param  Collection<int, MainMenuItem>  $all
-     */
-    private function absoluteDepthFromRoot(int $id, Collection $all): int
-    {
-        $depth = 0;
-        $cur = $id;
-        $guard = 0;
-        while ($cur > 0 && $guard++ < 100) {
-            $depth++;
-            $m = $all->get($cur);
-            if (! $m) {
-                return $depth;
-            }
-            $pid = (int) $m->parent_id;
-            if ($pid === 0) {
-                return $depth;
-            }
-            $cur = $pid;
-        }
-
-        return $depth;
     }
 
     /**

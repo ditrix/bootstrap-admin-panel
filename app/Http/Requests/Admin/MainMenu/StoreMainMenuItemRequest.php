@@ -4,10 +4,8 @@ namespace App\Http\Requests\Admin\MainMenu;
 
 use App\Models\MainMenuItem;
 use Closure;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Validator;
 
 class StoreMainMenuItemRequest extends FormRequest
 {
@@ -51,44 +49,6 @@ class StoreMainMenuItemRequest extends FormRequest
             ],
             'is_active' => ['required', 'boolean'],
         ];
-    }
-
-    public function withValidator(Validator $validator): void
-    {
-        $validator->after(function (Validator $v): void {
-            $all = MainMenuItem::all()->keyBy('id');
-            $newParentId = (int) $this->input('parent_id');
-            $newNodeDepth = $newParentId === 0
-                ? 1
-                : $this->absoluteDepthFromRoot($newParentId, $all) + 1;
-            if ($newNodeDepth > 3) {
-                $v->errors()->add('parent_id', __('The main menu may have at most :n levels.', ['n' => 3]));
-            }
-        });
-    }
-
-    /**
-     * @param  Collection<int, MainMenuItem>  $all
-     */
-    private function absoluteDepthFromRoot(int $id, $all): int
-    {
-        $depth = 0;
-        $cur = $id;
-        $guard = 0;
-        while ($cur > 0 && $guard++ < 100) {
-            $depth++;
-            $m = $all->get($cur);
-            if (! $m) {
-                return $depth;
-            }
-            $pid = (int) $m->parent_id;
-            if ($pid === 0) {
-                return $depth;
-            }
-            $cur = $pid;
-        }
-
-        return $depth;
     }
 
     /**

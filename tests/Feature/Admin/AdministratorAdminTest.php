@@ -21,6 +21,30 @@ class AdministratorAdminTest extends TestCase
         ]);
     }
 
+    public function test_index_shows_bootstrap_table_view(): void
+    {
+        $admin = $this->actingAdmin();
+
+        $this->actingAs($admin, 'admin')
+            ->get(route('admin.administrators.index'))
+            ->assertOk()
+            ->assertViewHas('tableId')
+            ->assertViewHas('dataUrl')
+            ->assertViewHas('currentAdminId', (int) $admin->getKey());
+    }
+
+    public function test_administrators_table_api_returns_bootstrap_table_payload(): void
+    {
+        $admin = $this->actingAdmin();
+        Administrator::factory()->count(2)->create();
+
+        $response = $this->actingAs($admin, 'admin')->getJson(route('admin.api.administrators.table'));
+
+        $response->assertOk()
+            ->assertJsonPath('total', 3)
+            ->assertJsonCount(3, 'rows');
+    }
+
     public function test_index_and_create_require_auth(): void
     {
         $this->get(route('admin.administrators.index'))->assertRedirect(route('admin.entry'));

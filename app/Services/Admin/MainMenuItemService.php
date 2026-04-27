@@ -5,6 +5,7 @@ namespace App\Services\Admin;
 use App\Models\MainMenuItem;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class MainMenuItemService
 {
@@ -36,6 +37,16 @@ class MainMenuItemService
      */
     public function saveOrder(array $nodes, int $parentId = 0): void
     {
+        DB::transaction(function () use ($nodes, $parentId): void {
+            $this->applyTreeOrder($nodes, $parentId);
+        });
+    }
+
+    /**
+     * @param  array<int, array{id: int, children?: array<mixed>}>  $nodes
+     */
+    private function applyTreeOrder(array $nodes, int $parentId): void
+    {
         foreach ($nodes as $sortNo => $node) {
             MainMenuItem::query()
                 ->whereKey($node['id'])
@@ -45,7 +56,7 @@ class MainMenuItemService
                 ]);
 
             if (! empty($node['children'])) {
-                $this->saveOrder($node['children'], $node['id']);
+                $this->applyTreeOrder($node['children'], $node['id']);
             }
         }
     }

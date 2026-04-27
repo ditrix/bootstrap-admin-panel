@@ -5,3 +5,5 @@
 - 2026-04-21 — GET `/admin/category-tree`, POST `/admin/category-tree/save-order` (auth:admin) → [../../diary/2026/04/2026-04-21-catalog_tree.md#01JRZ2K4TY0001CATEGORYTREE]
 - 2026-04-26 — PUT/DELETE `/admin/category-tree/{category_tree}` (auth:admin) → [../../diary/2026/04/2026-04-26-catalog-tree-crud.md#01JCTREE20260426CRUD]
 - 2026-04-26 — `main-menu` (GET/POST/store, save-order, update, destroy), `seo-redirects` resource, `administrators` resource (auth:admin) → [../../diary/2026/04/2026-04-26-configuration-module.md#01JCFGMOD20260426]
+- 2026-04-26 — GET `api/administrators/table`, `api/seo-redirects/table`, `api/main-menu/table` (bootstrap-table JSON) → [../../diary/2026/04/2026-04-26-configuration-module.md#01JBTCFGSETTINGSBT20260426]
+- 2026-04-26 — Удалён `api/main-menu/table`; остаются `api/administrators/table`, `api/seo-redirects/table` → [../../diary/2026/04/2026-04-26-configuration-module.md#01JMAINMENUREVERTBT20260426]

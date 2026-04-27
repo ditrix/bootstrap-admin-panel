@@ -23,3 +23,6 @@
 - 2026-04-26 — Category tree: модалка редактирования, `admin-bootstrap-table.js`+i18n для delete, кнопки/иконка активности в `tree-node` → [../../diary/2026/04/2026-04-26-catalog-tree-crud.md#01JCTREE20260426CRUD]
 - 2026-04-26 — Category tree: в submit модалки показ первой ошибки валидации (422) в `adminNotify` → [../../diary/2026/04/2026-04-26-catalog-tree-crud.md#01JCTREE20260426REVIEW]
 - 2026-04-26 — Settings: `sidebar` (collapse), страницы `main-menu`, `seo-redirects`, `administrators`, partial `admin-password-fields` с toggle видимости пароля → [../../diary/2026/04/2026-04-26-configuration-module.md#01JCFGMOD20260426]
+- 2026-04-26 — Index Settings: bootstrap-table-widget для `administrators`, `seo-redirects`, плоский список в `main-menu` (дерево DnD отдельно) → [../../diary/2026/04/2026-04-26-configuration-module.md#01JBTCFGSETTINGSBT20260426]
+- 2026-04-26 — `main-menu/index`: только дерево DnD и модалки; bootstrap-table убран с этой страницы → [../../diary/2026/04/2026-04-26-configuration-module.md#01JMAINMENUREVERTBT20260426]
+- 2026-04-27 — main-menu: пересоздание Sortable после каждого drop + reload при сбое save-order → [../../diary/2026/04/2026-04-26-configuration-module.md#01JMMSAVEORDDND20260427]
