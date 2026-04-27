@@ -15,12 +15,9 @@ class SeoRedirectController extends Controller
 {
     public function index(): View
     {
-        $redirects = SeoRedirect::query()
-            ->orderBy('slug_from')
-            ->paginate(20);
-
         return view('admin.pages.seo-redirects.index', [
-            'redirects' => $redirects,
+            'tableId' => 'seo-redirects-bootstrap-table',
+            'dataUrl' => route('admin.api.seo-redirects.table'),
         ]);
     }
 

@@ -32,7 +32,7 @@ This document describes the technology stack used by the Laravel reference proje
 ## Frontend Libraries In Use
 The reference project also uses supporting frontend tools around the core stack:
 - jQuery
-- DataTables for admin lists
+- **bootstrap-table** (server-side) для табличных списков админки в **этом** репозитории: Blade-виджет, invokable table API, listing service — см. [ADMIN_PANEL_PATTERN.md](ADMIN_PANEL_PATTERN.md), `docs/admin-bootstrap-table.md`. **DataTables** не использовать для новых админских таблиц без явного исключения (в legacy/reference-примерах встречается иначе).
 - Axios for requests
 - Dropzone for uploads
 - CKEditor for rich text

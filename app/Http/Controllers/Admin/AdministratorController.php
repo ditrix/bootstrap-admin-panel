@@ -16,12 +16,10 @@ class AdministratorController extends Controller
 {
     public function index(): View
     {
-        $administrators = Administrator::query()
-            ->orderBy('name')
-            ->paginate(20);
-
         return view('admin.pages.administrators.index', [
-            'administrators' => $administrators,
+            'tableId' => 'administrators-bootstrap-table',
+            'dataUrl' => route('admin.api.administrators.table'),
+            'currentAdminId' => (int) Auth::guard('admin')->id(),
         ]);
     }
 

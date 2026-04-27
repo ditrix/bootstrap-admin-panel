@@ -17,16 +17,16 @@ Table CRUD is the standard pattern for flat admin entities such as pages, blogs,
 - Service when logic is reusable or non-trivial
 - Model
 - Blade view
-- optional DataTable/AJAX endpoint
+- **В bootstrap-admin-panel:** отдельный **GET** endpoint и invokable `*TableDataController` + `*ListingService::paginateForBootstrapTable()` + при необходимости `*Resource` (см. [ADMIN_PANEL_PATTERN.md](ADMIN_PANEL_PATTERN.md)).
 
 ### Frontend
 - Blade tables for structure
-- jQuery DataTables for remote listing in admin modules
+- **bootstrap-admin-panel:** bootstrap-table (server-side) через `bootstrap-table-widget` и jQuery (см. ADMIN_PANEL_PATTERN)
 - optional Vue components for specific interactive fragments
 
 ### Typical Flow
-1. `index()` returns the list page.
-2. A separate endpoint returns table JSON for AJAX rendering.
+1. `index()` returns the list page (часто с `tableId` и `dataUrl` для виджета).
+2. Отдельный endpoint возвращает JSON `{ "total", "rows" }` для bootstrap-table.
 3. `create()` or `show()` returns the form page.
 4. `store()` and `update()` use `FormRequest::validated()`.
 5. `destroy()` removes the entity and redirects back with a flash message.

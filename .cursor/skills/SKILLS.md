@@ -91,7 +91,7 @@ The architecture uses two recurring CRUD styles.
 ### Table CRUD
 - Standard admin CRUD for flat entities.
 - Usually includes list, create, show/edit, update, and delete actions.
-- List pages are commonly implemented with Blade + AJAX DataTables.
+- **В этом репозитории** списки реализуются через Blade + **bootstrap-table** (server-side): общий виджет `admin.partials.bootstrap-table-widget`, invokable `*TableDataController`, `*ListingService::paginateForBootstrapTable()`, при необходимости `*Resource`. Источник правды по паттерну: **[ADMIN_PANEL_PATTERN.md](ADMIN_PANEL_PATTERN.md)** и `docs/admin-bootstrap-table.md`. DataTables не использовать для новых админских таблиц, если нет явного исключения.
 
 ### Tree CRUD
 - Used for hierarchical entities such as categories, documents, and menus.

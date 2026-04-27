@@ -12,54 +12,77 @@
 
         <a class="btn btn-primary mb-3" href="{{ route('admin.seo-redirects.create') }}">{{ __('Create redirect') }}</a>
 
-        <div class="card">
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-striped table-hover mb-0">
-                        <thead class="table-light">
-                        <tr>
-                            <th scope="col">{{ __('From (path)') }}</th>
-                            <th scope="col">{{ __('To') }}</th>
-                            <th scope="col" class="text-center">{{ __('Active') }}</th>
-                            <th scope="col" class="text-end">{{ __('Actions') }}</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        @forelse ($redirects as $r)
-                            <tr>
-                                <td><code>/{{ e($r->slug_from) }}</code></td>
-                                <td class="text-break"><code>{{ e($r->slug_to) }}</code></td>
-                                <td class="text-center">@if($r->is_active)<span class="text-success">✓</span>@else<span class="text-danger">✗</span>@endif</td>
-                                <td class="text-end">
-                                    <a class="btn btn-sm btn-outline-primary" href="{{ route('admin.seo-redirects.edit', $r) }}">{{ __('Edit') }}</a>
-                                    <button type="button" class="btn btn-sm btn-outline-danger" title="{{ __('Delete') }}" onclick="adminBootstrapTableDelete(@js(route('admin.seo-redirects.destroy', $r)))">
-                                        <i class="fas fa-trash" aria-hidden="true"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="4" class="text-muted px-3 py-3">{{ __('No redirects yet.') }}</td>
-                            </tr>
-                        @endforelse
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="card-footer text-muted small">
-                {{ $redirects->withQueryString()->links() }}
-            </div>
-        </div>
+        @include('admin.partials.bootstrap-table-widget', [
+            'tableId' => $tableId,
+            'dataUrl' => $dataUrl,
+            'pageSize' => 10,
+            'columns' => [
+                ['field' => 'id', 'title' => __('ID'), 'sortable' => true],
+                [
+                    'field' => 'slug_from',
+                    'title' => __('From (path)'),
+                    'sortable' => true,
+                    'formatter' => 'adminSeoRedirectSlugFromCell',
+                    'escape' => false,
+                ],
+                [
+                    'field' => 'slug_to',
+                    'title' => __('To'),
+                    'sortable' => true,
+                    'formatter' => 'adminSeoRedirectSlugToCell',
+                    'escape' => false,
+                ],
+                [
+                    'field' => 'is_active',
+                    'title' => __('Active'),
+                    'sortable' => true,
+                    'formatter' => 'adminBootstrapTableBooleanIcon',
+                    'escape' => false,
+                ],
+                ['field' => 'created_at', 'title' => __('Created at'), 'sortable' => true],
+                ['field' => 'updated_at', 'title' => __('Updated at'), 'sortable' => true],
+            ],
+            'actionsFormatter' => 'adminSeoRedirectRowActions',
+        ])
     </div>
 @endsection
 
 @push('scripts')
-    <div
-        id="admin-bootstrap-table-i18n"
-        class="d-none"
-        data-delete-confirm="{{ __('Delete this record?') }}"
-        data-fallback-done="{{ __('Done.') }}"
-        data-fallback-failed="{{ __('Request failed.') }}"
-    ></div>
-    @vite(['resources/themes/admin/assets/js/admin-bootstrap-table.js'])
+    <script>
+        function adminSeoRedirectEscapeHtml(s) {
+            return String(s)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        window.adminSeoRedirectSlugFromCell = function (value) {
+            return '<code>/' + adminSeoRedirectEscapeHtml(value ?? '') + '</code>';
+        };
+
+        window.adminSeoRedirectSlugToCell = function (value) {
+            return '<code class="text-break">' + adminSeoRedirectEscapeHtml(value ?? '') + '</code>';
+        };
+
+        window.adminSeoRedirectRowActions = function (value, row) {
+            const id = Number(row.id);
+            if (!Number.isInteger(id) || id < 1) {
+                return '';
+            }
+            const base = @json(route('admin.seo-redirects.index'));
+            return (
+                '<a href="' +
+                base +
+                '/' +
+                id +
+                '/edit" class="btn btn-sm btn-outline-primary"><i class="fas fa-edit"></i></a> ' +
+                '<button type="button" class="btn btn-sm btn-outline-danger" onclick="adminBootstrapTableDelete(\'' +
+                base +
+                '/' +
+                id +
+                '\')"><i class="fas fa-trash"></i></button>'
+            );
+        };
+    </script>
 @endpush

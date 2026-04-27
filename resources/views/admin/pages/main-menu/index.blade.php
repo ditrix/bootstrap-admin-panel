@@ -147,13 +147,19 @@
                     return;
                 }
                 statusEl.textContent = text;
-                statusEl.className = 'ms-md-auto small ' + cssClass;
+                statusEl.className = 'ms-md-auto small order-3 order-md-2 ' + cssClass;
             }
 
-            function initSortable(el) {
-                if (Sortable.get(el)) {
-                    return;
-                }
+            function destroyAllMmSortables() {
+                document.querySelectorAll('#mm-root .mm-list').forEach(function (el) {
+                    const inst = Sortable.get(el);
+                    if (inst) {
+                        inst.destroy();
+                    }
+                });
+            }
+
+            function mountSortable(el) {
                 new Sortable(el, {
                     group: 'mm-tree',
                     handle: '.mm-handle',
@@ -172,14 +178,17 @@
                         if (r) {
                             r.classList.remove('mm-is-dragging');
                         }
-                        initNestedSortables();
-                        saveTree();
+                        window.setTimeout(function () {
+                            reinitMmTreeSortables();
+                            saveTree();
+                        }, 0);
                     },
                 });
             }
 
-            function initNestedSortables() {
-                document.querySelectorAll('#mm-root .mm-list').forEach(initSortable);
+            function reinitMmTreeSortables() {
+                destroyAllMmSortables();
+                document.querySelectorAll('#mm-root .mm-list').forEach(mountSortable);
             }
 
             function serializeTree(ol) {
@@ -213,21 +222,53 @@
                     },
                     body: JSON.stringify({ nodes: nodes }),
                 })
-                .then(function (response) {
-                    if (!response.ok) {
-                        throw new Error('Server error');
-                    }
-                    setStatus('{{ __('Saved') }}', 'text-success');
-                    if (typeof window.adminNotify === 'function') {
-                        window.adminNotify('{{ __('Order saved') }}', 'success');
-                    }
-                })
-                .catch(function () {
-                    setStatus('{{ __('Error saving. Try again.') }}', 'text-danger');
-                    if (typeof window.adminNotify === 'function') {
-                        window.adminNotify('{{ __('Error saving order.') }}', 'danger');
-                    }
-                });
+                    .then(function (response) {
+                        return response
+                            .json()
+                            .then(function (body) {
+                                return { ok: response.ok, body: body };
+                            })
+                            .catch(function () {
+                                return { ok: response.ok, body: null };
+                            });
+                    })
+                    .then(function (result) {
+                        if (!result.ok) {
+                            let msg = '{{ __('Error saving order.') }}';
+                            if (result.body && result.body.errors && typeof result.body.errors === 'object') {
+                                const keys = Object.keys(result.body.errors);
+                                if (keys.length > 0) {
+                                    const first = result.body.errors[keys[0]];
+                                    if (Array.isArray(first) && typeof first[0] === 'string') {
+                                        msg = first[0];
+                                    }
+                                }
+                            } else if (result.body && typeof result.body.message === 'string') {
+                                msg = result.body.message;
+                            }
+                            setStatus('{{ __('Error saving. Try again.') }}', 'text-danger');
+                            if (typeof window.adminNotify === 'function') {
+                                window.adminNotify(msg, 'danger');
+                            }
+                            window.setTimeout(function () {
+                                window.location.reload();
+                            }, 600);
+                            return;
+                        }
+                        setStatus('{{ __('Saved') }}', 'text-success');
+                        if (typeof window.adminNotify === 'function') {
+                            window.adminNotify('{{ __('Order saved') }}', 'success');
+                        }
+                    })
+                    .catch(function () {
+                        setStatus('{{ __('Error saving. Try again.') }}', 'text-danger');
+                        if (typeof window.adminNotify === 'function') {
+                            window.adminNotify('{{ __('Error saving order.') }}', 'danger');
+                        }
+                        window.setTimeout(function () {
+                            window.location.reload();
+                        }, 600);
+                    });
             }
 
             function collectDescendantIds(rootId, nodes) {
@@ -391,7 +432,7 @@
             }
 
             document.addEventListener('DOMContentLoaded', function () {
-                initNestedSortables();
+                reinitMmTreeSortables();
             });
         }());
     </script>

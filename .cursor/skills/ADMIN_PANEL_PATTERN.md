@@ -34,23 +34,42 @@ The reference project commonly organizes admin views like this:
 
 This structure should be reused when adding new admin modules.
 
-## Admin Tables
-### Required Features
-- pagination
-- sorting
-- search
-- filters
-- bulk actions when the domain needs them
+Для **плоских списков (табличный CRUD)** в этом репозитории страница обычно: `pages/<module>/index.blade.php` или `view.blade.php` с подключением общего виджета (см. ниже), а не отдельный `data-table/table.blade.php` из условного reference — ориентируйся на существующие модули (**Static pages**, **Administrators**, **301 Redirects**).
 
-### UI Stack
-- Blade + Bootstrap
-- jQuery DataTables for server-fed admin lists
-- Vue components only when the table needs richer interaction
+## Admin Tables (стандарт проекта: bootstrap-table, server-side)
 
-### Pattern
-- `index` renders the page shell
-- the table partial initializes the JS table
-- a dedicated endpoint returns JSON for rows and actions
+**Эталон:** серверный список с пагинацией, поиском и сортировкой через плагин **bootstrap-table** (jQuery) и общий Blade-виджет — не DataTables и не «ручная» HTML-таблица с `links()`, если задача — именно табличный каталог в админке.
+
+### Обязательные возможности для новых модулей
+- пагинация на сервере (`limit` / `offset`)
+- глобальный поиск (`search`)
+- сортировка по белому списку полей (`sort`, `order`)
+- при необходимости: фильтры и массовые действия (по домену)
+
+### Стек UI
+- Blade + разметка Bootstrap (тема SB Admin)
+- CDN: **jQuery** + **bootstrap-table** (JS); стили — SCSS проекта (`_bootstrap-table.scss`), без CDN CSS плагина
+- Vite: `resources/themes/admin/assets/js/admin-bootstrap-table.js` (`adminBootstrapTableDelete`, `adminBootstrapTableBooleanIcon`, i18n через `#admin-bootstrap-table-i18n` внутри виджета)
+- Vue — только если таблице нужна нетипичная интеракция; для стандартного CRUD не подменяй этим паттерн
+
+### Blade
+- Виджет: `resources/views/admin/partials/bootstrap-table-widget.blade.php`
+- Подключение: `@include('admin.partials.bootstrap-table-widget', ['tableId' => ..., 'dataUrl' => route('admin.api…'), 'columns' => [...], 'actionsFormatter' => '…'])`
+- Колонки: массив с `field`, `title`, опционально `sortable`, `formatter`, `escape`
+- Действия (редактирование / удаление): глобальная JS-функция в `@push('scripts')` на странице (пример: `resources/views/admin/pages/static-pages/view.blade.php`)
+
+### Бэкенд (паттерн)
+- **Invokable controller** в `App\Http\Controllers\Admin\Api\*TableDataController`: принимает `Request`, отдаёт `JsonResponse`
+- **Listing service** с методом `paginateForBootstrapTable(Request $request): array{total: int, rows: Collection}` — единая логика лимита, offset, поиска, `SORTABLE`
+- **API Resource** (`App\Http\Resources\Admin\Admin\*`) для строк; даты в списке в формате **`d.m.Y`**, если так уже принято в модуле
+- Формат ответа для клиента: `{"total": <int>, "rows": [<object>, …]}`
+- Маршрут: `GET` под префиксом `admin`, имя вида `admin.api.<module>.table`, middleware **`auth:admin`**
+
+Подробности и таблица маршрутов: **`docs/admin-bootstrap-table.md`**.
+
+### Исключения
+- **Деревья** (main menu, category tree): SortableJS и своё сохранение порядка, не этот виджет
+- Демо `/admin/tables` и прочие страницы без доменной сущности — по существующему коду
 
 ## Admin Forms
 ### Supported Controls
@@ -123,6 +142,7 @@ AI should follow the authorization strategy already used by the project instead 
 ## AI Development Rules
 When generating admin functionality:
 - always follow the Table CRUD pattern
+- **for flat list screens, use the bootstrap-table widget + server JSON endpoint** (`*TableDataController`, `*ListingService::paginateForBootstrapTable()`, optional `*Resource`) as described in **Admin Tables** above; do not introduce DataTables for new modules unless explicitly requested
 - use `FormRequest` validation
 - keep controllers thin
 - use services for business logic when it is more than a simple model update
