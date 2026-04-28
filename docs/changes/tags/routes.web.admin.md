@@ -7,3 +7,4 @@
 - 2026-04-26 — `main-menu` (GET/POST/store, save-order, update, destroy), `seo-redirects` resource, `administrators` resource (auth:admin) → [../../diary/2026/04/2026-04-26-configuration-module.md#01JCFGMOD20260426]
 - 2026-04-26 — GET `api/administrators/table`, `api/seo-redirects/table`, `api/main-menu/table` (bootstrap-table JSON) → [../../diary/2026/04/2026-04-26-configuration-module.md#01JBTCFGSETTINGSBT20260426]
 - 2026-04-26 — Удалён `api/main-menu/table`; остаются `api/administrators/table`, `api/seo-redirects/table` → [../../diary/2026/04/2026-04-26-configuration-module.md#01JMAINMENUREVERTBT20260426]
+- 2026-04-28 — Вынос в `routes/admin-web.php` и `routes/admin-api.php`; группировка Route::controller(); `web.php` оставлен только с welcome-роутом → [../../diary/2026/04/2026-04-28-routes-refactoring.md#01JR20260428ROUTEREFACTOR]
