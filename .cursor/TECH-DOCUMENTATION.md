@@ -80,14 +80,16 @@ resources/
   views/admin/             # Blade: layouts, partials, pages
   themes/admin/assets/     # scss/js темы SB Admin
 routes/
-  web.php                  # корень + вся админка
+  web.php                  # корень (welcome)
+  admin-web.php            # вся admin web-часть (auth, страницы, CRUD)
+  admin-api.php            # admin AJAX/JSON эндпоинты (bootstrap-table)
   api.php
   console.php
 tests/
   Feature/, Unit/
 ```
 
-**Отличие от «эталонного» описания в `.cursor/skills/ARCHITECTURE.md`:** в этом репозитории нет разделения `routes/admin-web.php` / `admin-api.php` — админские маршруты сгруппированы в `routes/web.php` под префиксом `admin`. Представления лежат в `resources/views/admin/`, а не в `resources/admin/views/`.
+**Отличие от «эталонного» описания в `.cursor/skills/ARCHITECTURE.md`:** структура файлов роутов совпадает (`web.php`, `admin-web.php`, `admin-api.php`). Представления лежат в `resources/views/admin/`, а не в `resources/admin/views/`.
 
 ---
 
@@ -95,7 +97,16 @@ tests/
 
 ### 4.1 Регистрация
 
-- `RouteServiceProvider` подключает `routes/web.php` с middleware `web` и `routes/api.php` с префиксом `api` и middleware `api`.
+`RouteServiceProvider` регистрирует четыре файла:
+
+| Файл | Middleware | Описание |
+|------|------------|----------|
+| `routes/web.php` | `web` | Публичные web-маршруты (welcome) |
+| `routes/admin-web.php` | `web` | Admin web-маршруты (HTML-страницы) |
+| `routes/admin-api.php` | `web` | Admin AJAX/JSON эндпоинты для bootstrap-table |
+| `routes/api.php` | `api` + prefix `api` | Публичный API |
+
+`admin-api.php` зарегистрирован под `web`-middleware (не `api`), чтобы сохранить сессионную авторизацию `auth:admin`.
 
 ### 4.2 Публичные маршруты
 
@@ -105,13 +116,26 @@ tests/
 
 ### 4.3 Админка: префикс `admin`, имя маршрутов `admin.*`
 
-Группа: `Route::prefix('admin')->name('admin.')`.
+Оба файла `admin-web.php` и `admin-api.php` используют `Route::prefix('admin')->name('admin.')`.
+
+**`routes/admin-web.php`** — HTML-страницы:
 
 | Условие | Маршруты |
 |---------|----------|
 | Без middleware auth | `GET /admin` → `AdminEntryController`: если уже залогинен в guard `admin` — редирект на дашборд, иначе форма логина |
-| `guest:admin` | `POST` логина, регистрация, запрос/сброс пароля (страницы сброса/регистрации по `GET`) |
-| `auth:admin` | дашборд, демо-layout, charts/tables/forms/blank, демо ошибок, API таблиц, resource `static-pages`, `category-tree`, группа **Settings:** `main-menu` (с `store`/`save-order`), resource `seo-redirects` (без `show`), resource `administrators` (без `show`) |
+| `guest:admin` | `POST` логина; регистрация (`GET/POST`); запрос/сброс пароля (`GET/POST`) |
+| `auth:admin` | дашборд, layout-демо, charts/tables/forms/blank, демо ошибок, resource `static-pages`, `category-tree`, группа **Settings:** `main-menu` (с `store`/`save-order`), resource `seo-redirects` (без `show`), resource `administrators` (без `show`) |
+
+**`routes/admin-api.php`** — AJAX/JSON для bootstrap-table (все под `auth:admin`):
+
+| Маршрут | Контроллер |
+|---------|------------|
+| `GET /admin/api/employees` | `EmployeeTableDataController` |
+| `GET /admin/api/static-pages/table` | `StaticPageTableDataController` |
+| `GET /admin/api/administrators/table` | `AdministratorTableDataController` |
+| `GET /admin/api/seo-redirects/table` | `SeoRedirectTableDataController` |
+
+Роуты с несколькими методами сгруппированы через `Route::controller()` (RegisterController, PasswordResetLinkController, NewPasswordController, AdminErrorDemoController, CategoryTreeController, MainMenuItemController).
 
 Имена важных маршрутов:
 
@@ -130,7 +154,7 @@ tests/
 
 **Глобальный HTTP-middleware** (массив `$middleware` в `app/Http/Kernel.php`, не в группе `web`): `ApplySeoRedirectMiddleware` — на GET-запросы вне `admin` ищет активный `SeoRedirect` по пути, отдаёт 301; если таблицы `seo_redirects` ещё нет — `Schema::hasTable` пропускает обработку.
 
-Полный список — в `routes/web.php`.
+Полный список — в `routes/admin-web.php` и `routes/admin-api.php`.
 
 ---
 
@@ -359,4 +383,5 @@ tests/
 
 - Составлено по состоянию репозитория **bootstrap-admin-panel** (Laravel **10**, PHP **^8.1**). Префикс URL админки: **`/admin`**.
 - **2026-04-26 (актуализация):** модуль **Settings** (Main menu, 301 Redirects, Users/Administrators), глобальный middleware редиректов, `ConfigurationModuleSeeder`, тесты перечислены в §9; уточнены сайдбар, `admin-ui-flash`, `adminBootstrapTableDelete`.
+- **2026-04-28 (актуализация):** admin-маршруты вынесены из `web.php` в `routes/admin-web.php` (HTML) и `routes/admin-api.php` (AJAX/JSON); оба зарегистрированы в `RouteServiceProvider` под `web`-middleware. Обновлены §3, §4.1, §4.3.
 - При существенных изменениях маршрутов, моделей или стека имеет смысл обновить этот файл и раздел «Связанная документация».
