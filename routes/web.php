@@ -1,27 +1,5 @@
 <?php
 
-use App\Http\Controllers\Admin\AdminEntryController;
-use App\Http\Controllers\Admin\AdminErrorDemoController;
-use App\Http\Controllers\Admin\AdministratorController;
-use App\Http\Controllers\Admin\Api\AdministratorTableDataController;
-use App\Http\Controllers\Admin\Api\EmployeeTableDataController;
-use App\Http\Controllers\Admin\Api\SeoRedirectTableDataController;
-use App\Http\Controllers\Admin\Api\StaticPageTableDataController;
-use App\Http\Controllers\Admin\Auth\LoginController;
-use App\Http\Controllers\Admin\Auth\NewPasswordController;
-use App\Http\Controllers\Admin\Auth\PasswordResetLinkController;
-use App\Http\Controllers\Admin\Auth\RegisterController;
-use App\Http\Controllers\Admin\BlankPageController;
-use App\Http\Controllers\Admin\CategoryTreeController;
-use App\Http\Controllers\Admin\ChartsController;
-use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\FormsController;
-use App\Http\Controllers\Admin\Layout\LightSidenavController;
-use App\Http\Controllers\Admin\Layout\StaticNavigationController;
-use App\Http\Controllers\Admin\MainMenuItemController;
-use App\Http\Controllers\Admin\SeoRedirectController;
-use App\Http\Controllers\Admin\StaticPageController;
-use App\Http\Controllers\Admin\TablesController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -33,49 +11,3 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-
-Route::prefix('admin')
-    ->name('admin.')
-    ->group(function (): void {
-        Route::get('/', AdminEntryController::class)->name('entry');
-
-        Route::middleware('guest:admin')->group(function (): void {
-            Route::post('/login', [LoginController::class, 'store'])->name('login.store');
-            Route::get('/register', [RegisterController::class, 'create'])->name('register');
-            Route::post('/register', [RegisterController::class, 'store'])->name('register.store');
-            Route::get('/password', [PasswordResetLinkController::class, 'create'])->name('password.request');
-            Route::post('/password', [PasswordResetLinkController::class, 'store'])->name('password.email');
-            Route::get('/reset-password/{token}', [NewPasswordController::class, 'create'])->name('password.reset');
-            Route::post('/reset-password', [NewPasswordController::class, 'store'])->name('password.update');
-        });
-
-        Route::middleware('auth:admin')->group(function (): void {
-            Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
-            Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-            Route::get('/layouts/static', StaticNavigationController::class)->name('layouts.static');
-            Route::get('/layouts/sidenav-light', LightSidenavController::class)->name('layouts.sidenav-light');
-            Route::get('/charts', [ChartsController::class, 'index'])->name('charts');
-            Route::get('/tables', [TablesController::class, 'index'])->name('tables');
-            Route::get('/forms', [FormsController::class, 'index'])->name('forms');
-            Route::get('/blank', BlankPageController::class)->name('blank');
-            Route::get('/errors/401', [AdminErrorDemoController::class, 'show401'])->name('errors.401');
-            Route::get('/errors/404', [AdminErrorDemoController::class, 'show404'])->name('errors.404-demo');
-            Route::get('/errors/500', [AdminErrorDemoController::class, 'show500'])->name('errors.500-demo');
-            Route::get('/api/employees', EmployeeTableDataController::class)->name('api.employees');
-            Route::get('/api/static-pages/table', StaticPageTableDataController::class)->name('api.static-pages.table');
-            Route::get('/api/administrators/table', AdministratorTableDataController::class)->name('api.administrators.table');
-            Route::get('/api/seo-redirects/table', SeoRedirectTableDataController::class)->name('api.seo-redirects.table');
-            Route::resource('static-pages', StaticPageController::class);
-            Route::get('/category-tree', [CategoryTreeController::class, 'index'])->name('category-tree.index');
-            Route::post('/category-tree/save-order', [CategoryTreeController::class, 'saveOrder'])->name('category-tree.save-order');
-            Route::put('/category-tree/{category_tree}', [CategoryTreeController::class, 'update'])->name('category-tree.update');
-            Route::delete('/category-tree/{category_tree}', [CategoryTreeController::class, 'destroy'])->name('category-tree.destroy');
-            Route::get('/main-menu', [MainMenuItemController::class, 'index'])->name('main-menu.index');
-            Route::post('/main-menu', [MainMenuItemController::class, 'store'])->name('main-menu.store');
-            Route::post('/main-menu/save-order', [MainMenuItemController::class, 'saveOrder'])->name('main-menu.save-order');
-            Route::put('/main-menu/{main_menu_item}', [MainMenuItemController::class, 'update'])->name('main-menu.update');
-            Route::delete('/main-menu/{main_menu_item}', [MainMenuItemController::class, 'destroy'])->name('main-menu.destroy');
-            Route::resource('seo-redirects', SeoRedirectController::class)->except(['show']);
-            Route::resource('administrators', AdministratorController::class)->except(['show']);
-        });
-    });
