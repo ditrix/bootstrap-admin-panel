@@ -8,7 +8,6 @@ use App\Http\Requests\Admin\MainMenu\StoreMainMenuItemRequest;
 use App\Http\Requests\Admin\MainMenu\UpdateMainMenuItemRequest;
 use App\Models\MainMenuItem;
 use App\Services\Admin\MainMenuItemService;
-use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -61,57 +60,13 @@ class MainMenuItemController extends Controller
             'mainMenuMetaForJs' => $mainMenuMetaForJs,
             'mainMenuEditorForJs' => $mainMenuEditorForJs,
             'mainMenuUpdateUrlTemplate' => $updateUrlTemplate,
-            'parentOptionsHtml' => $this->buildParentOptionsHtml($nodesMeta),
+            'parentOptionsHtml' => $this->service->buildParentOptionsHtml($nodesMeta),
         ]);
-    }
-
-    /**
-     * @param  EloquentCollection<int, MainMenuItem>  $nodesMeta
-     */
-    private function buildParentOptionsHtml(EloquentCollection $nodesMeta): string
-    {
-        $byParent = $nodesMeta
-            ->map(fn (MainMenuItem $n): array => [
-                'id' => $n->id,
-                'parent_id' => (int) $n->parent_id,
-                'title' => $n->title,
-                'sort_no' => (int) $n->sort_no,
-            ])
-            ->groupBy('parent_id');
-
-        $parts = ['<option value="0">'.e(__('Root')).'</option>'];
-        $walk = function (int $parentId, int $depth) use (&$walk, &$parts, $byParent): void {
-            $items = ($byParent->get($parentId) ?? collect())
-                ->sortBy([
-                    ['sort_no', 'asc'],
-                    ['id', 'asc'],
-                ]);
-            foreach ($items as $n) {
-                $indent = $depth > 0 ? str_repeat('— ', $depth).' ' : '';
-                $label = $indent.e($n['title']);
-                $parts[] = '<option value="'.(int) $n['id'].'">'.$label.'</option>';
-                $walk((int) $n['id'], $depth + 1);
-            }
-        };
-        $walk(0, 0);
-
-        return implode('', $parts);
     }
 
     public function store(StoreMainMenuItemRequest $request): RedirectResponse
     {
-        $data = $request->validated();
-        $parentId = (int) $data['parent_id'];
-        $maxSort = (int) MainMenuItem::query()
-            ->where('parent_id', $parentId)
-            ->max('sort_no');
-
-        MainMenuItem::query()->create(array_merge(
-            $data,
-            [
-                'sort_no' => $maxSort + 1,
-            ],
-        ));
+        $this->service->createItem($request->validated());
 
         return redirect()
             ->route('admin.main-menu.index')

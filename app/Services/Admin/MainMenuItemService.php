@@ -4,99 +4,72 @@ namespace App\Services\Admin;
 
 use App\Models\MainMenuItem;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 
 /**
- * Business logic for the main navigation tree (load, reorder, delete with reparenting).
+ * Tree service for the main navigation menu.
+ *
+ * Structural operations (load, reorder, delete with reparenting) are inherited from
+ * {@see AbstractTreeService}. This class adds menu-specific operations: item creation
+ * and the parent selector HTML fragment used in the index form.
+ *
+ * @extends AbstractTreeService<MainMenuItem>
  */
-class MainMenuItemService
+class MainMenuItemService extends AbstractTreeService
 {
-    /**
-     * @return Collection<int|string, Collection<int, MainMenuItem>>
-     */
-    public function buildGroupedTree(): Collection
+    protected function modelClass(): string
     {
-        return MainMenuItem::query()
-            ->orderBy('sort_no')
-            ->orderBy('id')
-            ->get()
+        return MainMenuItem::class;
+    }
+
+    /**
+     * Create a new menu item, appending it after existing siblings under the same parent.
+     *
+     * @param  array<string, mixed>  $data  Validated fields from {@see StoreMainMenuItemRequest}
+     */
+    public function createItem(array $data): MainMenuItem
+    {
+        $parentId = (int) $data['parent_id'];
+        $maxSort = (int) MainMenuItem::query()
+            ->where('parent_id', $parentId)
+            ->max('sort_no');
+
+        /** @var MainMenuItem */
+        return MainMenuItem::query()->create(array_merge($data, ['sort_no' => $maxSort + 1]));
+    }
+
+    /**
+     * Build an HTML string of <option> elements for the "parent" select,
+     * indented to reflect the tree depth.
+     *
+     * @param  EloquentCollection<int, MainMenuItem>  $nodesMeta
+     */
+    public function buildParentOptionsHtml(EloquentCollection $nodesMeta): string
+    {
+        $byParent = $nodesMeta
+            ->map(fn (MainMenuItem $n): array => [
+                'id' => $n->id,
+                'parent_id' => (int) $n->parent_id,
+                'title' => $n->title,
+                'sort_no' => (int) $n->sort_no,
+            ])
             ->groupBy('parent_id');
-    }
 
-    /**
-     * @return EloquentCollection<int, MainMenuItem>
-     */
-    public function allNodesOrderedForMeta(): EloquentCollection
-    {
-        return MainMenuItem::query()
-            ->orderBy('sort_no')
-            ->orderBy('id')
-            ->get();
-    }
-
-    /**
-     * Persist tree order inside a DB transaction.
-     *
-     * @param  array<int, array{id: int, children?: array<mixed>}>  $nodes
-     */
-    public function saveOrder(array $nodes, int $parentId = 0): void
-    {
-        DB::transaction(function () use ($nodes, $parentId): void {
-            $this->applyTreeOrder($nodes, $parentId);
-        });
-    }
-
-    /**
-     * Recursively assigns `parent_id` and `sort_no` from the nested payload.
-     *
-     * @param  array<int, array{id: int, children?: array<mixed>}>  $nodes
-     */
-    private function applyTreeOrder(array $nodes, int $parentId): void
-    {
-        foreach ($nodes as $sortNo => $node) {
-            MainMenuItem::query()
-                ->whereKey($node['id'])
-                ->update([
-                    'parent_id' => $parentId,
-                    'sort_no' => $sortNo,
+        $parts = ['<option value="0">'.e(__('Root')).'</option>'];
+        $walk = function (int $parentId, int $depth) use (&$walk, &$parts, $byParent): void {
+            $items = ($byParent->get($parentId) ?? collect())
+                ->sortBy([
+                    ['sort_no', 'asc'],
+                    ['id', 'asc'],
                 ]);
-
-            if (! empty($node['children'])) {
-                $this->applyTreeOrder($node['children'], $node['id']);
+            foreach ($items as $n) {
+                $indent = $depth > 0 ? str_repeat('— ', $depth).' ' : '';
+                $label = $indent.e($n['title']);
+                $parts[] = '<option value="'.(int) $n['id'].'">'.$label.'</option>';
+                $walk((int) $n['id'], $depth + 1);
             }
-        }
-    }
+        };
+        $walk(0, 0);
 
-    /**
-     * Direct children of the node are linked to the node's parent, preserving relative order; then the node is removed.
-     */
-    public function deleteNodeReparentingChildren(MainMenuItem $node): void
-    {
-        MainMenuItem::query()->getConnection()->transaction(function () use ($node): void {
-            $newParentId = (int) $node->parent_id;
-
-            $children = MainMenuItem::query()
-                ->where('parent_id', $node->getKey())
-                ->orderBy('sort_no')
-                ->orderBy('id')
-                ->get();
-
-            $maxSortAmongSiblings = (int) MainMenuItem::query()
-                ->where('parent_id', $newParentId)
-                ->where('id', '!=', $node->getKey())
-                ->max('sort_no');
-
-            $nextSort = $maxSortAmongSiblings + 1;
-            foreach ($children as $child) {
-                $child->update([
-                    'parent_id' => $newParentId,
-                    'sort_no' => $nextSort,
-                ]);
-                $nextSort++;
-            }
-
-            $node->delete();
-        });
+        return implode('', $parts);
     }
 }

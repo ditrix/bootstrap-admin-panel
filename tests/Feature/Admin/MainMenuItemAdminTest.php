@@ -153,4 +153,47 @@ class MainMenuItemAdminTest extends TestCase
 
         $this->assertDatabaseMissing('main_menu_items', ['id' => $node->id]);
     }
+
+    public function test_store_assigns_sequential_sort_no_under_same_parent(): void
+    {
+        $admin = $this->actingAdmin();
+
+        MainMenuItem::factory()->create(['parent_id' => 0, 'sort_no' => 1, 'title' => 'First']);
+        MainMenuItem::factory()->create(['parent_id' => 0, 'sort_no' => 2, 'title' => 'Second']);
+
+        $this->actingAs($admin, 'admin')
+            ->post(route('admin.main-menu.store'), [
+                'parent_id' => 0,
+                'title' => 'Third',
+                'slug' => 'third',
+                'is_active' => true,
+            ])
+            ->assertRedirect(route('admin.main-menu.index'));
+
+        $this->assertDatabaseHas('main_menu_items', [
+            'title' => 'Third',
+            'parent_id' => 0,
+            'sort_no' => 3,
+        ]);
+    }
+
+    public function test_store_assigns_sort_no_one_to_first_root_item(): void
+    {
+        $admin = $this->actingAdmin();
+
+        $this->actingAs($admin, 'admin')
+            ->post(route('admin.main-menu.store'), [
+                'parent_id' => 0,
+                'title' => 'Only',
+                'slug' => 'only',
+                'is_active' => true,
+            ])
+            ->assertRedirect(route('admin.main-menu.index'));
+
+        $this->assertDatabaseHas('main_menu_items', [
+            'title' => 'Only',
+            'parent_id' => 0,
+            'sort_no' => 1,
+        ]);
+    }
 }

@@ -105,6 +105,8 @@ Route::group([
 ### Service Layer
 - Encapsulates domain workflows and reusable business operations.
 - Commonly handles tree building, data transformation, uploads, and domain-specific processing.
+- **Tree services** share structural operations via `AbstractTreeService<TModel>` (abstract base class). Subclasses implement only `modelClass(): string` and add entity-specific methods. This pattern must be followed for any new tree module.
+- **Listing services** (bootstrap-table pagination/search/sort) share utilities via `App\Helpers\BootstrapTableHelper` (`parsePaginationParams`, `stringCastType`). Each listing service defines its own `SORTABLE` constant and `applySearch()` but delegates param parsing and DB cast detection to the helper.
 
 ### Model Layer
 - Owns relationships, scopes, accessors, casts, translatable fields, and entity-specific helpers.
@@ -113,6 +115,9 @@ Route::group([
 ### Helper Functions
 - Provide small reusable utility operations.
 - Support but do not replace domain services.
+- `App\Helpers\BootstrapTableHelper` — shared static utility for all bootstrap-table listing services: `parsePaginationParams(Request)` and `stringCastType(Builder)`.
+- `App\Helpers\AdminHelper` — admin theme asset utilities (`themeAssetDataUri`).
+- `App\Helpers\SalaryHelper` — display formatters (`formatUsd`).
 
 ### Traits
 - Package or internal traits extend shared behavior on models or supporting classes.
@@ -180,3 +185,6 @@ This is not a full SPA architecture. AI should prefer server-rendered Blade page
 - Use observers and listeners for side effects instead of inflating controller actions.
 - Follow the same modular structure in routes, controllers, requests, views, and JS assets.
 - Describe routes declaratively with groups, prefixes, names, middleware, and controller grouping.
+- **New tree module** → service must extend `AbstractTreeService`, implement `modelClass()`, add entity-specific methods only.
+- **New listing service** → use `BootstrapTableHelper::parsePaginationParams()` and `BootstrapTableHelper::stringCastType()` instead of duplicating the logic.
+- Do not put DB queries or HTML generation inside controllers — delegate to services.

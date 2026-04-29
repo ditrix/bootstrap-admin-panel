@@ -2,6 +2,7 @@
 
 namespace App\Services\Admin;
 
+use App\Helpers\BootstrapTableHelper;
 use App\Models\StaticPage;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -23,11 +24,8 @@ class StaticPageListingService
      */
     public function paginateForBootstrapTable(Request $request): array
     {
-        $limit = min(max((int) $request->input('limit', 10), 1), 100);
-        $offset = max((int) $request->input('offset', 0), 0);
-        $search = (string) $request->input('search', '');
-        $sort = $request->input('sort');
-        $order = strtolower((string) $request->input('order', 'asc')) === 'desc' ? 'desc' : 'asc';
+        ['limit' => $limit, 'offset' => $offset, 'search' => $search, 'sort' => $sort, 'order' => $order]
+            = BootstrapTableHelper::parsePaginationParams($request);
 
         $query = StaticPage::query();
 
@@ -61,7 +59,7 @@ class StaticPageListingService
         }
 
         $like = '%'.addcslashes($trimmed, '%_\\').'%';
-        $cast = $this->stringCastType($query);
+        $cast = BootstrapTableHelper::stringCastType($query);
 
         $query->where(function (Builder $q) use ($like, $cast, $trimmed) {
             $q->where('title', 'like', $like)
@@ -82,13 +80,5 @@ class StaticPageListingService
                     ->orWhere('sort_no', $int);
             }
         });
-    }
-
-    /**
-     * @param  Builder<StaticPage>  $query
-     */
-    private function stringCastType(Builder $query): string
-    {
-        return $query->getConnection()->getDriverName() === 'sqlite' ? 'TEXT' : 'CHAR';
     }
 }
