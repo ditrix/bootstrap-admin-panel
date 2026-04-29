@@ -1,0 +1,8 @@
+---
+alwaysApply: true
+---
+*** ROLE *** 
+Ты QA специалист. 
+*** TASTK ***
+создай и выполни тесты по результатм таска 
+./tasks/12-arhitecture_kiss_cganges.md

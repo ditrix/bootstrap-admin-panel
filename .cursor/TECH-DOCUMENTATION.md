@@ -53,7 +53,7 @@ app/
   Console/Kernel.php
   Enums/                   # например AdminErrorPage (демо-страницы ошибок)
   Exceptions/Handler.php
-  Helpers/                 # SalaryHelper, AdminHelper (ассеты темы)
+  Helpers/                 # SalaryHelper, AdminHelper (ассеты темы), BootstrapTableHelper (пагинация таблиц)
   Http/
     Controllers/Admin/     # веб-админка
     Controllers/Admin/Api/ # JSON для таблиц (bootstrap-table)
@@ -65,7 +65,7 @@ app/
   Models/                  # User, Administrator, Employee, StaticPage, CategoryTree, MainMenuItem, SeoRedirect
   Notifications/
   Providers/
-  Services/Admin/          # листинги, дашборд, CategoryTreeService, MainMenuItemService
+  Services/Admin/          # AbstractTreeService (базовый), CategoryTreeService, MainMenuItemService, листинги (*ListingService), AdminDashboardService
   View/Composers/          # AdminLayoutComposer (sidebar, пользователь)
 bootstrap/app.php          # классическое создание приложения Laravel 10
 config/
@@ -230,7 +230,7 @@ tests/
 
 Поля: `parent_id` (0 — корень), `sort_no`, `title`, `slug` (nullable, unique), `is_active`, timestamps.
 
-Поведение: как у **Category tree** по DnD и сохранению порядка. Ограничение глубины снято. Сервис `MainMenuItemService` — `buildGroupedTree()`, `saveOrder()`, `deleteNodeReparentingChildren()`, `allNodesOrderedForMeta()`. UI: `resources/views/admin/pages/main-menu/`, SortableJS, префикс классов `mm-`, SCSS `blocks/_main-menu.scss`, создание узла — форма/модалка `POST` `admin.main-menu.store`.
+Поведение: как у **Category tree** по DnD и сохранению порядка. Ограничение глубины отсутствует. Сервис `MainMenuItemService` расширяет `AbstractTreeService` и добавляет: `createItem(array $data): MainMenuItem` (создаёт узел с `sort_no = max(siblings) + 1`), `buildParentOptionsHtml(EloquentCollection): string` (HTML для select-родителя в форме создания). UI: `resources/views/admin/pages/main-menu/`, SortableJS, префикс классов `mm-`, SCSS `blocks/_main-menu.scss`, создание узла — форма/модалка `POST` `admin.main-menu.store`.
 
 ### 6.5 `seo_redirects`
 
@@ -261,26 +261,60 @@ tests/
 
 ### 7.3 Сервисы
 
+#### Tree-сервисы
+
+`AbstractTreeService<TModel>` — абстрактный базовый класс с общими структурными операциями для всех древовидных модулей:
+
+| Метод | Описание |
+|-------|----------|
+| `buildGroupedTree()` | Все узлы, сгруппированные по `parent_id` (для Blade-рендера) |
+| `allNodesOrderedForMeta()` | Плоский список узлов, отсортированных по `sort_no, id` (для JS meta/editor map) |
+| `saveOrder(array $nodes)` | Рекурсивная запись `parent_id` + `sort_no` в транзакции |
+| `deleteNodeReparentingChildren(Model $node)` | Перенос дочерних к родителю, затем удаление — в одной транзакции |
+
+Подклассы реализуют только `modelClass(): string` и добавляют entity-специфичные методы:
+
+| Класс | `modelClass()` | Дополнительные методы |
+|-------|----------------|-----------------------|
+| `CategoryTreeService` | `CategoryTree::class` | — |
+| `MainMenuItemService` | `MainMenuItem::class` | `createItem(array): MainMenuItem`, `buildParentOptionsHtml(EloquentCollection): string` |
+
+#### Listing-сервисы (bootstrap-table)
+
+Все реализуют `paginateForBootstrapTable(Request): array{total: int, rows: Collection}`. Общие утилиты вынесены в `App\Helpers\BootstrapTableHelper`.
+
+| Класс | Модель |
+|-------|--------|
+| `AdministratorListingService` | `Administrator` |
+| `EmployeeListingService` | `Employee` (+ `orderedForDataTable()` для legacy DataTables) |
+| `StaticPageListingService` | `StaticPage` |
+| `SeoRedirectListingService` | `SeoRedirect` |
+
+#### Прочие сервисы
+
 | Класс | Роль |
 |-------|------|
-| `EmployeeListingService` | Пагинация, поиск, сортировка для сотрудников; метод `paginateForBootstrapTable()` |
-| `StaticPageListingService` | Аналогично для `StaticPage` |
-| `AdminDashboardService` | Карточки на дашборде (в т.ч. счётчик сотрудников) |
-| `CategoryTreeService` | Группировка дерева, сохранение порядка DnD, перенос детей при удалении, выборка узлов для UI |
-| `MainMenuItemService` | То же для главного меню, максимальная глубина дерева 3 |
-
-Поиск реализован через `LIKE` и при необходимости `CAST` полей в строку; для SQLite используется `TEXT`, для остальных драйверов — `CHAR` (метод `stringCastType`).
+| `AdminDashboardService` | Карточки на дашборде (счётчик сотрудников, ссылки) |
 
 ### 7.4 API Resources
 
-- `EmployeeResource`, `StaticPageResource` — нормализация полей для JSON (даты, формат salary).
+`App\Http\Resources\Admin\*` — нормализация полей для JSON-строк bootstrap-table:
 
-### 7.5 Enum и вспомогательные классы админки
+| Класс | Модель |
+|-------|--------|
+| `AdministratorResource` | `Administrator` |
+| `EmployeeResource` | `Employee` (формат salary через `SalaryHelper::formatUsd`) |
+| `StaticPageResource` | `StaticPage` |
+| `SeoRedirectResource` | `SeoRedirect` |
+
+### 7.5 Enum и вспомогательные классы
 
 | Класс | Роль |
 |-------|------|
 | `App\Enums\AdminErrorPage` | Метаданные для демо-страниц ошибок 401/404/500 (`AdminErrorDemoController`) |
 | `App\Helpers\AdminHelper` | `themeAssetDataUri()` — data URI для файлов из `resources/themes/admin/assets/` (иллюстрации в ошибках) |
+| `App\Helpers\BootstrapTableHelper` | `parsePaginationParams(Request)` — парсит `limit/offset/search/sort/order`; `stringCastType(Builder)` — возвращает `TEXT` (SQLite) или `CHAR` (прочие драйверы). Используется всеми `*ListingService`. |
+| `App\Helpers\SalaryHelper` | `formatUsd(float)` — форматирование суммы в USD с разделителями тысяч. |
 
 `App\View\Composers\AdminLayoutComposer` вешается в `AppServiceProvider` на layout’ы `admin.layouts.sb-admin`, `admin.layouts.sb-admin-static`, `admin.layout-sidenav-light` и передаёт в шаблоны `adminUser` и `activeSidebar` (по `request()->routeIs()`: `static-pages`, `category-tree`, `settings-redirects`, `settings-main-menu`, `settings-administrators` и др.). В `sidebar` для вложенных разделов (Layouts, Pages, **Settings**) класс `collapsed` на триггере снимается, если активен дочерний маршрут, чтобы chevron оставался в «открытом» состоянии.
 
@@ -340,7 +374,7 @@ tests/
 
 - Фреймворк: **PHPUnit 10** (`phpunit.xml`).
 - Окружение тестов: `APP_ENV=testing`, БД **sqlite `:memory:`**, `SESSION_DRIVER=array`, и т.д.
-- Примеры: `AdminAuthTest`, `AdminPagesTest`, `StaticPageAdminTest`, `CategoryTreeAdminTest`, `MainMenuItemAdminTest`, `SeoRedirectAdminTest`, `AdministratorAdminTest`, `tests/Unit/Services/AdminDashboardServiceTest`, `tests/Unit/Helpers/SalaryHelperTest`.
+- Примеры: `AdminAuthTest`, `AdminPagesTest`, `StaticPageAdminTest`, `CategoryTreeAdminTest`, `MainMenuItemAdminTest`, `SeoRedirectAdminTest`, `AdministratorAdminTest`, `tests/Unit/Services/AdminDashboardServiceTest`, `tests/Unit/Helpers/SalaryHelperTest`, `tests/Unit/Helpers/BootstrapTableHelperTest`, `tests/Feature/Services/MainMenuItemServiceTest`.
 
 Запуск (в проектах с Sail обычно): `./vendor/bin/sail artisan test` или фильтр по имени теста — по соглашению команды.
 
@@ -384,4 +418,5 @@ tests/
 - Составлено по состоянию репозитория **bootstrap-admin-panel** (Laravel **10**, PHP **^8.1**). Префикс URL админки: **`/admin`**.
 - **2026-04-26 (актуализация):** модуль **Settings** (Main menu, 301 Redirects, Users/Administrators), глобальный middleware редиректов, `ConfigurationModuleSeeder`, тесты перечислены в §9; уточнены сайдбар, `admin-ui-flash`, `adminBootstrapTableDelete`.
 - **2026-04-28 (актуализация):** admin-маршруты вынесены из `web.php` в `routes/admin-web.php` (HTML) и `routes/admin-api.php` (AJAX/JSON); оба зарегистрированы в `RouteServiceProvider` под `web`-middleware. Обновлены §3, §4.1, §4.3.
+- **2026-04-29 (актуализация — KISS рефакторинг):** создан `AbstractTreeService<TModel>` — базовый класс для всех Tree-сервисов (`CategoryTreeService`, `MainMenuItemService`); создан `BootstrapTableHelper` с `parsePaginationParams()` и `stringCastType()` — используется всеми `*ListingService`; бизнес-логика `createItem()` и `buildParentOptionsHtml()` перенесены из контроллера в `MainMenuItemService`. Обновлены §3, §6.4, §7.3, §7.4, §7.5, §9.
 - При существенных изменениях маршрутов, моделей или стека имеет смысл обновить этот файл и раздел «Связанная документация».
