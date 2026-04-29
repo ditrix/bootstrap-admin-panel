@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * Hierarchical category node for tree CRUD (parent/children, ordering, activation).
+ */
 class CategoryTree extends Model
 {
     /** @use HasFactory<CategoryTreeFactory> */

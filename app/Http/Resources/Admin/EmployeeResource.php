@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
+ * JSON row for admin employees table (formatted salary and dates).
+ *
  * @mixin Employee
  */
 class EmployeeResource extends JsonResource

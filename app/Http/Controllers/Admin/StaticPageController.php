@@ -11,6 +11,9 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
+/**
+ * Flat and hierarchical static pages (bootstrap-table index, forms, delete with child guard).
+ */
 class StaticPageController extends Controller
 {
     public function index(): View

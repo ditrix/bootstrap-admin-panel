@@ -6,6 +6,9 @@ use App\Models\CategoryTree;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Collection;
 
+/**
+ * Business logic for the hierarchical category tree (load, reorder, delete with reparenting).
+ */
 class CategoryTreeService
 {
     /**

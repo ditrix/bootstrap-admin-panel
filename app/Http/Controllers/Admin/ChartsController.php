@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\View\View;
 
+/**
+ * Charts demo page (SB Admin charts section).
+ */
 class ChartsController extends Controller
 {
     public function index(): View

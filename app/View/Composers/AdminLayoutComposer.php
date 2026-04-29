@@ -5,14 +5,23 @@ namespace App\View\Composers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
+/**
+ * Shares authenticated admin user and active sidebar key with SB Admin layouts.
+ */
 class AdminLayoutComposer
 {
+    /**
+     * Bind data to the view before it is rendered.
+     */
     public function compose(View $view): void
     {
         $view->with('adminUser', Auth::guard('admin')->user());
         $view->with('activeSidebar', $this->resolveActiveSidebar());
     }
 
+    /**
+     * Map the current route to a sidebar activation key for SB Admin navigation.
+     */
     private function resolveActiveSidebar(): string
     {
         return match (true) {

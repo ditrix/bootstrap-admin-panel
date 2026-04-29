@@ -7,6 +7,9 @@ use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * Validates nested tree payload for {@see \App\Services\Admin\MainMenuItemService::saveOrder()}.
+ */
 class SaveMainMenuItemOrderRequest extends FormRequest
 {
     public function authorize(): bool

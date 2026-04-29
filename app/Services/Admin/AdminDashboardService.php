@@ -4,6 +4,9 @@ namespace App\Services\Admin;
 
 use App\Models\Employee;
 
+/**
+ * Builds summary metrics and links for the admin dashboard.
+ */
 class AdminDashboardService
 {
     /**

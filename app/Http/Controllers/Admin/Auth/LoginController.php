@@ -7,6 +7,9 @@ use App\Http\Requests\Admin\Auth\LoginRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * Authenticate and destroy admin sessions (guard `admin`).
+ */
 class LoginController extends Controller
 {
     public function store(LoginRequest $request): RedirectResponse

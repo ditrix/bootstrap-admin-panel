@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
+ * JSON row for SEO redirects bootstrap-table.
+ *
  * @mixin SeoRedirect
  */
 class SeoRedirectResource extends JsonResource

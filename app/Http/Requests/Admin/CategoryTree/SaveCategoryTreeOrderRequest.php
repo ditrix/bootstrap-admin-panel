@@ -7,6 +7,9 @@ use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * Validates nested tree payload persisted by {@see \App\Services\Admin\CategoryTreeService::saveOrder()}.
+ */
 class SaveCategoryTreeOrderRequest extends FormRequest
 {
     public function authorize(): bool

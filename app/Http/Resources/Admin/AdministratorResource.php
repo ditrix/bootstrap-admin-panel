@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
+ * JSON row for administrators bootstrap-table (no secrets exposed).
+ *
  * @mixin Administrator
  */
 class AdministratorResource extends JsonResource

@@ -8,8 +8,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Applies 301 redirects from `/seo_redirects` for GET requests outside the admin UI.
+ */
 class ApplySeoRedirectMiddleware
 {
+    /**
+     * @param  \Closure(Request): Response  $next
+     */
     public function handle(Request $request, Closure $next): Response
     {
         if ($request->is('admin') || $request->is('admin/*')) {

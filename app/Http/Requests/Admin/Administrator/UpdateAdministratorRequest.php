@@ -7,6 +7,9 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 
+/**
+ * Validates updates to an administrator, including optional password rotation.
+ */
 class UpdateAdministratorRequest extends FormRequest
 {
     public function authorize(): bool

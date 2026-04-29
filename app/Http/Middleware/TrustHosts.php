@@ -4,6 +4,9 @@ namespace App\Http\Middleware;
 
 use Illuminate\Http\Middleware\TrustHosts as Middleware;
 
+/**
+ * Host header allowlist for the application (subdomain patterns).
+ */
 class TrustHosts extends Middleware
 {
     /**

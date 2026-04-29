@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Services\Admin\AdminDashboardService;
 use Illuminate\View\View;
 
+/**
+ * Admin dashboard with summary cards and embedded employees bootstrap-table.
+ */
 class DashboardController extends Controller
 {
     public function __construct(

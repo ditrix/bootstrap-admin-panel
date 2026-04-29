@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * Navigation menu node (tree: parent_id, slug, activation, ordering).
+ */
 class MainMenuItem extends Model
 {
     /** @use HasFactory<MainMenuItemFactory> */
@@ -51,6 +54,9 @@ class MainMenuItem extends Model
         return $query->orderBy('sort_no')->orderBy('id');
     }
 
+    /**
+     * Tree depth counting ancestors up to root (cached parent chain while walking).
+     */
     public function getDepthFromRootAttribute(): int
     {
         $d = 1;

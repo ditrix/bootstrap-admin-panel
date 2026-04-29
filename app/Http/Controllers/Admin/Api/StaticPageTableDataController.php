@@ -8,6 +8,9 @@ use App\Services\Admin\StaticPageListingService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+/**
+ * JSON endpoint for static pages consumed by bootstrap-table (total + rows).
+ */
 class StaticPageTableDataController extends Controller
 {
     public function __construct(

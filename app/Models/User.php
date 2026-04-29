@@ -8,6 +8,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
+/**
+ * Application user for Sanctum API authentication (demo / default Laravel user).
+ */
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;

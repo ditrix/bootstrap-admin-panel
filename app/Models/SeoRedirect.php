@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Legacy path redirect rule (`slug_from` → `slug_to`) with activation flag.
+ */
 class SeoRedirect extends Model
 {
     /** @use HasFactory<SeoRedirectFactory> */

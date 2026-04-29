@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\ValidationRule;
 
+/**
+ * Validates admin login credentials and exposes {@see authenticate()} for the login controller.
+ */
 class LoginRequest extends FormRequest
 {
     public function authorize(): bool

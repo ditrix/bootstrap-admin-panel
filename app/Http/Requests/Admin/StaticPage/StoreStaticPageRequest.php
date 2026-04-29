@@ -8,6 +8,9 @@ use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
+/**
+ * Validates create payload for a {@see StaticPage}.
+ */
 class StoreStaticPageRequest extends FormRequest
 {
     public function authorize(): bool

@@ -6,6 +6,9 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 
+/**
+ * Validates create payload for a new {@see \App\Models\Administrator}.
+ */
 class StoreAdministratorRequest extends FormRequest
 {
     public function authorize(): bool

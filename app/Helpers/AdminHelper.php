@@ -2,6 +2,9 @@
 
 namespace App\Helpers;
 
+/**
+ * Admin theme asset helpers (e.g. inline SVG data URIs for error pages).
+ */
 final class AdminHelper
 {
     /**

@@ -14,6 +14,9 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
+/**
+ * Main menu tree (create item, reorder DnD, edit/destroy with reparenting).
+ */
 class MainMenuItemController extends Controller
 {
     private const UPDATE_ROUTE_PLACEHOLDER_ID = 2147483646;

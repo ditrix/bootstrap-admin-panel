@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Business logic for the main navigation tree (load, reorder, delete with reparenting).
+ */
 class MainMenuItemService
 {
     /**
@@ -33,6 +36,8 @@ class MainMenuItemService
     }
 
     /**
+     * Persist tree order inside a DB transaction.
+     *
      * @param  array<int, array{id: int, children?: array<mixed>}>  $nodes
      */
     public function saveOrder(array $nodes, int $parentId = 0): void
@@ -43,6 +48,8 @@ class MainMenuItemService
     }
 
     /**
+     * Recursively assigns `parent_id` and `sort_no` from the nested payload.
+     *
      * @param  array<int, array{id: int, children?: array<mixed>}>  $nodes
      */
     private function applyTreeOrder(array $nodes, int $parentId): void
@@ -61,6 +68,9 @@ class MainMenuItemService
         }
     }
 
+    /**
+     * Direct children of the node are linked to the node's parent, preserving relative order; then the node is removed.
+     */
     public function deleteNodeReparentingChildren(MainMenuItem $node): void
     {
         MainMenuItem::query()->getConnection()->transaction(function () use ($node): void {

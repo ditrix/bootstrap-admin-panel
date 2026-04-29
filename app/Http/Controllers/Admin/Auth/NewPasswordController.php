@@ -9,6 +9,9 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Password;
 use Illuminate\View\View;
 
+/**
+ * Show and process the password reset form (admin broker).
+ */
 class NewPasswordController extends Controller
 {
     public function create(string $token): View

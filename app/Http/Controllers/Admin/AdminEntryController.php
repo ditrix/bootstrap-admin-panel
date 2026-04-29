@@ -7,6 +7,9 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
+/**
+ * Landing route: redirect authenticated admins to dashboard or show login view.
+ */
 class AdminEntryController extends Controller
 {
     public function __invoke(): RedirectResponse|View

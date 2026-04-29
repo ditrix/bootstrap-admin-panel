@@ -19,7 +19,7 @@ description: Applies project standards from `.cursor/skills/` (STACK, ARCHITECTU
 | [ARCHITECTURE.md](../ARCHITECTURE.md) | Слои, поток запроса, где жить логике |
 | [PATTERNS.md](../PATTERNS.md) | Tree-CRUD, `parent_id`/`position`, DnD, мультиязычные поля |
 | [EXAMPLES.md](../EXAMPLES.md) | Примеры структуры кода под проект |
-| [SKILLS.md](../SKILLS.md) | Слои (Controller, FormRequest, Service, Model), соглашения по именованию |
+| [SKILLS.md](../SKILLS.md) | Слои (Controller, FormRequest, Service, Model), соглашения по именованию, **PHPDoc** |
 | [ADMIN_PANEL_PATTERN.md](../ADMIN_PANEL_PATTERN.md) | Админ-панель, макеты, **табличные списки (стандарт: bootstrap-table + виджет)**, формы, деревья |
 
 Читай **только то**, что относится к текущей задаче (не обязательно все файлы сразу).

@@ -8,6 +8,9 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 
+/**
+ * Validates inline updates to an existing category node (scoped to route-bound model).
+ */
 class UpdateCategoryTreeRequest extends FormRequest
 {
     public function authorize(): bool

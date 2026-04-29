@@ -5,6 +5,9 @@ namespace App\Http\Middleware;
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
 use Illuminate\Http\Request;
 
+/**
+ * Guards web vs admin JSON redirects when authentication is missing.
+ */
 class Authenticate extends Middleware
 {
     /**

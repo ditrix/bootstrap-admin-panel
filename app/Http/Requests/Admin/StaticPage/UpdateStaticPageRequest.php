@@ -9,6 +9,9 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 
+/**
+ * Validates update payload for a {@see StaticPage} excluding invalid parent recursion.
+ */
 class UpdateStaticPageRequest extends FormRequest
 {
     public function authorize(): bool

@@ -6,6 +6,9 @@ use App\Enums\AdminErrorPage;
 use App\Http\Controllers\Controller;
 use Illuminate\View\View;
 
+/**
+ * Demo error templates (401, 404, 500) scoped to admin layout.
+ */
 class AdminErrorDemoController extends Controller
 {
     public function show401(): View

@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
+/**
+ * Administrator accounts listing for bootstrap-table (search, sort, pagination).
+ */
 class AdministratorListingService
 {
     /**

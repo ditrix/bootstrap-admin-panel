@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Admin\Layout;
 use App\Http\Controllers\Controller;
 use Illuminate\View\View;
 
+/**
+ * Static navigation layout preview (top nav variant).
+ */
 class StaticNavigationController extends Controller
 {
     public function __invoke(): View

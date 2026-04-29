@@ -12,6 +12,9 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
+/**
+ * Tree CRUD for categories (drag-and-drop order, inline JSON update/destroy).
+ */
 class CategoryTreeController extends Controller
 {
     /**

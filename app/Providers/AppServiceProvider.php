@@ -6,6 +6,9 @@ use App\View\Composers\AdminLayoutComposer;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
+/**
+ * Application-wide bootstrapping: view composers, shared config, etc.
+ */
 class AppServiceProvider extends ServiceProvider
 {
     /**

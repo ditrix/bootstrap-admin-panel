@@ -9,6 +9,9 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 
+/**
+ * Validates inline updates to a {@see MainMenuItem} (parent/slug rules per tree).
+ */
 class UpdateMainMenuItemRequest extends FormRequest
 {
     public function authorize(): bool

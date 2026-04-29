@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
+/**
+ * Server-side filtering, sorting, and pagination of static pages for bootstrap-table APIs.
+ */
 class StaticPageListingService
 {
     /**

@@ -85,6 +85,16 @@ Supporting layers plug into this flow:
 - Relationship methods should declare Laravel relation types such as `BelongsTo`, `HasMany`, and `BelongsToMany`.
 - Service methods should use explicit parameter and return types whenever possible.
 
+### PHPDoc (source documentation)
+- Every class under `app/` MUST have a **class-level PHPDoc block** above the declaration: one or two sentences on purpose (layer, domain entity, or HTTP responsibility). Use **English** for PHPDoc text to align with Laravel core and IDE tooling.
+- Document **public and protected** methods when the contract is non-obvious: `@param`, `@return`, and `@throws` where applicable. Prefer **array shapes** for structured arrays (e.g. `@return array{total: int, rows: Collection<int, Model>}`, `@param array<int, array{id: int, children?: array<mixed>}> $nodes`).
+- **Model** `$fillable`, `$casts`, `$hidden`, and similar MUST keep accurate `@var` lists. Add `@property` / `@property-read` on the class docblock only when the team relies on them for IDE support.
+- **Eloquent** scopes and custom query methods: document `Builder<Model>` (or concrete model) in `@param` / `@return` when it helps static analysis.
+- **Form requests**: class-level PHPDoc describing which action or resource is validated; no need to repeat every rule in prose if `rules()` is self-explanatory.
+- **Invokable controllers** (`__invoke`): describe the JSON/view contract briefly in the class docblock or above the method.
+- Do **not** restate the obvious in PHPDoc when the signature and name are fully clear; the class description and types are enough.
+- When touching a file, bring its PHPDoc in line with this section (do not add redundant inline `//` comments for the same thing—prefer PHPDoc per project rules).
+
 ## CRUD Overview
 The architecture uses two recurring CRUD styles.
 
@@ -131,5 +141,6 @@ When generating code, AI assistants must:
 - follow the established Table CRUD and Tree CRUD patterns
 - preserve naming and namespace structure already used in the project
 - prefer extending existing modules over introducing new architectural layers
+- document new and edited classes/methods according to the **PHPDoc (source documentation)** subsection above (English summaries, accurate `@param`/`@return`/`@throws` and array shapes when non-obvious)
 - if Laravel Boost is installed in the project, always use its available capabilities and tools where applicable before falling back to generic approaches
 

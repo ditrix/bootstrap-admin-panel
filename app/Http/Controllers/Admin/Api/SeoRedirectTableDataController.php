@@ -8,6 +8,9 @@ use App\Services\Admin\SeoRedirectListingService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+/**
+ * JSON endpoint for SEO redirects consumed by bootstrap-table.
+ */
 class SeoRedirectTableDataController extends Controller
 {
     public function __construct(

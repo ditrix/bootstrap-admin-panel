@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
+/**
+ * Employee listing for legacy DataTables and bootstrap-table JSON APIs (search, sort, page).
+ */
 class EmployeeListingService
 {
     /**

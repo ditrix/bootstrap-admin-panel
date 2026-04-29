@@ -8,6 +8,9 @@ use App\Services\Admin\AdministratorListingService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+/**
+ * JSON endpoint for administrators consumed by bootstrap-table.
+ */
 class AdministratorTableDataController extends Controller
 {
     public function __construct(

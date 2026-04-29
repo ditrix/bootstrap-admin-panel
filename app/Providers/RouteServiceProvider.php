@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 
+/**
+ * Route registration (`web`, `api`, admin bundles) and `api` rate limiter.
+ */
 class RouteServiceProvider extends ServiceProvider
 {
     /**

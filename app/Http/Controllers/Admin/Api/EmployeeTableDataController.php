@@ -8,6 +8,9 @@ use App\Services\Admin\EmployeeListingService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+/**
+ * JSON endpoint for employees consumed by bootstrap-table (paginated + transformed).
+ */
 class EmployeeTableDataController extends Controller
 {
     public function __construct(

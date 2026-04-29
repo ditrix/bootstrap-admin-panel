@@ -12,6 +12,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
+/**
+ * CRUD for other administrator accounts (bootstrap-table, self-delete guard).
+ */
 class AdministratorController extends Controller
 {
     public function index(): View

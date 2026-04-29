@@ -5,6 +5,9 @@ namespace App\Http\Requests\Admin\SeoRedirect;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
+/**
+ * Validates create payload for a {@see \App\Models\SeoRedirect}.
+ */
 class StoreSeoRedirectRequest extends FormRequest
 {
     public function authorize(): bool

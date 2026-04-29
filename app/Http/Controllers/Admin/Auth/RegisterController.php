@@ -8,6 +8,9 @@ use App\Models\Administrator;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
+/**
+ * Self-service registration of administrator accounts (demo flow).
+ */
 class RegisterController extends Controller
 {
     public function create(): View

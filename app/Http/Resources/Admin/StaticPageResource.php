@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
+ * JSON row for static pages bootstrap-table.
+ *
  * @mixin StaticPage
  */
 class StaticPageResource extends JsonResource

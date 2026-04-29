@@ -5,6 +5,9 @@ namespace App\Http\Requests\Admin\Auth;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\ValidationRule;
 
+/**
+ * Validates the email address for requesting an admin password reset link.
+ */
 class PasswordResetLinkRequest extends FormRequest
 {
     public function authorize(): bool

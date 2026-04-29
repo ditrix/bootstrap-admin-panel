@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Redirect authenticated users away from guest-only routes (`admin` uses dashboard home).
+ */
 class RedirectIfAuthenticated
 {
     /**

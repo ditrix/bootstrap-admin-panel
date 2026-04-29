@@ -5,6 +5,9 @@ namespace App\Console;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
+/**
+ * Console command registration and schedule (see `routes/console.php`).
+ */
 class Kernel extends ConsoleKernel
 {
     /**

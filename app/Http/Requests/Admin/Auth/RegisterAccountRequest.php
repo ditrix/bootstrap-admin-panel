@@ -7,6 +7,9 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationRule;
 
+/**
+ * Validates self-registration payload for creating an {@see Administrator}.
+ */
 class RegisterAccountRequest extends FormRequest
 {
     public function authorize(): bool

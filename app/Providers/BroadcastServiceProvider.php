@@ -5,6 +5,9 @@ namespace App\Providers;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\ServiceProvider;
 
+/**
+ * Registers broadcast authorization routes (`routes/channels.php`).
+ */
 class BroadcastServiceProvider extends ServiceProvider
 {
     /**

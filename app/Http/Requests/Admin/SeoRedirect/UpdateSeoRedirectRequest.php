@@ -6,6 +6,9 @@ use App\Models\SeoRedirect;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
+/**
+ * Validates updates to an existing {@see SeoRedirect} route model.
+ */
 class UpdateSeoRedirectRequest extends FormRequest
 {
     public function authorize(): bool

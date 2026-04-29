@@ -11,6 +11,9 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
+/**
+ * SEO redirects management (list + create/edit/delete).
+ */
 class SeoRedirectController extends Controller
 {
     public function index(): View

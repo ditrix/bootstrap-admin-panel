@@ -2,6 +2,9 @@
 
 namespace App\Enums;
 
+/**
+ * Built-in admin error demo pages (HTTP status, copy, illustration flags).
+ */
 enum AdminErrorPage: int
 {
     case Unauthorized = 401;

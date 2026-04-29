@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * CMS static page row with optional parent/child hierarchy and slugs.
+ */
 class StaticPage extends Model
 {
     /** @use HasFactory<StaticPageFactory> */

@@ -7,6 +7,9 @@ use Closure;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
+/**
+ * Validates create payload for a {@see MainMenuItem} (slug uniqueness per parent).
+ */
 class StoreMainMenuItemRequest extends FormRequest
 {
     public function authorize(): bool
