@@ -17,8 +17,10 @@
             </div>
         </div>
         @include('admin.partials.ui-shell')
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-        @vite(['resources/themes/admin/assets/js/sb-admin-scripts.js'])
+        @vite([
+            'resources/themes/admin/assets/js/app.js',
+            'resources/themes/admin/assets/js/sb-admin-scripts.js',
+        ])
         @include('admin.partials.admin-ui-flash')
         @stack('scripts')
     </body>

@@ -26,3 +26,4 @@
 - 2026-04-26 — Index Settings: bootstrap-table-widget для `administrators`, `seo-redirects`, плоский список в `main-menu` (дерево DnD отдельно) → [../../diary/2026/04/2026-04-26-configuration-module.md#01JBTCFGSETTINGSBT20260426]
 - 2026-04-26 — `main-menu/index`: только дерево DnD и модалки; bootstrap-table убран с этой страницы → [../../diary/2026/04/2026-04-26-configuration-module.md#01JMAINMENUREVERTBT20260426]
 - 2026-04-27 — main-menu: пересоздание Sortable после каждого drop + reload при сбое save-order → [../../diary/2026/04/2026-04-26-configuration-module.md#01JMMSAVEORDDND20260427]
+- 2026-04-29 — Layouts `sb-admin`, `sb-admin-static`, `auth`, `error`: Bootstrap JS с CDN заменён на Vite-бандл `app.js` → [../../diary/2026/04/2026-04-29-bootstrap-local.md#01JBSTRP5VITE20260429]

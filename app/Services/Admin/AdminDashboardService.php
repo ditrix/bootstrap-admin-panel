@@ -25,7 +25,7 @@ class AdminDashboardService
             [
                 'label' => 'Warning Card',
                 'variant' => 'warning',
-                'href' => route('admin.charts'),
+                'href' => route('admin.forms'),
             ],
             [
                 'label' => 'Employees',

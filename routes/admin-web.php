@@ -9,7 +9,6 @@ use App\Http\Controllers\Admin\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Admin\Auth\RegisterController;
 use App\Http\Controllers\Admin\BlankPageController;
 use App\Http\Controllers\Admin\CategoryTreeController;
-use App\Http\Controllers\Admin\ChartsController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\FormsController;
 use App\Http\Controllers\Admin\Layout\LightSidenavController;
@@ -55,10 +54,6 @@ Route::prefix('admin')
 
             Route::controller(LightSidenavController::class)->group(function (): void {
                 Route::get('/layouts/sidenav-light', '__invoke')->name('layouts.sidenav-light');
-            });
-
-            Route::controller(ChartsController::class)->group(function (): void {
-                Route::get('/charts', 'index')->name('charts');
             });
 
             Route::controller(TablesController::class)->group(function (): void {

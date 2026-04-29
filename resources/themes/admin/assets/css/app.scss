@@ -1,3 +1,4 @@
+// Порядок: _variables → Bootstrap (node_modules) → base → blocks/
 @use "variables";
 @use "bootstrap/scss/bootstrap";
 @use "base";
