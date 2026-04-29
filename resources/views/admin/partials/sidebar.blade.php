@@ -78,10 +78,6 @@
                     <a class="nav-link {{ $activeSidebar === 'settings-administrators' ? 'active' : '' }}" href="{{ route('admin.administrators.index') }}">{{ __('Users') }}</a>
                 </nav>
             </div>
-            <a class="nav-link {{ $activeSidebar === 'charts' ? 'active' : '' }}" href="{{ route('admin.charts') }}">
-                <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
-                Charts
-            </a>
             <a class="nav-link {{ $activeSidebar === 'tables' ? 'active' : '' }}" href="{{ route('admin.tables') }}">
                 <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                 Tables

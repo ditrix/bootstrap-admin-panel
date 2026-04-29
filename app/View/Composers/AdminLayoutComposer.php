@@ -28,7 +28,6 @@ class AdminLayoutComposer
             request()->routeIs('admin.dashboard') => 'dashboard',
             request()->routeIs('admin.layouts.static') => 'layout-static',
             request()->routeIs('admin.layouts.sidenav-light') => 'layout-sidenav-light',
-            request()->routeIs('admin.charts') => 'charts',
             request()->routeIs('admin.tables') => 'tables',
             request()->routeIs('admin.forms') => 'forms',
             request()->routeIs('admin.blank') => 'blank',
