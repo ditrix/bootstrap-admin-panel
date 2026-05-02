@@ -26,6 +26,7 @@ class CategoryTree extends Model
         'title',
         'slug',
         'description',
+        'content',
         'is_active',
     ];
 

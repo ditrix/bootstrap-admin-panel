@@ -82,7 +82,10 @@ Route::prefix('admin')
                 ->name('category-tree.')
                 ->group(function (): void {
                     Route::get('/', 'index')->name('index');
+                    Route::get('/create', 'create')->name('create');
+                    Route::post('/', 'store')->name('store');
                     Route::post('/save-order', 'saveOrder')->name('save-order');
+                    Route::get('/{category_tree}/edit', 'edit')->name('edit');
                     Route::put('/{category_tree}', 'update')->name('update');
                     Route::delete('/{category_tree}', 'destroy')->name('destroy');
                 });
@@ -92,8 +95,10 @@ Route::prefix('admin')
                 ->name('main-menu.')
                 ->group(function (): void {
                     Route::get('/', 'index')->name('index');
+                    Route::get('/create', 'create')->name('create');
                     Route::post('/', 'store')->name('store');
                     Route::post('/save-order', 'saveOrder')->name('save-order');
+                    Route::get('/{main_menu_item}/edit', 'edit')->name('edit');
                     Route::put('/{main_menu_item}', 'update')->name('update');
                     Route::delete('/{main_menu_item}', 'destroy')->name('destroy');
                 });

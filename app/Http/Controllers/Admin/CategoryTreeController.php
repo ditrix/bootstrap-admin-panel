@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\CategoryTree\SaveCategoryTreeOrderRequest;
+use App\Http\Requests\Admin\CategoryTree\StoreCategoryTreeRequest;
 use App\Http\Requests\Admin\CategoryTree\UpdateCategoryTreeRequest;
 use App\Models\CategoryTree;
 use App\Services\Admin\CategoryTreeService;
@@ -13,15 +14,10 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 /**
- * Tree CRUD for categories (drag-and-drop order, inline JSON update/destroy).
+ * Tree CRUD for categories (drag-and-drop order, page-based create/edit/update/destroy).
  */
 class CategoryTreeController extends Controller
 {
-    /**
-     * Numeric placeholder for generating the client-side URL template (replaced with "__ID__" in JS).
-     */
-    private const UPDATE_ROUTE_PLACEHOLDER_TREE_ID = 2147483646;
-
     public function __construct(private readonly CategoryTreeService $service) {}
 
     public function index(): View
@@ -39,31 +35,41 @@ class CategoryTreeController extends Controller
             ->values()
             ->all();
 
-        $categoryTreeEditorForJs = $nodesMeta
-            ->mapWithKeys(static fn (CategoryTree $n): array => [
-                $n->id => [
-                    'title' => $n->title,
-                    'slug' => $n->slug,
-                    'description' => $n->description,
-                    'parent_id' => (int) $n->parent_id,
-                    'is_active' => (bool) $n->is_active,
-                ],
-            ])
-            ->all();
-
-        $updateUrlTemplate = str_replace(
-            (string) self::UPDATE_ROUTE_PLACEHOLDER_TREE_ID,
-            '__ID__',
-            route('admin.category-tree.update', ['category_tree' => self::UPDATE_ROUTE_PLACEHOLDER_TREE_ID]),
-        );
-
         return view('admin.pages.category-tree.index', [
             'tree' => $tree,
-            'nodesMeta' => $nodesMeta,
             'categoryTreeMetaForJs' => $categoryTreeMetaForJs,
-            'categoryTreeEditorForJs' => $categoryTreeEditorForJs,
-            'categoryTreeUpdateUrlTemplate' => $updateUrlTemplate,
+            'saveOrderUrl' => route('admin.category-tree.save-order'),
         ]);
+    }
+
+    public function create(): View
+    {
+        $nodesMeta = $this->service->allNodesOrderedForMeta();
+        $selectedParentId = (int) (request()->old('parent_id') ?? 0);
+
+        return view('admin.pages.category-tree.create', [
+            'parentOptionsHtml' => $this->service->buildParentOptionsHtml($nodesMeta, $selectedParentId),
+        ]);
+    }
+
+    public function edit(CategoryTree $categoryTree): View
+    {
+        $nodesMeta = $this->service->allNodesOrderedForMeta();
+        $selectedParentId = (int) (request()->old('parent_id') ?? $categoryTree->parent_id);
+
+        return view('admin.pages.category-tree.edit', [
+            'categoryTree' => $categoryTree,
+            'parentOptionsHtml' => $this->service->buildParentOptionsHtml($nodesMeta, $selectedParentId),
+        ]);
+    }
+
+    public function store(StoreCategoryTreeRequest $request): RedirectResponse
+    {
+        $this->service->createItem($request->validated());
+
+        return redirect()
+            ->route('admin.category-tree.index')
+            ->with('success', __('Category node created.'));
     }
 
     public function saveOrder(SaveCategoryTreeOrderRequest $request): JsonResponse
@@ -73,19 +79,13 @@ class CategoryTreeController extends Controller
         return response()->json(['success' => true]);
     }
 
-    public function update(UpdateCategoryTreeRequest $request, CategoryTree $categoryTree): JsonResponse|RedirectResponse
+    public function update(UpdateCategoryTreeRequest $request, CategoryTree $categoryTree): RedirectResponse
     {
         $categoryTree->update($request->validated());
 
-        $message = __('Category tree node updated.');
-
-        if ($request->wantsJson()) {
-            return response()->json(['message' => $message]);
-        }
-
         return redirect()
             ->route('admin.category-tree.index')
-            ->with('success', $message);
+            ->with('success', __('Category tree node updated.'));
     }
 
     public function destroy(Request $request, CategoryTree $categoryTree): JsonResponse|RedirectResponse

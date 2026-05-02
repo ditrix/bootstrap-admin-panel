@@ -12,9 +12,9 @@
                 @endif
             </span>
             <span class="mm-node-actions">
-                <button type="button" class="btn btn-sm btn-outline-primary mm-btn-edit" data-mm-node-id="{{ $item->id }}" title="{{ __('Edit') }}">
+                <a href="{{ route('admin.main-menu.edit', $item) }}" class="btn btn-sm btn-outline-primary" title="{{ __('Edit') }}">
                     <i class="fas fa-edit"></i>
-                </button>
+                </a>
                 <button type="button" class="btn btn-sm btn-outline-danger mm-btn-delete" title="{{ __('Delete') }}"
                     onclick="adminBootstrapTableDelete(@js(route('admin.main-menu.destroy', $item)))">
                     <i class="fas fa-trash"></i>

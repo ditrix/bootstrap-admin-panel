@@ -58,6 +58,7 @@ class UpdateCategoryTreeRequest extends FormRequest
                 Rule::unique('category_trees', 'slug')->ignore($categoryTree->getKey()),
             ],
             'description' => ['nullable', 'string'],
+            'content' => ['nullable', 'string'],
             'is_active' => ['required', 'boolean'],
         ];
     }

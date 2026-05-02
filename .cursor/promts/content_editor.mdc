@@ -1,0 +1,65 @@
+---
+alwaysApply: true
+---
+
+#### ЗАДАЧА: Внедрение Jodit + модальных форм в CategoryTree и MenuTree
+
+**Ты — Senior Laravel + Bootstrap 5 + jQuery разработчик.**  
+Максимальный акцент на чистоту, DRY и уважение к существующей архитектуре Tree Service.
+
+### Стек
+- Laravel 10 + PHP 8.2
+- Blade + Bootstrap 5
+- jQuery
+- sail окружение + Laravel:boost
+
+### Исходное состояние
+- **StaticPage** — полностью готовый CRUD с модальными Create/Edit формами и полем `content`.
+- **CategoryTree** и **MainMenuTree** (MenuTree) используют **общий Tree Service** для соблюдения DRY.
+- Drag & drop сортировка и вложенность уже работают.
+- У CategoryTree пока **нет** поля `content`.
+
+### Задача (строго по шагам)
+
+**Шаг 1. Миграция**
+- Добавить поле `content` (`longtext`, nullable) **только** в таблицу `category_trees`.
+
+**Шаг 2. Модальные формы**
+- Для **CategoryTree**:
+  - Реализовать Create и Edit через Bootstrap 5 модальное окно.
+  - Форма должна быть максимально похожа на StaticPage (включая поле `content`).
+- Для **MainMenuTree**:
+  - Реализовать Create и Edit через Bootstrap 5 модальное окно.
+  - Форма **без** поля `content` (только стандартные поля дерева).
+
+**Шаг 3. Jodit Editor (Core / Plain JS)**
+- Подключить Jodit (рекомендую через CDN или npm + Vite).
+- Инициализировать редактор **только** на поле `content`:
+  - В модалках StaticPage (Create + Edit)
+  - В модалке CategoryTree (Create + Edit)
+- Требования к редактору:
+  - Drag & Drop изображений
+  - Хорошая поддержка таблиц
+  - Русский язык
+  - Корректная работа внутри Bootstrap модалок (инициализация после `shown.bs.modal`)
+
+**Важные ограничения**
+- Максимально использовать **существующий Tree Service** — не дублировать логику.
+- Изменения в общем сервисе должны быть минимальными и **не ломать** работу другого дерева.
+- По возможности вынести общую разметку модалок в Blade partials.
+- Jodit должен корректно уничтожаться при закрытии модалки.
+
+### Порядок выполнения
+1. Миграция + обновление модели CategoryTree
+2. Создание/доработка модальных форм для CategoryTree и MainMenuTree
+3. Подключение и настройка Jodit в StaticPage (проверка)
+4. Подключение Jodit в CategoryTree
+
+---
+
+**Перед началом изменений** покажи мне структуру ключевых файлов:
+- StaticPageController + blade
+- CategoryTreeController + blade (если есть)
+- Tree Service
+
+Готов? Пиши "Начинаю шаг 1".

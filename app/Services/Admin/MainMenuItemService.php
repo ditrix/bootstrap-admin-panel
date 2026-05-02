@@ -43,7 +43,7 @@ class MainMenuItemService extends AbstractTreeService
      *
      * @param  EloquentCollection<int, MainMenuItem>  $nodesMeta
      */
-    public function buildParentOptionsHtml(EloquentCollection $nodesMeta): string
+    public function buildParentOptionsHtml(EloquentCollection $nodesMeta, int $selectedId = 0): string
     {
         $byParent = $nodesMeta
             ->map(fn (MainMenuItem $n): array => [
@@ -54,8 +54,9 @@ class MainMenuItemService extends AbstractTreeService
             ])
             ->groupBy('parent_id');
 
-        $parts = ['<option value="0">'.e(__('Root')).'</option>'];
-        $walk = function (int $parentId, int $depth) use (&$walk, &$parts, $byParent): void {
+        $selected = $selectedId === 0 ? ' selected' : '';
+        $parts = ['<option value="0"'.$selected.'>'.e(__('Root')).'</option>'];
+        $walk = function (int $parentId, int $depth) use (&$walk, &$parts, $byParent, $selectedId): void {
             $items = ($byParent->get($parentId) ?? collect())
                 ->sortBy([
                     ['sort_no', 'asc'],
@@ -64,7 +65,8 @@ class MainMenuItemService extends AbstractTreeService
             foreach ($items as $n) {
                 $indent = $depth > 0 ? str_repeat('— ', $depth).' ' : '';
                 $label = $indent.e($n['title']);
-                $parts[] = '<option value="'.(int) $n['id'].'">'.$label.'</option>';
+                $sel = (int) $n['id'] === $selectedId ? ' selected' : '';
+                $parts[] = '<option value="'.(int) $n['id'].'"'.$sel.'>'.$label.'</option>';
                 $walk((int) $n['id'], $depth + 1);
             }
         };
