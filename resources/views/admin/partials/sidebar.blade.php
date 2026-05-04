@@ -15,6 +15,10 @@
                 <div class="sb-nav-link-icon"><i class="fas fa-file-alt"></i></div>
                 {{ __('Static pages') }}
             </a>
+            <a class="nav-link {{ $activeSidebar === 'tables' ? 'active' : '' }}" href="{{ route('admin.tables.index') }}">
+                <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
+                {{ __('Tables') }}
+            </a>
             <a class="nav-link {{ $activeSidebar === 'category-tree' ? 'active' : '' }}" href="{{ route('admin.category-tree.index') }}">
                 <div class="sb-nav-link-icon"><i class="fas fa-sitemap"></i></div>
                 {{ __('Category Tree') }}
@@ -31,11 +35,6 @@
                     <a class="nav-link {{ $activeSidebar === 'settings-administrators' ? 'active' : '' }}" href="{{ route('admin.administrators.index') }}">{{ __('Users') }}</a>
                 </nav>
             </div>
-            <a class="nav-link {{ $activeSidebar === 'tables' ? 'active' : '' }}" href="{{ route('admin.tables.index') }}">
-                <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                {{ __('Tables') }}
-            </a>
-
             <a class="nav-link" href="/log-viewer">
                 <div class="sb-nav-link-icon"><i class="fa-solid fa-bug-slash"></i></div>
                 Log
@@ -44,6 +43,6 @@
     </div>
     <div class="sb-sidenav-footer">
         <div class="small">Logged in as:</div>
-        {{ $adminUser?->name ?? 'Start Bootstrap' }}
+        {{ $adminUser?->name ?? 'BS Admin' }}
     </div>
 </nav>
