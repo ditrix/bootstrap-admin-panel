@@ -27,8 +27,6 @@ class AppServiceProvider extends ServiceProvider
         View::composer(
             [
                 'admin.layouts.sb-admin',
-                'admin.layouts.sb-admin-static',
-                'admin.layout-sidenav-light',
             ],
             AdminLayoutComposer::class
         );

@@ -37,22 +37,12 @@ class AdminPagesTest extends TestCase
     {
         $admin = $this->actingAdmin();
 
-        $response = $this->actingAs($admin, 'admin')->get(route('admin.tables'));
+        $response = $this->actingAs($admin, 'admin')->get(route('admin.tables.index'));
 
         $response->assertOk()
-            ->assertViewIs('admin.tables')
+            ->assertViewIs('admin.pages.tables.index')
             ->assertViewHas('tableId')
             ->assertViewHas('dataUrl');
-    }
-
-    public function test_forms_page_renders(): void
-    {
-        $admin = $this->actingAdmin();
-
-        $response = $this->actingAs($admin, 'admin')->get(route('admin.forms'));
-
-        $response->assertOk()
-            ->assertViewIs('admin.forms');
     }
 
     public function test_admin_employees_table_api_returns_bootstrap_table_payload(): void

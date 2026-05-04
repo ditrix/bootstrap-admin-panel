@@ -29,3 +29,5 @@
 - 2026-04-29 — Layouts `sb-admin`, `sb-admin-static`, `auth`, `error`: Bootstrap JS с CDN заменён на Vite-бандл `app.js` → [../../diary/2026/04/2026-04-29-bootstrap-local.md#01JBSTRP5VITE20260429]
 - 2026-05-02 — `category-tree/index`: Create-модал с `content`, поле `content` в Edit-модал, Jodit (CDN) с init/destroy на shown/hidden.bs.modal; `static-pages/create` и `edit`: Jodit на поле `#sp-content` → [../../diary/2026/05/2026-05-02-jodit-category-tree.md#01JCAT20260502JODIT]
 - 2026-05-02 — CategoryTree/MainMenu: страницы create/edit вместо модалок; кнопки edit → ссылки в tree-node partials; index-страницы — только DnD → [../../diary/2026/05/2026-05-02-jodit-category-tree.md#01JCAT20260502PAGES]
+- 2026-05-04 — Sidebar без Layouts/Pages/Blank; удалены blade-демо static layout, light sidenav, blank, error layout и страницы 401/404/500 → [../../diary/2026/05/2026-05-04-development.md#01JRMVSBDEMO20260504]
+- 2026-05-04 — Tables: `pages/tables/index.blade.php`, сайдбар без Forms → [../../diary/2026/05/2026-05-04-development.md#01JTBLFORMS20260504]
