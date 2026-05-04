@@ -31,7 +31,8 @@ class CategoryTreeAdminTest extends TestCase
         $response->assertOk()
             ->assertViewIs('admin.pages.category-tree.index')
             ->assertViewHas('tree')
-            ->assertViewHas('nodesMeta');
+            ->assertViewHas('categoryTreeMetaForJs')
+            ->assertViewHas('saveOrderUrl');
     }
 
     public function test_category_tree_index_requires_auth(): void
@@ -127,7 +128,7 @@ class CategoryTreeAdminTest extends TestCase
         $this->assertDatabaseHas('category_trees', ['id' => $c->id, 'parent_id' => 0, 'sort_no' => 1]);
     }
 
-    public function test_update_returns_json_with_message(): void
+    public function test_update_redirects_to_index_with_success(): void
     {
         $admin = $this->actingAdmin();
         $node = CategoryTree::factory()->create([
@@ -138,7 +139,7 @@ class CategoryTreeAdminTest extends TestCase
         ]);
 
         $response = $this->actingAs($admin, 'admin')
-            ->putJson(route('admin.category-tree.update', $node), [
+            ->put(route('admin.category-tree.update', $node), [
                 'parent_id' => 0,
                 'title' => 'Node A updated',
                 'slug' => 'node-a-upd',
@@ -146,8 +147,7 @@ class CategoryTreeAdminTest extends TestCase
                 'is_active' => false,
             ]);
 
-        $response->assertOk()
-            ->assertJsonPath('message', __('Category tree node updated.'));
+        $response->assertRedirect(route('admin.category-tree.index'));
         $node->refresh();
         $this->assertSame('Node A updated', $node->title);
         $this->assertSame('node-a-upd', $node->slug);

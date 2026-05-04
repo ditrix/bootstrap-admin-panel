@@ -25,6 +25,61 @@ abstract class AbstractTreeService
     abstract protected function modelClass(): string;
 
     /**
+     * Create a new tree node, appending it after existing siblings under the same parent.
+     *
+     * @param  array<string, mixed>  $data
+     * @return TModel
+     */
+    public function createItem(array $data): Model
+    {
+        $class = $this->modelClass();
+        $parentId = (int) $data['parent_id'];
+        $maxSort = (int) $class::query()
+            ->where('parent_id', $parentId)
+            ->max('sort_no');
+
+        return $class::query()->create(array_merge($data, ['sort_no' => $maxSort + 1]));
+    }
+
+    /**
+     * Build an HTML string of <option> elements for the "parent" select,
+     * indented to reflect the tree depth.
+     *
+     * @param  EloquentCollection<int, TModel>  $nodesMeta
+     */
+    public function buildParentOptionsHtml(EloquentCollection $nodesMeta, int $selectedId = 0): string
+    {
+        $byParent = $nodesMeta
+            ->map(static fn ($n): array => [
+                'id' => $n->id,
+                'parent_id' => (int) $n->parent_id,
+                'title' => $n->title,
+                'sort_no' => (int) $n->sort_no,
+            ])
+            ->groupBy('parent_id');
+
+        $selected = $selectedId === 0 ? ' selected' : '';
+        $parts = ['<option value="0"'.$selected.'>'.e(__('Root')).'</option>'];
+        $walk = function (int $parentId, int $depth) use (&$walk, &$parts, $byParent, $selectedId): void {
+            $items = ($byParent->get($parentId) ?? collect())
+                ->sortBy([
+                    ['sort_no', 'asc'],
+                    ['id', 'asc'],
+                ]);
+            foreach ($items as $n) {
+                $indent = $depth > 0 ? str_repeat('— ', $depth).' ' : '';
+                $label = $indent.e($n['title']);
+                $sel = (int) $n['id'] === $selectedId ? ' selected' : '';
+                $parts[] = '<option value="'.(int) $n['id'].'"'.$sel.'>'.$label.'</option>';
+                $walk((int) $n['id'], $depth + 1);
+            }
+        };
+        $walk(0, 0);
+
+        return implode('', $parts);
+    }
+
+    /**
      * Load all nodes sorted by sort_no and group by parent_id.
      *
      * @return Collection<int|string, Collection<int, TModel>>

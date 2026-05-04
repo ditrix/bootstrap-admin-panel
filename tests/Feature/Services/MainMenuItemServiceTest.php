@@ -106,7 +106,9 @@ class MainMenuItemServiceTest extends TestCase
 
         $html = $this->service()->buildParentOptionsHtml($nodesMeta);
 
-        $this->assertStringContainsString('<option value="0">', $html);
+        // Root option is selected by default (selectedId=0), so attribute may vary;
+        // assert by value attribute and label content only.
+        $this->assertStringContainsString('value="0"', $html);
         $this->assertStringContainsString('Root', $html);
     }
 

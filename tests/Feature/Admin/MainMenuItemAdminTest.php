@@ -32,7 +32,8 @@ class MainMenuItemAdminTest extends TestCase
         $response->assertOk()
             ->assertViewIs('admin.pages.main-menu.index')
             ->assertViewHas('tree')
-            ->assertViewHas('nodesMeta');
+            ->assertViewHas('mainMenuMetaForJs')
+            ->assertViewHas('saveOrderUrl');
     }
 
     public function test_main_menu_index_requires_auth(): void
@@ -118,7 +119,7 @@ class MainMenuItemAdminTest extends TestCase
         $response->assertOk()->assertJsonPath('success', true);
     }
 
-    public function test_update_returns_json_with_message(): void
+    public function test_update_redirects_to_index_with_success(): void
     {
         $admin = $this->actingAdmin();
         $node = MainMenuItem::factory()->create([
@@ -128,15 +129,14 @@ class MainMenuItemAdminTest extends TestCase
         ]);
 
         $response = $this->actingAs($admin, 'admin')
-            ->putJson(route('admin.main-menu.update', $node), [
+            ->put(route('admin.main-menu.update', $node), [
                 'parent_id' => 0,
                 'title' => 'Item updated',
                 'slug' => 'item-upd',
                 'is_active' => false,
             ]);
 
-        $response->assertOk()
-            ->assertJsonPath('message', __('Menu item updated.'));
+        $response->assertRedirect(route('admin.main-menu.index'));
         $node->refresh();
         $this->assertSame('Item updated', $node->title);
     }

@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Admin\Traits\HasTreeCrudActions;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\CategoryTree\SaveCategoryTreeOrderRequest;
 use App\Http\Requests\Admin\CategoryTree\StoreCategoryTreeRequest;
 use App\Http\Requests\Admin\CategoryTree\UpdateCategoryTreeRequest;
 use App\Models\CategoryTree;
+use App\Services\Admin\AbstractTreeService;
 use App\Services\Admin\CategoryTreeService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -18,88 +20,91 @@ use Illuminate\View\View;
  */
 class CategoryTreeController extends Controller
 {
+    use HasTreeCrudActions;
+
     public function __construct(private readonly CategoryTreeService $service) {}
 
-    public function index(): View
+    protected function getTreeService(): AbstractTreeService
     {
-        $tree = $this->service->buildGroupedTree();
-        $nodesMeta = $this->service->allNodesOrderedForMeta();
-
-        $categoryTreeMetaForJs = $nodesMeta
-            ->map(static fn (CategoryTree $n): array => [
-                'id' => $n->id,
-                'parent_id' => (int) $n->parent_id,
-                'title' => $n->title,
-                'sort_no' => (int) $n->sort_no,
-            ])
-            ->values()
-            ->all();
-
-        return view('admin.pages.category-tree.index', [
-            'tree' => $tree,
-            'categoryTreeMetaForJs' => $categoryTreeMetaForJs,
-            'saveOrderUrl' => route('admin.category-tree.save-order'),
-        ]);
+        return $this->service;
     }
 
-    public function create(): View
+    protected function indexView(): string
     {
-        $nodesMeta = $this->service->allNodesOrderedForMeta();
-        $selectedParentId = (int) (request()->old('parent_id') ?? 0);
-
-        return view('admin.pages.category-tree.create', [
-            'parentOptionsHtml' => $this->service->buildParentOptionsHtml($nodesMeta, $selectedParentId),
-        ]);
+        return 'admin.pages.category-tree.index';
     }
+
+    protected function createView(): string
+    {
+        return 'admin.pages.category-tree.create';
+    }
+
+    protected function editView(): string
+    {
+        return 'admin.pages.category-tree.edit';
+    }
+
+    protected function editModelKey(): string
+    {
+        return 'categoryTree';
+    }
+
+    protected function jsMetaKey(): string
+    {
+        return 'categoryTreeMetaForJs';
+    }
+
+    protected function saveOrderRouteName(): string
+    {
+        return 'admin.category-tree.save-order';
+    }
+
+    protected function indexRouteName(): string
+    {
+        return 'admin.category-tree.index';
+    }
+
+    protected function storeSuccessMessage(): string
+    {
+        return __('Category node created.');
+    }
+
+    protected function updateSuccessMessage(): string
+    {
+        return __('Category tree node updated.');
+    }
+
+    protected function destroySuccessMessage(): string
+    {
+        return __('Category tree node deleted.');
+    }
+
+    // -------------------------------------------------------------------------
+    // Public methods with typed route model binding — delegate to trait helpers
+    // -------------------------------------------------------------------------
 
     public function edit(CategoryTree $categoryTree): View
     {
-        $nodesMeta = $this->service->allNodesOrderedForMeta();
-        $selectedParentId = (int) (request()->old('parent_id') ?? $categoryTree->parent_id);
-
-        return view('admin.pages.category-tree.edit', [
-            'categoryTree' => $categoryTree,
-            'parentOptionsHtml' => $this->service->buildParentOptionsHtml($nodesMeta, $selectedParentId),
-        ]);
+        return $this->handleEdit($categoryTree);
     }
 
     public function store(StoreCategoryTreeRequest $request): RedirectResponse
     {
-        $this->service->createItem($request->validated());
-
-        return redirect()
-            ->route('admin.category-tree.index')
-            ->with('success', __('Category node created.'));
+        return $this->handleStore($request);
     }
 
     public function saveOrder(SaveCategoryTreeOrderRequest $request): JsonResponse
     {
-        $this->service->saveOrder($request->validated('nodes'));
-
-        return response()->json(['success' => true]);
+        return $this->executeSaveOrder($request);
     }
 
     public function update(UpdateCategoryTreeRequest $request, CategoryTree $categoryTree): RedirectResponse
     {
-        $categoryTree->update($request->validated());
-
-        return redirect()
-            ->route('admin.category-tree.index')
-            ->with('success', __('Category tree node updated.'));
+        return $this->handleUpdate($request, $categoryTree);
     }
 
     public function destroy(Request $request, CategoryTree $categoryTree): JsonResponse|RedirectResponse
     {
-        $this->service->deleteNodeReparentingChildren($categoryTree);
-
-        $message = __('Category tree node deleted.');
-
-        if ($request->wantsJson()) {
-            return response()->json(['message' => $message]);
-        }
-
-        return redirect()
-            ->route('admin.category-tree.index')
-            ->with('success', $message);
+        return $this->handleDestroy($request, $categoryTree);
     }
 }

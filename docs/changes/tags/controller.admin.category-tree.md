@@ -5,3 +5,4 @@
 - 2026-04-26 — Константа-плейсхолдер для шаблона URL `category-tree.update` → [../../diary/2026/04/2026-04-26-catalog-tree-crud.md#01JCTREE20260426REVIEW]
 - 2026-05-02 — Метод `store`, `content` в editor data, передача `parentOptionsHtml`/`categoryTreeStoreUrl` в view → [../../diary/2026/05/2026-05-02-jodit-category-tree.md#01JCAT20260502JODIT]
 - 2026-05-02 — page-based create/edit: методы `create()`, `edit()`, упрощён `index()`, `update()` → только RedirectResponse → [../../diary/2026/05/2026-05-02-jodit-category-tree.md#01JCAT20260502PAGES]
+- 2026-05-03 — рефакторинг с `HasTreeCrudActions` trait; контроллер = конфигурация + 4 делегирующих метода → [../../diary/2026/05/2026-05-03-tree-refactoring-aeb.md#01JTREE20260503AEB]

@@ -1,0 +1,58 @@
+---
+alwaysApply: false
+---
+
+# Промт: Рефакторинг Tree-модулей (A + E + B)
+
+## Контекст
+Рефакторинг двух существующих tree-модулей: `CategoryTree` и `MainMenu`.
+Модули **различаются полями** — `CategoryTree` имеет поле `content` (Jodit Editor), `MainMenu` — нет.
+В будущем будут добавляться новые tree-модули (например, nested accordion).
+
+## Цели
+- Устранить дублирование кода без изменения поведения
+- Сохранить полную обратную совместимость (роуты, тесты, Blade-шаблоны)
+- Не трогать модели, миграции, Blade-шаблоны, роуты
+
+## Что реализуем
+
+### A — AbstractTreeService: поднять общие методы
+Файл: `app/Services/Admin/AbstractTreeService.php`
+- Добавить `createItem(array $data): Model` — идентичен в обоих подклассах
+- Добавить `buildParentOptionsHtml(EloquentCollection $nodesMeta, int $selectedId = 0): string`
+- Из `CategoryTreeService` и `MainMenuItemService` удалить эти методы
+
+### E — AbstractSaveTreeOrderRequest
+Создать: `app/Http/Requests/Admin/AbstractSaveTreeOrderRequest.php`
+- abstract `modelClass(): string`
+- abstract `invalidIdsMessage(): string`
+- Перенести `rules()`, `allIdsExist()`, `collectIds()` из обоих Request-классов
+- `SaveCategoryTreeOrderRequest` и `SaveMainMenuItemOrderRequest` — только реализуют два метода
+
+### B — Trait HasTreeCrudActions
+Создать: `app/Http/Controllers/Admin/Traits/HasTreeCrudActions.php`
+- Полностью generic методы: `index()`, `create()`, `saveOrder(AbstractSaveTreeOrderRequest)`
+- Protected helper-методы: `handleEdit()`, `handleStore()`, `handleUpdate()`, `handleDestroy()`
+- Abstract config-методы: `indexView()`, `createView()`, `editView()`, `jsMetaKey()`,
+  `saveOrderRouteName()`, `indexRouteName()`, `storeSuccessMessage()`, `updateSuccessMessage()`, `destroySuccessMessage()`
+- abstract `getTreeService(): AbstractTreeService`
+
+Контроллеры: публичные методы с route model binding (`edit`, `store`, `update`, `destroy`)
+остаются в конкретных контроллерах — они делегируют в `$this->handleXxx()`.
+
+## Ограничения
+- НЕ менять модели, роуты, Blade, FormRequest Store/Update
+- НЕ трогать `StaticPageController` и другие не-tree контроллеры
+- `buildParentOptionsHtml` остаётся в сервисе (перемещается в абстрактный, не в контроллер)
+- Если phpDoc-тип не может быть `TModel` — использовать `Model` с PHPDoc `@return TModel`
+
+## Порядок работы
+1. Изучить существующие тесты
+2. Реализовать A (AbstractTreeService)
+3. Реализовать E (AbstractSaveTreeOrderRequest)
+4. Реализовать B (Trait)
+5. Применить trait к контроллерам
+6. Запустить `./vendor/bin/sail artisan test --filter=CategoryTree` и `--filter=MainMenu`
+7. Запустить `./vendor/bin/pint --dirty`
+8. Создать документ `.cursor/docs/tree_architecture_changes_result.md`
+9. Обновить дневник изменений

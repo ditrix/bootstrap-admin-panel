@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Admin\Traits\HasTreeCrudActions;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\MainMenu\SaveMainMenuItemOrderRequest;
 use App\Http\Requests\Admin\MainMenu\StoreMainMenuItemRequest;
 use App\Http\Requests\Admin\MainMenu\UpdateMainMenuItemRequest;
 use App\Models\MainMenuItem;
+use App\Services\Admin\AbstractTreeService;
 use App\Services\Admin\MainMenuItemService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -18,88 +20,91 @@ use Illuminate\View\View;
  */
 class MainMenuItemController extends Controller
 {
+    use HasTreeCrudActions;
+
     public function __construct(private readonly MainMenuItemService $service) {}
 
-    public function index(): View
+    protected function getTreeService(): AbstractTreeService
     {
-        $tree = $this->service->buildGroupedTree();
-        $nodesMeta = $this->service->allNodesOrderedForMeta();
-
-        $mainMenuMetaForJs = $nodesMeta
-            ->map(static fn (MainMenuItem $n): array => [
-                'id' => $n->id,
-                'parent_id' => (int) $n->parent_id,
-                'title' => $n->title,
-                'sort_no' => (int) $n->sort_no,
-            ])
-            ->values()
-            ->all();
-
-        return view('admin.pages.main-menu.index', [
-            'tree' => $tree,
-            'mainMenuMetaForJs' => $mainMenuMetaForJs,
-            'saveOrderUrl' => route('admin.main-menu.save-order'),
-        ]);
+        return $this->service;
     }
 
-    public function create(): View
+    protected function indexView(): string
     {
-        $nodesMeta = $this->service->allNodesOrderedForMeta();
-        $selectedParentId = (int) (request()->old('parent_id') ?? 0);
-
-        return view('admin.pages.main-menu.create', [
-            'parentOptionsHtml' => $this->service->buildParentOptionsHtml($nodesMeta, $selectedParentId),
-        ]);
+        return 'admin.pages.main-menu.index';
     }
+
+    protected function createView(): string
+    {
+        return 'admin.pages.main-menu.create';
+    }
+
+    protected function editView(): string
+    {
+        return 'admin.pages.main-menu.edit';
+    }
+
+    protected function editModelKey(): string
+    {
+        return 'mainMenuItem';
+    }
+
+    protected function jsMetaKey(): string
+    {
+        return 'mainMenuMetaForJs';
+    }
+
+    protected function saveOrderRouteName(): string
+    {
+        return 'admin.main-menu.save-order';
+    }
+
+    protected function indexRouteName(): string
+    {
+        return 'admin.main-menu.index';
+    }
+
+    protected function storeSuccessMessage(): string
+    {
+        return __('Menu item created.');
+    }
+
+    protected function updateSuccessMessage(): string
+    {
+        return __('Menu item updated.');
+    }
+
+    protected function destroySuccessMessage(): string
+    {
+        return __('Menu item deleted.');
+    }
+
+    // -------------------------------------------------------------------------
+    // Public methods with typed route model binding — delegate to trait helpers
+    // -------------------------------------------------------------------------
 
     public function edit(MainMenuItem $mainMenuItem): View
     {
-        $nodesMeta = $this->service->allNodesOrderedForMeta();
-        $selectedParentId = (int) (request()->old('parent_id') ?? $mainMenuItem->parent_id);
-
-        return view('admin.pages.main-menu.edit', [
-            'mainMenuItem' => $mainMenuItem,
-            'parentOptionsHtml' => $this->service->buildParentOptionsHtml($nodesMeta, $selectedParentId),
-        ]);
+        return $this->handleEdit($mainMenuItem);
     }
 
     public function store(StoreMainMenuItemRequest $request): RedirectResponse
     {
-        $this->service->createItem($request->validated());
-
-        return redirect()
-            ->route('admin.main-menu.index')
-            ->with('success', __('Menu item created.'));
+        return $this->handleStore($request);
     }
 
     public function saveOrder(SaveMainMenuItemOrderRequest $request): JsonResponse
     {
-        $this->service->saveOrder($request->validated('nodes'));
-
-        return response()->json(['success' => true]);
+        return $this->executeSaveOrder($request);
     }
 
     public function update(UpdateMainMenuItemRequest $request, MainMenuItem $mainMenuItem): RedirectResponse
     {
-        $mainMenuItem->update($request->validated());
-
-        return redirect()
-            ->route('admin.main-menu.index')
-            ->with('success', __('Menu item updated.'));
+        return $this->handleUpdate($request, $mainMenuItem);
     }
 
     public function destroy(Request $request, MainMenuItem $mainMenuItem): JsonResponse|RedirectResponse
     {
-        $this->service->deleteNodeReparentingChildren($mainMenuItem);
-
-        $message = __('Menu item deleted.');
-
-        if ($request->wantsJson()) {
-            return response()->json(['message' => $message]);
-        }
-
-        return redirect()
-            ->route('admin.main-menu.index')
-            ->with('success', $message);
+        return $this->handleDestroy($request, $mainMenuItem);
     }
 }
