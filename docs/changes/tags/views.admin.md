@@ -27,3 +27,5 @@
 - 2026-04-26 — `main-menu/index`: только дерево DnD и модалки; bootstrap-table убран с этой страницы → [../../diary/2026/04/2026-04-26-configuration-module.md#01JMAINMENUREVERTBT20260426]
 - 2026-04-27 — main-menu: пересоздание Sortable после каждого drop + reload при сбое save-order → [../../diary/2026/04/2026-04-26-configuration-module.md#01JMMSAVEORDDND20260427]
 - 2026-04-29 — Layouts `sb-admin`, `sb-admin-static`, `auth`, `error`: Bootstrap JS с CDN заменён на Vite-бандл `app.js` → [../../diary/2026/04/2026-04-29-bootstrap-local.md#01JBSTRP5VITE20260429]
+- 2026-05-02 — `category-tree/index`: Create-модал с `content`, поле `content` в Edit-модал, Jodit (CDN) с init/destroy на shown/hidden.bs.modal; `static-pages/create` и `edit`: Jodit на поле `#sp-content` → [../../diary/2026/05/2026-05-02-jodit-category-tree.md#01JCAT20260502JODIT]
+- 2026-05-02 — CategoryTree/MainMenu: страницы create/edit вместо модалок; кнопки edit → ссылки в tree-node partials; index-страницы — только DnD → [../../diary/2026/05/2026-05-02-jodit-category-tree.md#01JCAT20260502PAGES]

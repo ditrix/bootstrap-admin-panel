@@ -14,12 +14,10 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 /**
- * Main menu tree (create item, reorder DnD, edit/destroy with reparenting).
+ * Main menu tree (page-based create/edit, reorder DnD, update/destroy).
  */
 class MainMenuItemController extends Controller
 {
-    private const UPDATE_ROUTE_PLACEHOLDER_ID = 2147483646;
-
     public function __construct(private readonly MainMenuItemService $service) {}
 
     public function index(): View
@@ -37,30 +35,31 @@ class MainMenuItemController extends Controller
             ->values()
             ->all();
 
-        $mainMenuEditorForJs = $nodesMeta
-            ->mapWithKeys(static fn (MainMenuItem $n): array => [
-                $n->id => [
-                    'title' => $n->title,
-                    'slug' => $n->slug,
-                    'parent_id' => (int) $n->parent_id,
-                    'is_active' => (bool) $n->is_active,
-                ],
-            ])
-            ->all();
-
-        $updateUrlTemplate = str_replace(
-            (string) self::UPDATE_ROUTE_PLACEHOLDER_ID,
-            '__ID__',
-            route('admin.main-menu.update', ['main_menu_item' => self::UPDATE_ROUTE_PLACEHOLDER_ID]),
-        );
-
         return view('admin.pages.main-menu.index', [
             'tree' => $tree,
-            'nodesMeta' => $nodesMeta,
             'mainMenuMetaForJs' => $mainMenuMetaForJs,
-            'mainMenuEditorForJs' => $mainMenuEditorForJs,
-            'mainMenuUpdateUrlTemplate' => $updateUrlTemplate,
-            'parentOptionsHtml' => $this->service->buildParentOptionsHtml($nodesMeta),
+            'saveOrderUrl' => route('admin.main-menu.save-order'),
+        ]);
+    }
+
+    public function create(): View
+    {
+        $nodesMeta = $this->service->allNodesOrderedForMeta();
+        $selectedParentId = (int) (request()->old('parent_id') ?? 0);
+
+        return view('admin.pages.main-menu.create', [
+            'parentOptionsHtml' => $this->service->buildParentOptionsHtml($nodesMeta, $selectedParentId),
+        ]);
+    }
+
+    public function edit(MainMenuItem $mainMenuItem): View
+    {
+        $nodesMeta = $this->service->allNodesOrderedForMeta();
+        $selectedParentId = (int) (request()->old('parent_id') ?? $mainMenuItem->parent_id);
+
+        return view('admin.pages.main-menu.edit', [
+            'mainMenuItem' => $mainMenuItem,
+            'parentOptionsHtml' => $this->service->buildParentOptionsHtml($nodesMeta, $selectedParentId),
         ]);
     }
 
@@ -80,19 +79,13 @@ class MainMenuItemController extends Controller
         return response()->json(['success' => true]);
     }
 
-    public function update(UpdateMainMenuItemRequest $request, MainMenuItem $mainMenuItem): JsonResponse|RedirectResponse
+    public function update(UpdateMainMenuItemRequest $request, MainMenuItem $mainMenuItem): RedirectResponse
     {
         $mainMenuItem->update($request->validated());
 
-        $message = __('Menu item updated.');
-
-        if ($request->wantsJson()) {
-            return response()->json(['message' => $message]);
-        }
-
         return redirect()
             ->route('admin.main-menu.index')
-            ->with('success', $message);
+            ->with('success', __('Menu item updated.'));
     }
 
     public function destroy(Request $request, MainMenuItem $mainMenuItem): JsonResponse|RedirectResponse

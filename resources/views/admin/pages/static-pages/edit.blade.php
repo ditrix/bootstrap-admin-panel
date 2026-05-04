@@ -58,8 +58,8 @@
                         @enderror
                     </div>
                     <div class="mb-3">
-                        <label class="form-label" for="content">{{ __('Content') }}</label>
-                        <textarea class="form-control @error('content') is-invalid @enderror" id="content" name="content" rows="8">{{ old('content', $staticPage->content) }}</textarea>
+                        <label class="form-label" for="sp-content">{{ __('Content') }}</label>
+                        <textarea class="form-control @error('content') is-invalid @enderror" id="sp-content" name="content" rows="8">{{ old('content', $staticPage->content) }}</textarea>
                         @error('content')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -86,3 +86,18 @@
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jodit@4.12.2/es5/jodit.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <script src="https://cdn.jsdelivr.net/npm/jodit@4.12.2/es5/jodit.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+        if (typeof Jodit !== 'undefined') {
+            Jodit.make('#sp-content', {
+                language: 'ru',
+                height: 400,
+                enableDragAndDropFileToEditor: true,
+                uploader: { insertImageAsBase64URI: true },
+            });
+        }
+    </script>
+@endpush

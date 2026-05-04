@@ -7,7 +7,7 @@
 ## 1. Назначение проекта
 
 - Веб-приложение на Laravel с **отдельной зоной администратора** по префиксу URL `/admin`.
-- Включает **демо-страницы** макета (дашборд, графики, таблицы, формы, варианты layout), **CRUD статических страниц** с древовидной связью `parent_id`, **дерево категорий (Category tree)** c DnD, группу **Settings** в сайдбаре: **Main menu** (древовидный DnD без фиксированного лимита глубины), **301 Redirects** (табличный CRUD + глобальный middleware 301), **Users** (CRUD администраторов), и **таблицу сотрудников** (`employees`) как пример серверной пагинации для Bootstrap Table.
+- Включает **демо-страницы** макета (дашборд, графики, таблицы, формы, варианты layout), **CRUD статических страниц** с древовидной связью `parent_id` и WYSIWYG-редактором Jodit, **дерево категорий (Category tree)** c DnD и полем `content` (Jodit), группу **Settings** в сайдбаре: **Main menu** (древовидный DnD без фиксированного лимита глубины), **301 Redirects** (табличный CRUD + глобальный middleware 301), **Users** (CRUD администраторов), и **таблицу сотрудников** (`employees`) как пример серверной пагинации для Bootstrap Table.
 - **Публичные GET-редиректы 301** по путям из `seo_redirects` обрабатывает глобальный middleware (исключение `admin/*`); до применения маршрута проверяется `Schema::hasTable('seo_redirects')` (например, тесты без миграций).
 - Публичная часть минимальна: маршрут `/` отдаёт приветственную страницу `welcome`.
 
@@ -124,7 +124,7 @@ tests/
 |---------|----------|
 | Без middleware auth | `GET /admin` → `AdminEntryController`: если уже залогинен в guard `admin` — редирект на дашборд, иначе форма логина |
 | `guest:admin` | `POST` логина; регистрация (`GET/POST`); запрос/сброс пароля (`GET/POST`) |
-| `auth:admin` | дашборд, layout-демо, charts/tables/forms/blank, демо ошибок, resource `static-pages`, `category-tree`, группа **Settings:** `main-menu` (с `store`/`save-order`), resource `seo-redirects` (без `show`), resource `administrators` (без `show`) |
+| `auth:admin` | дашборд, layout-демо, charts/tables/forms/blank, демо ошибок, resource `static-pages`; `category-tree` (index, create, store, edit, update, save-order, destroy); `main-menu` (index, create, store, edit, update, save-order, destroy); resource `seo-redirects` (без `show`), resource `administrators` (без `show`) |
 
 **`routes/admin-api.php`** — AJAX/JSON для bootstrap-table (все под `auth:admin`):
 
@@ -144,11 +144,10 @@ tests/
 - `admin.api.employees` — `GET /admin/api/employees` (JSON для таблицы)
 - `admin.api.static-pages.table` — `GET /admin/api/static-pages/table`
 - `admin.static-pages.*` — стандартный `Route::resource` для CRUD статических страниц
-- `admin.category-tree.index` — `GET /admin/category-tree`
-- `admin.category-tree.save-order` — `POST /admin/category-tree/save-order`
+- `admin.category-tree.{index,create,store,edit,update,save-order,destroy}` — полный CRUD дерева категорий (см. §6.3)
 - `admin.layouts.static`, `admin.layouts.sidenav-light` — варианты демо-layout
 - `admin.errors.401`, `admin.errors.404-demo`, `admin.errors.500-demo` — демо ошибок (Blade)
-- `admin.main-menu.*` — `GET/POST /admin/main-menu`, `POST /admin/main-menu/save-order`, `PUT/DELETE /admin/main-menu/{main_menu_item}`
+- `admin.main-menu.{index,create,store,edit,update,save-order,destroy}` — полный CRUD дерева меню (см. §6.4)
 - `admin.seo-redirects.*` — CRUD 301-редиректов
 - `admin.administrators.*` — CRUD администраторов
 
@@ -209,28 +208,40 @@ tests/
 
 ### 6.3 `category_trees`
 
-Поля: `parent_id` (по умолчанию `0`, индекс), `title`, `slug` (nullable, unique), `description` (nullable, text), `sort_no`, `is_active`, timestamps.
+Поля: `parent_id` (по умолчанию `0`, индекс), `title`, `slug` (nullable, unique), `description` (nullable, text), `content` (longtext, nullable), `sort_no`, `is_active`, timestamps.
 
 Модель `CategoryTree`:
 
 - связи `parent()` / `children()`
 - scope `ordered()` — сортировка по `sort_no`, затем `id`
 
-Дерево формируется группировкой всех записей по `parent_id`; `parent_id = 0` — корневые узлы. Сервис `CategoryTreeService` содержит `buildGroupedTree()` и рекурсивный `saveOrder()` для пересчёта `parent_id` + `sort_no` после drag-and-drop, а также `allNodesOrderedForMeta()` (данные для UI) и `deleteNodeReparentingChildren()`: операция выполняется в одной транзакции БД; прямые дочерние узлы при удалении переносятся к родителю удаляемой записи (с новым `sort_no` в конце списка среди соседей, порядок детей относительно друг друга сохраняется), затем удаляемая запись удаляется.
+Дерево формируется группировкой всех записей по `parent_id`; `parent_id = 0` — корневые узлы. Сервис `CategoryTreeService` содержит `buildGroupedTree()` и рекурсивный `saveOrder()` для пересчёта `parent_id` + `sort_no` после drag-and-drop, а также `allNodesOrderedForMeta()`, `deleteNodeReparentingChildren()` (в транзакции: перенос дочерних к родителю, затем удаление), `createItem(array): CategoryTree` (создаёт узел с `sort_no = max(siblings) + 1`), `buildParentOptionsHtml(EloquentCollection, int $selectedId = 0): string` (HTML для select с поддержкой предвыбора, в т.ч. после ошибки валидации).
 
-Редактирование узла — в модальном окне (Bootstrap) на странице дерева; валидация в `UpdateCategoryTreeRequest` (в т.ч. запрет циклов в иерархии по `parent_id`). Удаление — `adminBootstrapTableDelete` (подтверждение через `admin-ui`), тост `adminNotify` по результату.
+Create/Edit — отдельные страницы (`create.blade.php`, `edit.blade.php`) по аналогии с `StaticPage`; поле `content` редактируется через **Jodit Editor** (CDN). Валидация: `StoreCategoryTreeRequest` (create), `UpdateCategoryTreeRequest` (update, в т.ч. запрет циклов по `parent_id`). Удаление — `adminBootstrapTableDelete`.
 
 Маршруты:
 - `admin.category-tree.index` — `GET /admin/category-tree`
+- `admin.category-tree.create` — `GET /admin/category-tree/create`
+- `admin.category-tree.store` — `POST /admin/category-tree`
+- `admin.category-tree.edit` — `GET /admin/category-tree/{category_tree}/edit`
+- `admin.category-tree.update` — `PUT /admin/category-tree/{category_tree}` (редирект после сохранения)
 - `admin.category-tree.save-order` — `POST /admin/category-tree/save-order` (JSON body `{ nodes: [...] }`)
-- `admin.category-tree.update` — `PUT /admin/category-tree/{category_tree}` (form/json; ответ JSON с `message` при `Accept: application/json`)
-- `admin.category-tree.destroy` — `DELETE /admin/category-tree/{category_tree}` (JSON `message` при `Accept: application/json`, иначе редирект)
+- `admin.category-tree.destroy` — `DELETE /admin/category-tree/{category_tree}` (JSON при AJAX, редирект иначе)
 
 ### 6.4 `main_menu_items`
 
 Поля: `parent_id` (0 — корень), `sort_no`, `title`, `slug` (nullable, unique), `is_active`, timestamps.
 
-Поведение: как у **Category tree** по DnD и сохранению порядка. Ограничение глубины отсутствует. Сервис `MainMenuItemService` расширяет `AbstractTreeService` и добавляет: `createItem(array $data): MainMenuItem` (создаёт узел с `sort_no = max(siblings) + 1`), `buildParentOptionsHtml(EloquentCollection): string` (HTML для select-родителя в форме создания). UI: `resources/views/admin/pages/main-menu/`, SortableJS, префикс классов `mm-`, SCSS `blocks/_main-menu.scss`, создание узла — форма/модалка `POST` `admin.main-menu.store`.
+Поведение: как у **Category tree** по DnD и сохранению порядка. Ограничение глубины отсутствует. Сервис `MainMenuItemService` расширяет `AbstractTreeService` и добавляет: `createItem(array $data): MainMenuItem` (создаёт узел с `sort_no = max(siblings) + 1`), `buildParentOptionsHtml(EloquentCollection, int $selectedId = 0): string` (HTML для select с поддержкой предвыбора). UI: `resources/views/admin/pages/main-menu/`, SortableJS, префикс классов `mm-`, SCSS `blocks/_main-menu.scss`. Create/Edit — отдельные страницы (без поля `content`).
+
+Маршруты:
+- `admin.main-menu.index` — `GET /admin/main-menu`
+- `admin.main-menu.create` — `GET /admin/main-menu/create`
+- `admin.main-menu.store` — `POST /admin/main-menu`
+- `admin.main-menu.edit` — `GET /admin/main-menu/{main_menu_item}/edit`
+- `admin.main-menu.update` — `PUT /admin/main-menu/{main_menu_item}` (редирект после сохранения)
+- `admin.main-menu.save-order` — `POST /admin/main-menu/save-order` (JSON body `{ nodes: [...] }`)
+- `admin.main-menu.destroy` — `DELETE /admin/main-menu/{main_menu_item}` (JSON при AJAX, редирект иначе)
 
 ### 6.5 `seo_redirects`
 
@@ -276,8 +287,8 @@ tests/
 
 | Класс | `modelClass()` | Дополнительные методы |
 |-------|----------------|-----------------------|
-| `CategoryTreeService` | `CategoryTree::class` | — |
-| `MainMenuItemService` | `MainMenuItem::class` | `createItem(array): MainMenuItem`, `buildParentOptionsHtml(EloquentCollection): string` |
+| `CategoryTreeService` | `CategoryTree::class` | `createItem(array): CategoryTree`, `buildParentOptionsHtml(EloquentCollection, int $selectedId = 0): string` |
+| `MainMenuItemService` | `MainMenuItem::class` | `createItem(array): MainMenuItem`, `buildParentOptionsHtml(EloquentCollection, int $selectedId = 0): string` |
 
 #### Listing-сервисы (bootstrap-table)
 
@@ -346,9 +357,9 @@ tests/
 
 ### 8.3 Модули страниц
 
-- Статические страницы: `resources/views/admin/pages/static-pages/` (`view` как index-список с таблицей, `create`, `edit`, `show`).
-- Дерево каталога: `resources/views/admin/pages/category-tree/index.blade.php` + рекурсивный partial `partials/tree-node.blade.php`. Вложенный `<ol class="ct-list--nested">` рендерится для каждого узла (в т.ч. пустой), что обеспечивает корректный drop при смене уровня вложенности. SortableJS (CDN) инициализируется на всех `<ol>` через plain JS + `document.addEventListener('DOMContentLoaded')`. Во время drag класс `ct-is-dragging` на `#ct-root` раскрывает пустые drop-зоны через SCSS.
-- **Main menu:** `pages/main-menu/` — то же DnD-поведение с префиксом `mm-`, `blocks/_main-menu.scss`.
+- Статические страницы: `resources/views/admin/pages/static-pages/` (`view` как index-список с таблицей, `create`, `edit`, `show`). Поле `content` в `create` и `edit` — WYSIWYG через **Jodit Editor** (CDN, id `#sp-content`).
+- Дерево каталога: `resources/views/admin/pages/category-tree/` — `index.blade.php` (только DnD + save-order), `create.blade.php`, `edit.blade.php` + рекурсивный partial `partials/tree-node.blade.php`. Кнопка «Edit» в узле — ссылка на страницу `/{id}/edit`. Вложенный `<ol class="ct-list--nested">` рендерится для каждого узла (в т.ч. пустой), что обеспечивает корректный drop при смене уровня вложенности. SortableJS (CDN) инициализируется на всех `<ol>` через plain JS + `document.addEventListener('DOMContentLoaded')`. Во время drag класс `ct-is-dragging` на `#ct-root` раскрывает пустые drop-зоны через SCSS. Поле `content` в `create`/`edit` — Jodit Editor (CDN, id `#ct-content`).
+- **Main menu:** `pages/main-menu/` — `index.blade.php` (только DnD), `create.blade.php`, `edit.blade.php`; то же DnD-поведение с префиксом `mm-`, `blocks/_main-menu.scss`. Кнопка «Edit» в узле — ссылка на `/{id}/edit`. Без поля `content`.
 - **301 Redirects / Administrators:** `pages/seo-redirects/`, `pages/administrators/` — таблицы, удаление кнопкой `adminBootstrapTableDelete(url)`; на странице — блок `#admin-bootstrap-table-i18n` с текстом подтверждения, подключение `admin-bootstrap-table.js` через Vite; подтверждение — `adminUiDialog` (fallback `window.confirm` в `admin-bootstrap-table.js`), результат — `adminNotify` + перезагрузка при успехе.
 - Сайдбар: `partials/sidebar` — сворачиваемая группа **Settings** (Redirects, Main menu, Users) с иконкой шестерёнки.
 - Демо: `admin/dashboard`, `charts`, `tables`, `forms`, `blank`, варианты layout (`layout-static.blade.php`, `layout-sidenav-light.blade.php` и контроллеры в `Layout/`), демо ошибок в `admin/errors/`.
@@ -366,7 +377,9 @@ tests/
 
 Сервер разработки: `host: 0.0.0.0`, порт `5173`, HMR `localhost`, `watch.usePolling: true` (удобно для Docker/Sail).
 
-**Важно для inline-скриптов в `@push('scripts')`:** Vite-бандлы подключаются как `type="module"` (defer), поэтому `window.jQuery` и другие глобалы из Vite-бандлов **недоступны** в момент выполнения обычных inline-скриптов. Паттерн для inline-JS: plain JavaScript + `document.addEventListener('DOMContentLoaded', ...)` + `fetch` вместо `$.ajax`. CDN-библиотеки (SortableJS, Bootstrap CDN) загружаются синхронно и доступны немедленно.
+**Важно для inline-скриптов в `@push('scripts')`:** Vite-бандлы подключаются как `type="module"` (defer), поэтому `window.jQuery`, `window.bootstrap` и другие глобалы из Vite-бандлов **недоступны** в момент выполнения обычных inline-скриптов. Правильный паттерн: lazy-инициализация (создавать объект на первом вызове пользователем, когда модуль уже загружен), или `document.addEventListener('DOMContentLoaded', ...)` (DOMContentLoaded ждёт выполнения module-скриптов). CDN-библиотеки (SortableJS, Jodit) загружаются как синхронные `<script>` теги и доступны немедленно для следующих inline-скриптов.
+
+**Jodit Editor:** подключается через CDN (`https://cdn.jsdelivr.net/npm/jodit@4.12.2/es5/jodit.min.js`) в `@push('scripts')` на страницах, где нужен редактор (`static-pages/create`, `static-pages/edit`, `category-tree/create`, `category-tree/edit`). Инициализация — прямым вызовом `Jodit.make('#id', config)` (скрипт уже в конце body, DOM готов). Конфигурация: `language: 'ru'`, `height: 400`, `enableDragAndDropFileToEditor: true`, `uploader: { insertImageAsBase64URI: true }`. Partial `admin/partials/jodit-cdn.blade.php` — вспомогательный; использует `@push('head')` для CSS и `@push('scripts')` для JS.
 
 ---
 
@@ -419,4 +432,5 @@ tests/
 - **2026-04-26 (актуализация):** модуль **Settings** (Main menu, 301 Redirects, Users/Administrators), глобальный middleware редиректов, `ConfigurationModuleSeeder`, тесты перечислены в §9; уточнены сайдбар, `admin-ui-flash`, `adminBootstrapTableDelete`.
 - **2026-04-28 (актуализация):** admin-маршруты вынесены из `web.php` в `routes/admin-web.php` (HTML) и `routes/admin-api.php` (AJAX/JSON); оба зарегистрированы в `RouteServiceProvider` под `web`-middleware. Обновлены §3, §4.1, §4.3.
 - **2026-04-29 (актуализация — KISS рефакторинг):** создан `AbstractTreeService<TModel>` — базовый класс для всех Tree-сервисов (`CategoryTreeService`, `MainMenuItemService`); создан `BootstrapTableHelper` с `parsePaginationParams()` и `stringCastType()` — используется всеми `*ListingService`; бизнес-логика `createItem()` и `buildParentOptionsHtml()` перенесены из контроллера в `MainMenuItemService`. Обновлены §3, §6.4, §7.3, §7.4, §7.5, §9.
+- **2026-05-02 (актуализация — Jodit + page-based CRUD):** `category_trees` получила поле `content` (longtext, nullable). `CategoryTreeService` дополнен `createItem()` и `buildParentOptionsHtml()`  (аналог `MainMenuItemService`). Оба метода `buildParentOptionsHtml` в обоих сервисах получили параметр `int $selectedId = 0` для предвыбора родителя. `CategoryTree` и `MainMenu` переведены с модальных окон на отдельные страницы `create` / `edit` (роуты `/create`, `/{id}/edit`); кнопки «Edit» в `tree-node` partials стали ссылками. `update()` в обоих контроллерах — только `RedirectResponse`. Jodit Editor (CDN `@4.12.2/es5`) подключён в `static-pages/create`, `static-pages/edit`, `category-tree/create`, `category-tree/edit`. Обновлены §1, §4.3, §6.3, §6.4, §7.3, §8.3, §8.4.
 - При существенных изменениях маршрутов, моделей или стека имеет смысл обновить этот файл и раздел «Связанная документация».

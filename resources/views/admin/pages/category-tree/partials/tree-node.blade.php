@@ -12,9 +12,9 @@
                 @endif
             </span>
             <span class="ct-node-actions">
-                <button type="button" class="btn btn-sm btn-outline-primary ct-btn-edit" data-ct-node-id="{{ $item->id }}" title="{{ __('Edit') }}">
+                <a href="{{ route('admin.category-tree.edit', $item) }}" class="btn btn-sm btn-outline-primary" title="{{ __('Edit') }}">
                     <i class="fas fa-edit"></i>
-                </button>
+                </a>
                 <button type="button" class="btn btn-sm btn-outline-danger ct-btn-delete" title="{{ __('Delete') }}"
                     onclick="adminBootstrapTableDelete(@js(route('admin.category-tree.destroy', $item)))">
                     <i class="fas fa-trash"></i>

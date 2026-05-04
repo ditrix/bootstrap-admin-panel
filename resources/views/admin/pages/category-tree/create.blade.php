@@ -1,50 +1,38 @@
 @extends('admin.layouts.sb-admin')
 
-@section('title', __('Create static page'))
+@section('title', __('Add category'))
 
 @section('content')
     <div class="container-fluid px-4">
-        <h1 class="mt-4">{{ __('Create static page') }}</h1>
+        <h1 class="mt-4">{{ __('Add category') }}</h1>
         <ol class="breadcrumb mb-4">
             <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-            <li class="breadcrumb-item"><a href="{{ route('admin.static-pages.index') }}">{{ __('Static pages') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ route('admin.category-tree.index') }}">{{ __('Category Tree') }}</a></li>
             <li class="breadcrumb-item active">{{ __('Create') }}</li>
         </ol>
         <div class="card mb-4">
             <div class="card-body">
-                <form method="post" action="{{ route('admin.static-pages.store') }}">
+                <form method="post" action="{{ route('admin.category-tree.store') }}">
                     @csrf
                     <div class="mb-3">
                         <label class="form-label" for="parent_id">{{ __('Parent') }}</label>
                         <select class="form-select @error('parent_id') is-invalid @enderror" id="parent_id" name="parent_id">
-                            <option value="0" @selected((int) old('parent_id', 0) === 0)>{{ __('Root') }}</option>
-                            @foreach ($parents as $parent)
-                                <option value="{{ $parent->id }}" @selected((int) old('parent_id') === $parent->id)>
-                                    {{ $parent->title }} ({{ $parent->code }})
-                                </option>
-                            @endforeach
+                            {!! $parentOptionsHtml !!}
                         </select>
                         @error('parent_id')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="mb-3">
-                        <label class="form-label" for="code">{{ __('Code') }}</label>
-                        <input type="text" class="form-control @error('code') is-invalid @enderror" id="code" name="code" value="{{ old('code') }}" required>
-                        @error('code')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-                    <div class="mb-3">
                         <label class="form-label" for="title">{{ __('Title') }}</label>
-                        <input type="text" class="form-control @error('title') is-invalid @enderror" id="title" name="title" value="{{ old('title') }}" required>
+                        <input type="text" class="form-control @error('title') is-invalid @enderror" id="title" name="title" value="{{ old('title') }}" required maxlength="255">
                         @error('title')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="mb-3">
                         <label class="form-label" for="slug">{{ __('Slug') }}</label>
-                        <input type="text" class="form-control @error('slug') is-invalid @enderror" id="slug" name="slug" value="{{ old('slug') }}" required>
+                        <input type="text" class="form-control @error('slug') is-invalid @enderror" id="slug" name="slug" value="{{ old('slug') }}" maxlength="255">
                         @error('slug')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -57,16 +45,9 @@
                         @enderror
                     </div>
                     <div class="mb-3">
-                        <label class="form-label" for="content">{{ __('Content') }}</label>
-                        <textarea class="form-control @error('content') is-invalid @enderror" id="sp-content" name="content" rows="8">{{ old('content') }}</textarea>
+                        <label class="form-label" for="ct-content">{{ __('Content') }}</label>
+                        <textarea class="form-control @error('content') is-invalid @enderror" id="ct-content" name="content" rows="8">{{ old('content') }}</textarea>
                         @error('content')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label" for="sort_no">{{ __('Sort no.') }}</label>
-                        <input type="number" class="form-control @error('sort_no') is-invalid @enderror" id="sort_no" name="sort_no" value="{{ old('sort_no', 0) }}" min="0" required>
-                        @error('sort_no')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
@@ -79,7 +60,7 @@
                         @enderror
                     </div>
                     <button type="submit" class="btn btn-primary">{{ __('Save') }}</button>
-                    <a class="btn btn-outline-secondary" href="{{ route('admin.static-pages.index') }}">{{ __('Cancel') }}</a>
+                    <a class="btn btn-outline-secondary" href="{{ route('admin.category-tree.index') }}">{{ __('Cancel') }}</a>
                 </form>
             </div>
         </div>
@@ -91,7 +72,7 @@
     <script src="https://cdn.jsdelivr.net/npm/jodit@4.12.2/es5/jodit.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
         if (typeof Jodit !== 'undefined') {
-            Jodit.make('#sp-content', {
+            Jodit.make('#ct-content', {
                 language: 'ru',
                 height: 400,
                 enableDragAndDropFileToEditor: true,
