@@ -20,22 +20,22 @@ class AdminDashboardService
             [
                 'label' => 'Primary Card',
                 'variant' => 'primary',
-                'href' => route('admin.tables'),
+                'href' => route('admin.tables.index'),
             ],
             [
                 'label' => 'Warning Card',
                 'variant' => 'warning',
-                'href' => route('admin.forms'),
+                'href' => route('admin.dashboard'),
             ],
             [
                 'label' => 'Employees',
                 'variant' => 'success',
-                'href' => route('admin.tables'),
+                'href' => route('admin.tables.index'),
             ],
             [
                 'label' => $count.' records',
                 'variant' => 'danger',
-                'href' => route('admin.tables'),
+                'href' => route('admin.tables.index'),
             ],
         ];
     }

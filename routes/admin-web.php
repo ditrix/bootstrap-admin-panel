@@ -1,18 +1,13 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminEntryController;
-use App\Http\Controllers\Admin\AdminErrorDemoController;
 use App\Http\Controllers\Admin\AdministratorController;
 use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\Admin\Auth\NewPasswordController;
 use App\Http\Controllers\Admin\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Admin\Auth\RegisterController;
-use App\Http\Controllers\Admin\BlankPageController;
 use App\Http\Controllers\Admin\CategoryTreeController;
 use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\FormsController;
-use App\Http\Controllers\Admin\Layout\LightSidenavController;
-use App\Http\Controllers\Admin\Layout\StaticNavigationController;
 use App\Http\Controllers\Admin\MainMenuItemController;
 use App\Http\Controllers\Admin\SeoRedirectController;
 use App\Http\Controllers\Admin\StaticPageController;
@@ -48,32 +43,7 @@ Route::prefix('admin')
 
             Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-            Route::controller(StaticNavigationController::class)->group(function (): void {
-                Route::get('/layouts/static', '__invoke')->name('layouts.static');
-            });
-
-            Route::controller(LightSidenavController::class)->group(function (): void {
-                Route::get('/layouts/sidenav-light', '__invoke')->name('layouts.sidenav-light');
-            });
-
-            Route::controller(TablesController::class)->group(function (): void {
-                Route::get('/tables', 'index')->name('tables');
-            });
-
-            Route::controller(FormsController::class)->group(function (): void {
-                Route::get('/forms', 'index')->name('forms');
-            });
-
-            Route::get('/blank', BlankPageController::class)->name('blank');
-
-            Route::controller(AdminErrorDemoController::class)
-                ->prefix('errors')
-                ->name('errors.')
-                ->group(function (): void {
-                    Route::get('/401', 'show401')->name('401');
-                    Route::get('/404', 'show404')->name('404-demo');
-                    Route::get('/500', 'show500')->name('500-demo');
-                });
+            Route::resource('tables', TablesController::class)->only(['index']);
 
             Route::resource('static-pages', StaticPageController::class);
 

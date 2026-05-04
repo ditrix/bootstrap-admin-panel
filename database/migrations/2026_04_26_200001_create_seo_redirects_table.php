@@ -14,7 +14,7 @@ return new class extends Migration
 
         Schema::create('seo_redirects', function (Blueprint $table) {
             $table->id();
-            $table->string('slug_from', 1000);
+            $table->string('slug_from', 768);
             $table->string('slug_to', 2000);
             $table->boolean('is_active')->default(true);
             $table->timestamps();

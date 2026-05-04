@@ -26,16 +26,7 @@ class AdminLayoutComposer
     {
         return match (true) {
             request()->routeIs('admin.dashboard') => 'dashboard',
-            request()->routeIs('admin.layouts.static') => 'layout-static',
-            request()->routeIs('admin.layouts.sidenav-light') => 'layout-sidenav-light',
-            request()->routeIs('admin.tables') => 'tables',
-            request()->routeIs('admin.forms') => 'forms',
-            request()->routeIs('admin.blank') => 'blank',
-            request()->routeIs('admin.register') => 'register',
-            request()->routeIs('admin.password.request') => 'password',
-            request()->routeIs('admin.errors.401') => 'error-401',
-            request()->routeIs('admin.errors.404-demo') => 'error-404',
-            request()->routeIs('admin.errors.500-demo') => 'error-500',
+            request()->routeIs('admin.tables.*') => 'tables',
             request()->routeIs('admin.static-pages.*') => 'static-pages',
             request()->routeIs('admin.category-tree.*') => 'category-tree',
             request()->routeIs('admin.seo-redirects.*') => 'settings-redirects',

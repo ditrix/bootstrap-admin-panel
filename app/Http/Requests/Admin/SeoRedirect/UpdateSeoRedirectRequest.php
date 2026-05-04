@@ -37,7 +37,7 @@ class UpdateSeoRedirectRequest extends FormRequest
             'slug_from' => [
                 'required',
                 'string',
-                'max:1000',
+                'max:768',
                 'regex:/^[a-zA-Z0-9_\/\-]+$/',
                 Rule::unique('seo_redirects', 'slug_from')->ignore($redirect->getKey()),
             ],
