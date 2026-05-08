@@ -19,6 +19,6 @@ yarn-error.log
 /.vscode
 wrk.txt
 *.sql
-/.cursor
-/.cursorignore
+.cursor/
+.cursorignore
 /.cursor.exclude
