@@ -71,6 +71,13 @@ DB_PASSWORD=password
 
 ### 7. Import Database
 
+#### 7.1 Run Migrations with test dats
+
+```bash
+./vendor/bin/sail artisan migrate --seed
+```
+
+
 #### 7.2 Run Migrations
 
 If you need to run additional migrations:
@@ -112,4 +119,10 @@ If `vite build` fails with `Cannot find module '@rollup/rollup-linux-...'`, pull
 ./vendor/bin/sail artisan config:clear
 ./vendor/bin/sail artisan route:clear
 ```
+
+##### Access to admin dashboard #####
+
+log: admin@mail.com
+
+pass: password
 
