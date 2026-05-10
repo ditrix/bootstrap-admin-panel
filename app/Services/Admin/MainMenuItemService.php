@@ -16,9 +16,19 @@ use Illuminate\Database\Eloquent\Collection as EloquentCollection;
  */
 class MainMenuItemService extends AbstractTreeService
 {
+    protected function treeStructureLogLabel(): string
+    {
+        return 'Menu';
+    }
+
     protected function modelClass(): string
     {
         return MainMenuItem::class;
+    }
+
+    protected function maxRecommendedTreeDepth(): int
+    {
+        return 3;
     }
 
     /**

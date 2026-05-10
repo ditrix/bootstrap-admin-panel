@@ -12,7 +12,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-
+use Illuminate\Support\Facades\Log;
 /**
  * Tree CRUD for categories (drag-and-drop order, page-based create/edit/update/destroy).
  */
@@ -42,14 +42,20 @@ class CategoryTreeController extends Controller
         ]);
     }
 
-    public function create(): View
+    public function create(): View|RedirectResponse
     {
-        $nodesMeta = $this->service->allNodesOrderedForMeta();
-        $selectedParentId = (int) (request()->old('parent_id') ?? 0);
+        try {
+            $nodesMeta = $this->service->allNodesOrderedForMeta();
+            $selectedParentId = (int) (request()->old('parent_id') ?? 0);
 
-        return view('admin.pages.category-tree.create', [
-            'parentOptionsHtml' => $this->service->buildParentOptionsHtml($nodesMeta, $selectedParentId),
-        ]);
+            return view('admin.pages.category-tree.create', [
+                'parentOptionsHtml' => $this->service->buildParentOptionsHtml($nodesMeta, $selectedParentId),
+            ]);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+        }
+
+        return redirect()->back()->with('error', __('Failed to create category tree node.'));
     }
 
     public function edit(CategoryTree $categoryTree): View

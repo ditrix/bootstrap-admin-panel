@@ -16,9 +16,19 @@ use Illuminate\Database\Eloquent\Collection as EloquentCollection;
  */
 class CategoryTreeService extends AbstractTreeService
 {
+    protected function treeStructureLogLabel(): string
+    {
+        return 'Category tree';
+    }
+
     protected function modelClass(): string
     {
         return CategoryTree::class;
+    }
+
+    protected function maxRecommendedTreeDepth(): int
+    {
+        return 5;
     }
 
     /**
