@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\Api\AdministratorTableDataController;
+use App\Http\Controllers\Admin\Api\BannerTableDataController;
 use App\Http\Controllers\Admin\Api\EmployeeTableDataController;
 use App\Http\Controllers\Admin\Api\SeoRedirectTableDataController;
 use App\Http\Controllers\Admin\Api\StaticPageTableDataController;
@@ -15,6 +16,7 @@ Route::prefix('admin')
             ->group(function (): void {
                 Route::get('/employees', EmployeeTableDataController::class)->name('employees');
                 Route::get('/static-pages/table', StaticPageTableDataController::class)->name('static-pages.table');
+                Route::get('/banners/table', BannerTableDataController::class)->name('banners.table');
                 Route::get('/administrators/table', AdministratorTableDataController::class)->name('administrators.table');
                 Route::get('/seo-redirects/table', SeoRedirectTableDataController::class)->name('seo-redirects.table');
             });

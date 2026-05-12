@@ -31,3 +31,6 @@
 - 2026-05-02 — CategoryTree/MainMenu: страницы create/edit вместо модалок; кнопки edit → ссылки в tree-node partials; index-страницы — только DnD → [../../diary/2026/05/2026-05-02-jodit-category-tree.md#01JCAT20260502PAGES]
 - 2026-05-04 — Sidebar без Layouts/Pages/Blank; удалены blade-демо static layout, light sidenav, blank, error layout и страницы 401/404/500 → [../../diary/2026/05/2026-05-04-development.md#01JRMVSBDEMO20260504]
 - 2026-05-04 — Tables: `pages/tables/index.blade.php`, сайдбар без Forms → [../../diary/2026/05/2026-05-04-development.md#01JTBLFORMS20260504]
+- 2026-05-12 — Баннеры: `pages/banners/view|create|edit`, пункт сайдбара, preview в bootstrap-table; FilePond CDN → [../../diary/2026/05/2026-05-12-banners-crud.md#01JBANNERCRUD20260512]
+- 2026-05-12 — Баннеры create/edit: блок «Image preview» + синхронизация с событиями FilePond (object URL/revoke) → [../../diary/2026/05/2026-05-12-banners-crud.md#01JBANPREVIEW20260512]
+- 2026-05-12 — FilePond баннеров: `storeAsFile` + `instantUpload: false` для multipart и сохранения `image_path` → [../../diary/2026/05/2026-05-12-banners-crud.md#01JBANSTOREFILE20260512]

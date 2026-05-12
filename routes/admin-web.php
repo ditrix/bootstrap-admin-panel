@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\Admin\Auth\NewPasswordController;
 use App\Http\Controllers\Admin\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Admin\Auth\RegisterController;
+use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\CategoryTreeController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\MainMenuItemController;
@@ -46,6 +47,9 @@ Route::prefix('admin')
             Route::resource('tables', TablesController::class)->only(['index']);
 
             Route::resource('static-pages', StaticPageController::class);
+
+            Route::delete('/banners/{banner}/image', [BannerController::class, 'destroyImage'])->name('banners.image.destroy');
+            Route::resource('banners', BannerController::class)->except(['show']);
 
             Route::controller(CategoryTreeController::class)
                 ->prefix('category-tree')
