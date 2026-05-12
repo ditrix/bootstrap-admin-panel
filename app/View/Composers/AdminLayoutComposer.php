@@ -28,6 +28,7 @@ class AdminLayoutComposer
             request()->routeIs('admin.dashboard') => 'dashboard',
             request()->routeIs('admin.tables.*') => 'tables',
             request()->routeIs('admin.static-pages.*') => 'static-pages',
+            request()->routeIs('admin.banners.*') => 'banners',
             request()->routeIs('admin.category-tree.*') => 'category-tree',
             request()->routeIs('admin.seo-redirects.*') => 'settings-redirects',
             request()->routeIs('admin.main-menu.*') => 'settings-main-menu',

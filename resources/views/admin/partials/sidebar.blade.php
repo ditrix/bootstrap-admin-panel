@@ -15,6 +15,10 @@
                 <div class="sb-nav-link-icon"><i class="fas fa-file-alt"></i></div>
                 {{ __('Static pages') }}
             </a>
+            <a class="nav-link {{ $activeSidebar === 'banners' ? 'active' : '' }}" href="{{ route('admin.banners.index') }}">
+                <div class="sb-nav-link-icon"><i class="fas fa-image"></i></div>
+                {{ __('Banners') }}
+            </a>
             <a class="nav-link {{ $activeSidebar === 'tables' ? 'active' : '' }}" href="{{ route('admin.tables.index') }}">
                 <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
                 {{ __('Tables') }}

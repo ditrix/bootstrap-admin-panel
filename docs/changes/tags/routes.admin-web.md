@@ -5,3 +5,4 @@
 - 2026-05-02 — Добавлены `GET /admin/category-tree/create`, `GET /admin/category-tree/{id}/edit`, `GET /admin/main-menu/create`, `GET /admin/main-menu/{id}/edit` → [../../diary/2026/05/2026-05-02-jodit-category-tree.md#01JCAT20260502PAGES]
 - 2026-05-04 — Удалены `GET` layouts/static, layouts/sidenav-light, blank, errors/401|404|500 (демо) → [../../diary/2026/05/2026-05-04-development.md#01JRMVSBDEMO20260504]
 - 2026-05-04 — Tables: `Route::resource(...)->only(['index'])` (`admin.tables.index`), удалён `/forms` → [../../diary/2026/05/2026-05-04-development.md#01JTBLFORMS20260504]
+- 2026-05-12 — Баннеры: `DELETE admin/banners/{banner}/image`, resource `banners` без `show` → [../../diary/2026/05/2026-05-12-banners-crud.md#01JBANNERCRUD20260512]
