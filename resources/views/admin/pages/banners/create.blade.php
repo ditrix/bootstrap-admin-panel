@@ -53,14 +53,14 @@
                         <div class="form-label mb-1">{{ __('Image preview') }}</div>
                         <img
                             id="banner-form-image-preview"
-                            src="{{ asset('admin/images/no-image.jpg') }}"
+                            src="{{ \App\Models\Banner::attachmentPlaceholderPublicUrl() }}"
                             alt=""
                             width="192"
                             height="128"
                             loading="lazy"
                             class="border rounded d-block"
                             style="max-height: 8rem; width: auto; object-fit: contain;"
-                            data-revert-src="{{ asset('admin/images/no-image.jpg') }}"
+                            data-revert-src="{{ \App\Models\Banner::attachmentPlaceholderPublicUrl() }}"
                         >
                     </div>
                     <div class="mb-3">

@@ -74,6 +74,35 @@
 ### Follow-up
 - [ ] N/A
 
+## 09:45 (Europe/Kyiv) fix[trait.attachable,views.admin] — плейсхолдер не в public/admin (конфликт с URL /admin)
+
+**Entry ID:** 01JBANNOPUBLICADMIN20260514  
+**Agent:** Composer  
+**Дата:** 2026-05-14  
+**Ветка:** banner_upload_pic  
+
+### Файлы
+- `public/static/banners/no-image.jpg` (перенос с `public/admin/images/`)
+- `public/admin/` (удалён)
+- `app/Models/Concerns/Attachable.php`
+- `resources/views/admin/pages/banners/create.blade.php`, `edit.blade.php`
+
+### Что сделано
+Каталог **`public/admin/`** перехватывал запрос **`GET /admin`**: nginx считал `/admin` статикой (существующая директория) и не отдавал Laravel. Плейсхолдер перенесён в **`public/static/banners/no-image.jpg`**, все `asset()` переключены на `static/banners/no-image.jpg`.
+
+### Почему
+На ветке с баннерами появился 404 только для `/admin`; на `development` папки `public/admin` не было.
+
+### Влияние
+- **БД/API:** N/A  
+- **URL:** `/admin` снова обрабатывает приложение.
+
+### Проверено
+- Pint.
+
+### Follow-up
+- [ ] N/A
+
 ## 21:05 (Europe/Kyiv) fix[views.admin] — FilePond: файл в multipart-форме (save баннер + превью)
 
 **Entry ID:** 01JBANSTOREFILE20260512  
@@ -126,3 +155,57 @@
 
 ### Follow-up
 - [ ] При установке приложения в подкаталог (не корень домена) может понадобиться префикс URL из конфига отдельно.
+
+## 09:45 (Europe/Kyiv) fix[trait.attachable,views.admin] — нет `public/admin` (конфликт с маршрутом `/admin`)
+
+**Entry ID:** 01JBANNOPUBLICADMIN20260514  
+**Agent:** Composer  
+**Дата:** 2026-05-14  
+**Ветка:** banner_upload_pic  
+
+### Файлы
+- `public/static/banners/no-image.jpg` (перенос)
+- `public/admin/` (удалён)
+- `app/Models/Concerns/Attachable.php`
+- `resources/views/admin/pages/banners/create.blade.php`, `edit.blade.php`
+
+### Что сделано
+Каталог **`public/admin/`** давал nginx существующий путь **`/admin`** раньше Laravel (статика), из‑за этого на ветке с баннерами был **404 на `/admin`**, а на `development` — нет. Плейсхолдер перенесён в **`public/static/banners/no-image.jpg`**, обновлены `asset()`.
+
+### Почему
+Совпадение URL префикса админки с физической папкой под `public`.
+
+### Проверено
+- Pint.
+
+### Follow-up
+- [ ] N/A
+
+## 11:05 (Europe/Kyiv) feat[trait.attachable,views.admin,frontend.vite] — плейсхолдер баннера в теме админки + Vite
+
+**Entry ID:** 01JBANIMGVITE20260514  
+**Agent:** Composer  
+**Дата:** 2026-05-14  
+**Ветка:** banner_upload_pic  
+
+### Файлы
+- `resources/themes/admin/assets/img/no-image.jpg` (+перенос)
+- `vite.config.js` (+entry для изображения)
+- `app/Models/Concerns/Attachable.php`
+- `resources/views/admin/pages/banners/create.blade.php`, `edit.blade.php`
+- `public/static/` — удалено
+
+### Что сделано
+Изображение-запасник в **`resources/themes/admin/assets/img/no-image.jpg`**, добавлено в **`laravel-vite-plugin` `input`**. URL через **`Vite::asset()`** — в трейте `Attachable` методы `attachmentPlaceholderSourcePath()` и `attachmentPlaceholderPublicUrl()`, в Blade — `\App\Models\Banner::attachmentPlaceholderPublicUrl()`. Каталог `public/static/` убран.
+
+### Почему
+Размещение плейсхолдера в дереве темы админки и отдача через Vite без ручных файлов в `public/` (кроме `build/`).
+
+### Влияние
+- Требуются **`npm run build`** или **`sail npm run dev`**, чтобы в manifest попал `no-image.jpg`.
+
+### Проверено
+- Pint.
+
+### Follow-up
+- [ ] Сборка `/ dev Vite после pull.

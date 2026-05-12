@@ -16,7 +16,7 @@
                     $bannerPreviewSrc =
                         $banner->image_path && $banner->attachmentPublicUrl()
                             ? $banner->attachmentPublicUrl()
-                            : asset('admin/images/no-image.jpg');
+                            : \App\Models\Banner::attachmentPlaceholderPublicUrl();
                 @endphp
                 <div class="mb-3">
                     <div class="form-label mb-1">{{ __('Image preview') }}</div>

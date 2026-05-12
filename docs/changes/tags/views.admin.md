@@ -34,3 +34,5 @@
 - 2026-05-12 — Баннеры: `pages/banners/view|create|edit`, пункт сайдбара, preview в bootstrap-table; FilePond CDN → [../../diary/2026/05/2026-05-12-banners-crud.md#01JBANNERCRUD20260512]
 - 2026-05-12 — Баннеры create/edit: блок «Image preview» + синхронизация с событиями FilePond (object URL/revoke) → [../../diary/2026/05/2026-05-12-banners-crud.md#01JBANPREVIEW20260512]
 - 2026-05-12 — FilePond баннеров: `storeAsFile` + `instantUpload: false` для multipart и сохранения `image_path` → [../../diary/2026/05/2026-05-12-banners-crud.md#01JBANSTOREFILE20260512]
+- 2026-05-14 — Баннеры: плейсхолдер `asset('static/banners/no-image.jpg')` (не `public/admin/…`) → [../../diary/2026/05/2026-05-12-banners-crud.md#01JBANNOPUBLICADMIN20260514]
+- 2026-05-14 — Баннеры: превью без картинки — URL из темы через Vite → [../../diary/2026/05/2026-05-12-banners-crud.md#01JBANIMGVITE20260514]

@@ -9,6 +9,7 @@ export default defineConfig({
                 'resources/themes/admin/assets/js/app.js',
                 'resources/themes/admin/assets/js/admin-bootstrap-table.js',
                 'resources/themes/admin/assets/js/sb-admin-scripts.js',
+                'resources/themes/admin/assets/img/no-image.jpg',
             ],
             refresh: true,
         }),

@@ -13,3 +13,4 @@
 - 2026-04-01 — Добавлены JS entrypoints админки из `resources/views/admin/assets/js/*` и Blade подключен на `@vite` → [../../diary/2026/04/2026-04-01-architecture_js_scripts.md#20260401T165100RIGA]
 - 2026-04-01 — Установлен `jquery` через Sail и подключен в Vite admin entrypoint → [../../diary/2026/04/2026-04-01-architecture_js_scripts.md#20260401T171900RIGA]
 - 2026-04-29 — Vite input `resources/themes/admin/assets/js/app.js` (Bootstrap npm, `window.bootstrap`) → [../../diary/2026/04/2026-04-29-bootstrap-local.md#01JBSTRP5VITE20260429]
+- 2026-05-14 — Entry `resources/themes/admin/assets/img/no-image.jpg` (плейсхолдер баннеров) → [../../diary/2026/05/2026-05-12-banners-crud.md#01JBANIMGVITE20260514]

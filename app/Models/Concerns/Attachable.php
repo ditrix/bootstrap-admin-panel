@@ -3,6 +3,7 @@
 namespace App\Models\Concerns;
 
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Vite;
 
 /**
  * Stored file path on a configurable public disk (single column per model).
@@ -41,14 +42,26 @@ trait Attachable
             return null;
         }
 
-        /** @var non-falsy-string $normalized */
         $normalized = str_replace('\\', '/', $path);
 
         return '/storage/'.$normalized;
     }
 
+    public static function attachmentPlaceholderSourcePath(): string
+    {
+        return 'resources/themes/admin/assets/img/no-image.jpg';
+    }
+
+    /**
+     * Resolves placeholder image URL via the Vite manifest (requires build or dev server).
+     */
+    public static function attachmentPlaceholderPublicUrl(): string
+    {
+        return Vite::asset(static::attachmentPlaceholderSourcePath());
+    }
+
     public function thumbPublicUrl(): string
     {
-        return $this->attachmentPublicUrl() ?? asset('admin/images/no-image.jpg');
+        return $this->attachmentPublicUrl() ?? static::attachmentPlaceholderPublicUrl();
     }
 }
