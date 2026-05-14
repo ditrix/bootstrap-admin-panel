@@ -21,7 +21,6 @@ class StaticPageFactory extends Factory
         $title = fake()->sentence(3);
 
         return [
-            'parent_id' => 0,
             'code' => strtoupper(Str::random(8)),
             'title' => $title,
             'description' => fake()->optional()->paragraph(),
@@ -36,13 +35,6 @@ class StaticPageFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'is_active' => false,
-        ]);
-    }
-
-    public function childOf(StaticPage $parent): self
-    {
-        return $this->state(fn (array $attributes) => [
-            'parent_id' => $parent->getKey(),
         ]);
     }
 }

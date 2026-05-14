@@ -22,8 +22,6 @@
                 <dl class="row mb-0">
                     <dt class="col-sm-3">ID</dt>
                     <dd class="col-sm-9">{{ $staticPage->id }}</dd>
-                    <dt class="col-sm-3">{{ __('Parent ID') }}</dt>
-                    <dd class="col-sm-9">{{ $staticPage->parent_id }}</dd>
                     <dt class="col-sm-3">{{ __('Code') }}</dt>
                     <dd class="col-sm-9">{{ $staticPage->code }}</dd>
                     <dt class="col-sm-3">{{ __('Slug') }}</dt>

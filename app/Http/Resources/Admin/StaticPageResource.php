@@ -20,7 +20,6 @@ class StaticPageResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'parent_id' => $this->parent_id,
             'code' => $this->code,
             'title' => $this->title,
             'description' => $this->description,

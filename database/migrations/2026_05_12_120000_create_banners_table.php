@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('banners', function (Blueprint $table): void {
             $table->id();
-            $table->unsignedBigInteger('parent_id')->default(0)->index();
             $table->string('code')->nullable()->index();
             $table->string('title');
             $table->integer('sort_no')->default(0)->index();

@@ -18,6 +18,8 @@ class DatabaseSeeder extends Seeder
 
         $this->call(StaticPageSeeder::class);
 
+        $this->call(BannerSeeder::class);
+
         $this->call(CategoryTreeSeeder::class);
 
         $this->call(ConfigurationModuleSeeder::class);

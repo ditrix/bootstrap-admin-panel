@@ -15,20 +15,6 @@
                 <form method="post" action="{{ route('admin.banners.store') }}" enctype="multipart/form-data">
                     @csrf
                     <div class="mb-3">
-                        <label class="form-label" for="parent_id">{{ __('Parent') }}</label>
-                        <select class="form-select @error('parent_id') is-invalid @enderror" id="parent_id" name="parent_id">
-                            <option value="0" @selected((int) old('parent_id', 0) === 0)>{{ __('Root') }}</option>
-                            @foreach ($parents as $parent)
-                                <option value="{{ $parent->id }}" @selected((int) old('parent_id') === $parent->id)>
-                                    {{ $parent->title }} @if ($parent->code) ({{ $parent->code }}) @endif
-                                </option>
-                            @endforeach
-                        </select>
-                        @error('parent_id')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-                    <div class="mb-3">
                         <label class="form-label" for="code">{{ __('Code') }}</label>
                         <input type="text" class="form-control @error('code') is-invalid @enderror" id="code" name="code" value="{{ old('code') }}">
                         @error('code')

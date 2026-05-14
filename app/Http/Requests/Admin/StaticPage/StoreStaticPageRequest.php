@@ -2,8 +2,6 @@
 
 namespace App\Http\Requests\Admin\StaticPage;
 
-use App\Models\StaticPage;
-use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -31,16 +29,6 @@ class StoreStaticPageRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'parent_id' => [
-                'required',
-                'integer',
-                'min:0',
-                function (string $attribute, mixed $value, Closure $fail): void {
-                    if ((int) $value !== 0 && ! StaticPage::query()->whereKey($value)->exists()) {
-                        $fail(__('validation.exists', ['attribute' => $attribute]));
-                    }
-                },
-            ],
             'code' => ['required', 'string', 'max:255', Rule::unique('static_pages', 'code')],
             'title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
