@@ -3,14 +3,12 @@
 namespace App\Http\Requests\Admin\Banner;
 
 use App\Models\Banner;
-use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Validator;
 
 /**
- * Validates update payload for a {@see Banner} excluding invalid parent recursion.
+ * Validates update payload for a {@see Banner}.
  */
 class UpdateBannerRequest extends FormRequest
 {
@@ -39,20 +37,6 @@ class UpdateBannerRequest extends FormRequest
         \assert($banner instanceof Banner);
 
         return [
-            'parent_id' => [
-                'required',
-                'integer',
-                'min:0',
-                function (string $attribute, mixed $value, Closure $fail) use ($banner): void {
-                    $pid = (int) $value;
-                    if ($pid !== 0 && ! Banner::query()->whereKey($pid)->exists()) {
-                        $fail(__('validation.exists', ['attribute' => $attribute]));
-                    }
-                    if ($pid === $banner->getKey()) {
-                        $fail(__('The banner cannot be its own parent.'));
-                    }
-                },
-            ],
             'code' => [
                 'nullable',
                 'string',
@@ -66,37 +50,6 @@ class UpdateBannerRequest extends FormRequest
             'is_active' => ['required', 'boolean'],
             'banner_image' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:5120'],
         ];
-    }
-
-    public function withValidator(Validator $validator): void
-    {
-        $validator->after(function (Validator $validator): void {
-            /** @var Banner $banner */
-            $banner = $this->route('banner');
-            $parentId = (int) $this->input('parent_id');
-            if ($parentId === 0) {
-                return;
-            }
-            if ($this->wouldCreateParentCycle($banner, $parentId)) {
-                $validator->errors()->add('parent_id', __('This parent would create a cycle in the hierarchy.'));
-            }
-        });
-    }
-
-    private function wouldCreateParentCycle(Banner $banner, int $newParentId): bool
-    {
-        $current = Banner::query()->find($newParentId);
-        while ($current !== null) {
-            if ($current->getKey() === $banner->getKey()) {
-                return true;
-            }
-            if ((int) $current->parent_id === 0) {
-                return false;
-            }
-            $current = $current->parent;
-        }
-
-        return false;
     }
 
     /**

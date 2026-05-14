@@ -18,7 +18,6 @@
             'pageSize' => 10,
             'columns' => [
                 ['field' => 'id', 'title' => 'ID', 'sortable' => true],
-                ['field' => 'parent_id', 'title' => 'Parent', 'sortable' => true],
                 ['field' => 'code', 'title' => 'Code', 'sortable' => true],
                 ['field' => 'title', 'title' => 'Title', 'sortable' => true],
                 ['field' => 'slug', 'title' => 'Slug', 'sortable' => true],

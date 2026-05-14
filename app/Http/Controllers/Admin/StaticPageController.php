@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 /**
- * Flat and hierarchical static pages (bootstrap-table index, forms, delete with child guard).
+ * Static pages CRUD (bootstrap-table index, forms).
  */
 class StaticPageController extends Controller
 {
@@ -26,9 +26,7 @@ class StaticPageController extends Controller
 
     public function create(): View
     {
-        return view('admin.pages.static-pages.create', [
-            'parents' => StaticPage::query()->ordered()->get(),
-        ]);
+        return view('admin.pages.static-pages.create');
     }
 
     public function store(StoreStaticPageRequest $request): RedirectResponse
@@ -51,10 +49,6 @@ class StaticPageController extends Controller
     {
         return view('admin.pages.static-pages.edit', [
             'staticPage' => $staticPage,
-            'parents' => StaticPage::query()
-                ->whereKeyNot($staticPage->getKey())
-                ->ordered()
-                ->get(),
         ]);
     }
 
@@ -69,17 +63,6 @@ class StaticPageController extends Controller
 
     public function destroy(Request $request, StaticPage $staticPage): JsonResponse|RedirectResponse
     {
-        if (StaticPage::query()->where('parent_id', $staticPage->getKey())->exists()) {
-            $message = __('Cannot delete a page that has child pages.');
-            if ($request->wantsJson()) {
-                return response()->json(['message' => $message], 422);
-            }
-
-            return redirect()
-                ->route('admin.static-pages.index')
-                ->with('error', $message);
-        }
-
         $staticPage->delete();
         $message = __('Static page deleted.');
         if ($request->wantsJson()) {

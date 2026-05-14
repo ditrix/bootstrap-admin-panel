@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('static_pages', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('parent_id')->default(0)->index();
             $table->string('code');
             $table->string('title');
             $table->text('description')->nullable();

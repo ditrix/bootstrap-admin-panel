@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 /**
- * Banners catalogue (bootstrap-table index, attachment upload/remove, delete with child guard).
+ * Banners catalogue (bootstrap-table index, attachment upload/remove).
  */
 class BannerController extends Controller
 {
@@ -31,9 +31,7 @@ class BannerController extends Controller
 
     public function create(): View
     {
-        return view('admin.pages.banners.create', [
-            'parents' => Banner::query()->ordered()->get(),
-        ]);
+        return view('admin.pages.banners.create');
     }
 
     public function store(StoreBannerRequest $request): RedirectResponse
@@ -52,10 +50,6 @@ class BannerController extends Controller
     {
         return view('admin.pages.banners.edit', [
             'banner' => $banner,
-            'parents' => Banner::query()
-                ->whereKeyNot($banner->getKey())
-                ->ordered()
-                ->get(),
         ]);
     }
 
@@ -73,17 +67,6 @@ class BannerController extends Controller
 
     public function destroy(Request $request, Banner $banner): JsonResponse|RedirectResponse
     {
-        if (Banner::query()->where('parent_id', $banner->getKey())->exists()) {
-            $message = __('Cannot delete a banner that has child banners.');
-            if ($request->wantsJson()) {
-                return response()->json(['message' => $message], 422);
-            }
-
-            return redirect()
-                ->route('admin.banners.index')
-                ->with('error', $message);
-        }
-
         $this->bannerAttachmentService->clearStoredImage($banner);
         $banner->delete();
         $message = __('Banner deleted.');

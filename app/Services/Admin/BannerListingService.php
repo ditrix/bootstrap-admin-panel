@@ -17,7 +17,7 @@ class BannerListingService
     /**
      * @var list<string>
      */
-    private const SORTABLE = ['id', 'parent_id', 'code', 'title', 'sort_no', 'is_active', 'created_at', 'updated_at'];
+    private const SORTABLE = ['id', 'code', 'title', 'sort_no', 'is_active', 'created_at', 'updated_at'];
 
     /**
      * @return array{total: int, rows: Collection<int, Banner>}
@@ -65,7 +65,6 @@ class BannerListingService
             $q->where('title', 'like', $like)
                 ->orWhere('code', 'like', $like)
                 ->orWhereRaw("CAST(id AS {$cast}) LIKE ?", [$like])
-                ->orWhereRaw("CAST(parent_id AS {$cast}) LIKE ?", [$like])
                 ->orWhereRaw("CAST(sort_no AS {$cast}) LIKE ?", [$like])
                 ->orWhereRaw("CAST(is_active AS {$cast}) LIKE ?", [$like])
                 ->orWhereRaw("CAST(created_at AS {$cast}) LIKE ?", [$like])
@@ -74,7 +73,6 @@ class BannerListingService
             if (Str::isAscii($trimmed) && ctype_digit($trimmed)) {
                 $int = (int) $trimmed;
                 $q->orWhere('id', $int)
-                    ->orWhere('parent_id', $int)
                     ->orWhere('sort_no', $int);
             }
         });

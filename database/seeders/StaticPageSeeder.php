@@ -9,15 +9,8 @@ class StaticPageSeeder extends Seeder
 {
     public function run(): void
     {
-        $roots = StaticPage::factory()
-            ->count(12)
+        StaticPage::factory()
+            ->count(22)
             ->create();
-
-        foreach ($roots->random(min(5, $roots->count())) as $parent) {
-            StaticPage::factory()
-                ->count(2)
-                ->childOf($parent)
-                ->create();
-        }
     }
 }

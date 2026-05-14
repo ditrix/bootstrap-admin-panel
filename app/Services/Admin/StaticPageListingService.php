@@ -17,7 +17,7 @@ class StaticPageListingService
     /**
      * @var list<string>
      */
-    private const SORTABLE = ['id', 'parent_id', 'code', 'title', 'sort_no', 'slug', 'is_active', 'created_at', 'updated_at'];
+    private const SORTABLE = ['id', 'code', 'title', 'sort_no', 'slug', 'is_active', 'created_at', 'updated_at'];
 
     /**
      * @return array{total: int, rows: Collection<int, StaticPage>}
@@ -67,7 +67,6 @@ class StaticPageListingService
                 ->orWhere('slug', 'like', $like)
                 ->orWhere('description', 'like', $like)
                 ->orWhereRaw("CAST(id AS {$cast}) LIKE ?", [$like])
-                ->orWhereRaw("CAST(parent_id AS {$cast}) LIKE ?", [$like])
                 ->orWhereRaw("CAST(sort_no AS {$cast}) LIKE ?", [$like])
                 ->orWhereRaw("CAST(is_active AS {$cast}) LIKE ?", [$like])
                 ->orWhereRaw("CAST(created_at AS {$cast}) LIKE ?", [$like])
@@ -76,7 +75,6 @@ class StaticPageListingService
             if (Str::isAscii($trimmed) && ctype_digit($trimmed)) {
                 $int = (int) $trimmed;
                 $q->orWhere('id', $int)
-                    ->orWhere('parent_id', $int)
                     ->orWhere('sort_no', $int);
             }
         });

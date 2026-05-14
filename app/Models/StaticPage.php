@@ -6,11 +6,9 @@ use Database\Factories\StaticPageFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * CMS static page row with optional parent/child hierarchy and slugs.
+ * CMS static page row with slugs and ordering.
  */
 class StaticPage extends Model
 {
@@ -21,7 +19,6 @@ class StaticPage extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'parent_id',
         'code',
         'title',
         'description',
@@ -37,16 +34,6 @@ class StaticPage extends Model
     protected $casts = [
         'is_active' => 'boolean',
     ];
-
-    public function parent(): BelongsTo
-    {
-        return $this->belongsTo(self::class, 'parent_id', 'id');
-    }
-
-    public function children(): HasMany
-    {
-        return $this->hasMany(self::class, 'parent_id', 'id')->orderBy('sort_no');
-    }
 
     /**
      * @param  Builder<StaticPage>  $query

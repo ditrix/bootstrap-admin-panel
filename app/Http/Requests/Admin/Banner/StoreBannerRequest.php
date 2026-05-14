@@ -2,8 +2,6 @@
 
 namespace App\Http\Requests\Admin\Banner;
 
-use App\Models\Banner;
-use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -35,16 +33,6 @@ class StoreBannerRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'parent_id' => [
-                'required',
-                'integer',
-                'min:0',
-                function (string $attribute, mixed $value, Closure $fail): void {
-                    if ((int) $value !== 0 && ! Banner::query()->whereKey((int) $value)->exists()) {
-                        $fail(__('validation.exists', ['attribute' => $attribute]));
-                    }
-                },
-            ],
             'code' => [
                 'nullable',
                 'string',

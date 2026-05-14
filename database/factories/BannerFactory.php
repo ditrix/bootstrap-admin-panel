@@ -18,17 +18,11 @@ class BannerFactory extends Factory
     public function definition(): array
     {
         return [
-            'parent_id' => 0,
             'code' => fake()->unique()->bothify('bnr_???###'),
             'title' => fake()->sentence(3),
             'sort_no' => fake()->numberBetween(0, 100),
             'is_active' => true,
             'image_path' => null,
         ];
-    }
-
-    public function childOf(Banner $parent): self
-    {
-        return $this->state(fn () => ['parent_id' => $parent->getKey()]);
     }
 }
