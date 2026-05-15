@@ -2,21 +2,34 @@
 
 namespace Tests\Feature\Admin;
 
+use App\Authorization\AdminRole;
 use App\Models\Administrator;
+use Database\Seeders\RolesAndPermissionsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 class AdminPagesTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->seed(RolesAndPermissionsSeeder::class);
+    }
+
     private function actingAdmin(): Administrator
     {
+        $role = Role::findByName(AdminRole::ADMIN, 'admin');
+
         return Administrator::query()->create([
             'name' => 'Page Tester',
             'email' => 'pages@example.com',
             'password' => Hash::make('secret'),
+            'is_active' => true,
+            'role_id' => $role->getKey(),
         ]);
     }
 

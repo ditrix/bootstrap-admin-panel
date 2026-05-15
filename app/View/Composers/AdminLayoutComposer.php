@@ -2,6 +2,7 @@
 
 namespace App\View\Composers;
 
+use App\Support\AdminHomeRedirect;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
@@ -16,6 +17,10 @@ class AdminLayoutComposer
     public function compose(View $view): void
     {
         $view->with('adminUser', Auth::guard('admin')->user());
+        $view->with(
+            'adminHomeUrl',
+            Auth::guard('admin')->check() ? AdminHomeRedirect::url() : route('admin.entry')
+        );
         $view->with('activeSidebar', $this->resolveActiveSidebar());
     }
 
@@ -33,6 +38,7 @@ class AdminLayoutComposer
             request()->routeIs('admin.seo-redirects.*') => 'settings-redirects',
             request()->routeIs('admin.main-menu.*') => 'settings-main-menu',
             request()->routeIs('admin.administrators.*') => 'settings-administrators',
+            request()->routeIs('admin.permissions.*') => 'settings-permissions',
             default => '',
         };
     }

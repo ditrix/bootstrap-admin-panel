@@ -4,6 +4,7 @@
     'pageSize' => 10,
     'pagination' => true,
     'search' => true,
+    'serverSidePagination' => true,
     'columns' => [],
     'actionsFormatter' => null,
     'actionsTitle' => __('Actions'),
@@ -23,7 +24,7 @@
     data-toggle="table"
     data-url="{{ $dataUrl }}"
     data-pagination="{{ $pagination ? 'true' : 'false' }}"
-    data-side-pagination="server"
+    data-side-pagination="{{ $serverSidePagination ? 'server' : 'client' }}"
     data-page-size="{{ $pageSize }}"
     data-page-list="[10, 25, 50, 100]"
     data-search="{{ $search ? 'true' : 'false' }}"

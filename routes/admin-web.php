@@ -1,5 +1,6 @@
 <?php
 
+use App\Authorization\AdminPermission;
 use App\Http\Controllers\Admin\AdminEntryController;
 use App\Http\Controllers\Admin\AdministratorController;
 use App\Http\Controllers\Admin\Auth\LoginController;
@@ -10,6 +11,7 @@ use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\CategoryTreeController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\MainMenuItemController;
+use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\SeoRedirectController;
 use App\Http\Controllers\Admin\StaticPageController;
 use App\Http\Controllers\Admin\TablesController;
@@ -39,19 +41,25 @@ Route::prefix('admin')
             });
         });
 
-        Route::middleware('auth:admin')->group(function (): void {
+        Route::middleware(['auth:admin', 'use_admin_guard'])->group(function (): void {
             Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
 
-            Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+            Route::middleware('permission:'.AdminPermission::DASHBOARD_VIEW)
+                ->get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-            Route::resource('tables', TablesController::class)->only(['index']);
+            Route::middleware('permission:'.AdminPermission::EMPLOYEES_MANAGE)
+                ->resource('tables', TablesController::class)->only(['index']);
 
-            Route::resource('static-pages', StaticPageController::class);
+            Route::middleware('permission:'.AdminPermission::STATIC_PAGES_MANAGE)
+                ->resource('static-pages', StaticPageController::class);
 
-            Route::delete('/banners/{banner}/image', [BannerController::class, 'destroyImage'])->name('banners.image.destroy');
-            Route::resource('banners', BannerController::class)->except(['show']);
+            Route::middleware('permission:'.AdminPermission::BANNERS_MANAGE)->group(function (): void {
+                Route::delete('/banners/{banner}/image', [BannerController::class, 'destroyImage'])->name('banners.image.destroy');
+                Route::resource('banners', BannerController::class)->except(['show']);
+            });
 
-            Route::controller(CategoryTreeController::class)
+            Route::middleware('permission:'.AdminPermission::CATEGORY_TREE_MANAGE)
+                ->controller(CategoryTreeController::class)
                 ->prefix('category-tree')
                 ->name('category-tree.')
                 ->group(function (): void {
@@ -64,7 +72,8 @@ Route::prefix('admin')
                     Route::delete('/{category_tree}', 'destroy')->name('destroy');
                 });
 
-            Route::controller(MainMenuItemController::class)
+            Route::middleware('permission:'.AdminPermission::MAIN_MENU_MANAGE)
+                ->controller(MainMenuItemController::class)
                 ->prefix('main-menu')
                 ->name('main-menu.')
                 ->group(function (): void {
@@ -77,8 +86,13 @@ Route::prefix('admin')
                     Route::delete('/{main_menu_item}', 'destroy')->name('destroy');
                 });
 
-            Route::resource('seo-redirects', SeoRedirectController::class)->except(['show']);
+            Route::middleware('permission:'.AdminPermission::SEO_REDIRECTS_MANAGE)
+                ->resource('seo-redirects', SeoRedirectController::class)->except(['show']);
 
-            Route::resource('administrators', AdministratorController::class)->except(['show']);
+            Route::middleware('permission:'.AdminPermission::USERS_MANAGE)
+                ->resource('administrators', AdministratorController::class)->except(['show']);
+
+            Route::middleware('permission:'.AdminPermission::PERMISSIONS_VIEW)
+                ->get('/permissions', [PermissionController::class, 'index'])->name('permissions.index');
         });
     });

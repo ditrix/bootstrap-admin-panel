@@ -28,10 +28,22 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="role_id">{{ __('Role') }}</label>
+                        <select class="form-select @error('role_id') is-invalid @enderror" id="role_id" name="role_id" required>
+                            <option value="" disabled @selected(old('role_id') === null)>{{ __('Select role') }}</option>
+                            @foreach ($roles as $role)
+                                <option value="{{ $role->getKey() }}" @selected((string) old('role_id', '') === (string) $role->getKey())>{{ $role->name }}</option>
+                            @endforeach
+                        </select>
+                        @error('role_id')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
                     @include('admin.partials.admin-password-fields', ['requirePassword' => true])
                     <div class="mb-3 form-check">
                         <input type="hidden" name="is_active" value="0">
-                        <input type="checkbox" class="form-check-input" id="is_active" name="is_active" value="1" @checked(old('is_active', true))>
+                        <input type="checkbox" class="form-check-input" id="is_active" name="is_active" value="1" @checked(old('is_active', false))>
                         <label class="form-check-label" for="is_active">{{ __('Active') }}</label>
                     </div>
                     <button type="submit" class="btn btn-primary">{{ __('Save') }}</button>

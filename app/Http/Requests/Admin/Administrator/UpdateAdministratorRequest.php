@@ -41,6 +41,7 @@ class UpdateAdministratorRequest extends FormRequest
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('administrators', 'email')->ignore($admin->getKey())],
             'password' => ['nullable', 'string', 'confirmed', Password::defaults()],
             'is_active' => ['required', 'boolean'],
+            'role_id' => ['required', 'integer', Rule::exists('roles', 'id')->where('guard_name', 'admin')],
         ];
     }
 }

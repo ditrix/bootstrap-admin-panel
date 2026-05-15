@@ -27,6 +27,7 @@ class AppServiceProvider extends ServiceProvider
         View::composer(
             [
                 'admin.layouts.sb-admin',
+                'admin.pages.*',
             ],
             AdminLayoutComposer::class
         );

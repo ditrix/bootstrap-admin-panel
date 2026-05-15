@@ -2,28 +2,19 @@
 
 namespace Tests\Feature\Admin;
 
+use App\Authorization\AdminRole;
 use App\Models\Administrator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 class AdministratorAdminTest extends TestCase
 {
     use RefreshDatabase;
 
-    private function actingAdmin(): Administrator
-    {
-        return Administrator::query()->create([
-            'name' => 'Manager',
-            'email' => 'manager@example.com',
-            'password' => Hash::make('Password1!'),
-            'is_active' => true,
-        ]);
-    }
-
     public function test_index_shows_bootstrap_table_view(): void
     {
-        $admin = $this->actingAdmin();
+        $admin = $this->adminWithFullAccess(['email' => 'manager@example.com']);
 
         $this->actingAs($admin, 'admin')
             ->get(route('admin.administrators.index'))
@@ -35,8 +26,10 @@ class AdministratorAdminTest extends TestCase
 
     public function test_administrators_table_api_returns_bootstrap_table_payload(): void
     {
-        $admin = $this->actingAdmin();
-        Administrator::factory()->count(2)->create();
+        $admin = $this->adminWithFullAccess(['email' => 'table-api@example.com']);
+
+        $role = Role::findByName(AdminRole::ADMIN, 'admin');
+        Administrator::factory()->count(2)->create(['role_id' => $role->getKey()]);
 
         $response = $this->actingAs($admin, 'admin')->getJson(route('admin.api.administrators.table'));
 
@@ -53,7 +46,8 @@ class AdministratorAdminTest extends TestCase
 
     public function test_store_and_edit_update_delete(): void
     {
-        $admin = $this->actingAdmin();
+        $admin = $this->adminWithFullAccess(['email' => 'crud@example.com']);
+        $role = Role::findByName(AdminRole::ADMIN, 'admin');
 
         $this->actingAs($admin, 'admin')
             ->post(route('admin.administrators.store'), [
@@ -62,6 +56,7 @@ class AdministratorAdminTest extends TestCase
                 'password' => 'Password1!',
                 'password_confirmation' => 'Password1!',
                 'is_active' => true,
+                'role_id' => $role->getKey(),
             ])
             ->assertRedirect(route('admin.administrators.index'));
 
@@ -73,6 +68,7 @@ class AdministratorAdminTest extends TestCase
                 'name' => 'Renamed',
                 'email' => 'newadmin@example.com',
                 'is_active' => true,
+                'role_id' => $role->getKey(),
             ])
             ->assertRedirect(route('admin.administrators.index'));
 
@@ -88,7 +84,7 @@ class AdministratorAdminTest extends TestCase
 
     public function test_cannot_delete_self(): void
     {
-        $admin = $this->actingAdmin();
+        $admin = $this->adminWithFullAccess(['email' => 'self@example.com']);
 
         $this->actingAs($admin, 'admin')
             ->delete(route('admin.administrators.destroy', $admin))

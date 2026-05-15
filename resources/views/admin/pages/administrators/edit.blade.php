@@ -30,6 +30,17 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="role_id">{{ __('Role') }}</label>
+                        <select class="form-select @error('role_id') is-invalid @enderror" id="role_id" name="role_id" required>
+                            @foreach ($roles as $role)
+                                <option value="{{ $role->getKey() }}" @selected((string) old('role_id', $administrator->role_id) === (string) $role->getKey())>{{ $role->name }}</option>
+                            @endforeach
+                        </select>
+                        @error('role_id')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
                     @include('admin.partials.admin-password-fields', ['requirePassword' => false])
                     <div class="mb-3 form-check">
                         <input type="hidden" name="is_active" value="0">
