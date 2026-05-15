@@ -27,7 +27,7 @@ class AdministratorListingService
         ['limit' => $limit, 'offset' => $offset, 'search' => $search, 'sort' => $sort, 'order' => $order]
             = BootstrapTableHelper::parsePaginationParams($request);
 
-        $query = Administrator::query();
+        $query = Administrator::query()->with('adminRole');
 
         if ($search !== '') {
             $this->applySearch($query, $search);

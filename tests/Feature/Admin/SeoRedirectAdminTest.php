@@ -14,7 +14,7 @@ class SeoRedirectAdminTest extends TestCase
 
     private function actingAdmin(): Administrator
     {
-        return Administrator::query()->create([
+        return $this->adminWithFullAccess([
             'name' => 'Seo Tester',
             'email' => 'seo@example.com',
             'password' => Hash::make('secret'),

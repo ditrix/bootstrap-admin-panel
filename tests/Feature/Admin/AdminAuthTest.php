@@ -2,14 +2,36 @@
 
 namespace Tests\Feature\Admin;
 
+use App\Authorization\AdminRole;
 use App\Models\Administrator;
+use Database\Seeders\RolesAndPermissionsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 class AdminAuthTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->seed(RolesAndPermissionsSeeder::class);
+    }
+
+    private function makeAdmin(string $email, bool $isActive = true): Administrator
+    {
+        $role = Role::findByName(AdminRole::ADMIN, 'admin');
+
+        return Administrator::query()->create([
+            'name' => 'Tester',
+            'email' => $email,
+            'password' => Hash::make('secret'),
+            'is_active' => $isActive,
+            'role_id' => $role->getKey(),
+        ]);
+    }
 
     public function test_adm_entry_shows_login_when_guest(): void
     {
@@ -21,12 +43,7 @@ class AdminAuthTest extends TestCase
 
     public function test_adm_entry_redirects_to_dashboard_when_authenticated(): void
     {
-        $admin = Administrator::query()->create([
-            'name' => 'Tester',
-            'email' => 't@example.com',
-            'password' => Hash::make('secret'),
-            'is_active' => true,
-        ]);
+        $admin = $this->makeAdmin('t@example.com');
 
         $response = $this->actingAs($admin, 'admin')->get('/admin');
 
@@ -35,12 +52,7 @@ class AdminAuthTest extends TestCase
 
     public function test_login_with_valid_credentials_redirects_to_dashboard(): void
     {
-        Administrator::query()->create([
-            'name' => 'Tester',
-            'email' => 'auth@example.com',
-            'password' => Hash::make('secret'),
-            'is_active' => true,
-        ]);
+        $this->makeAdmin('auth@example.com');
 
         $response = $this->post('/admin/login', [
             'email' => 'auth@example.com',
@@ -53,12 +65,7 @@ class AdminAuthTest extends TestCase
 
     public function test_login_with_invalid_credentials_fails_validation(): void
     {
-        Administrator::query()->create([
-            'name' => 'Tester',
-            'email' => 'bad@example.com',
-            'password' => Hash::make('secret'),
-            'is_active' => true,
-        ]);
+        $this->makeAdmin('bad@example.com');
 
         $response = $this->from(route('admin.entry'))->post('/admin/login', [
             'email' => 'bad@example.com',
@@ -72,12 +79,7 @@ class AdminAuthTest extends TestCase
 
     public function test_logout_clears_session_and_redirects_to_entry(): void
     {
-        $admin = Administrator::query()->create([
-            'name' => 'Tester',
-            'email' => 'out@example.com',
-            'password' => Hash::make('secret'),
-            'is_active' => true,
-        ]);
+        $admin = $this->makeAdmin('out@example.com');
 
         $response = $this->actingAs($admin, 'admin')->post('/admin/logout');
 
@@ -114,7 +116,7 @@ class AdminAuthTest extends TestCase
             'password' => 'Password1!',
         ]);
 
-        $login->assertRedirect(route('admin.dashboard'));
+        $login->assertRedirect(route('admin.static-pages.index'));
         $this->assertAuthenticatedAs(
             Administrator::query()->where('email', 'newuser@example.com')->first(),
             'admin'
@@ -123,12 +125,7 @@ class AdminAuthTest extends TestCase
 
     public function test_login_rejects_inactive_account_with_valid_password(): void
     {
-        Administrator::query()->create([
-            'name' => 'Inactive',
-            'email' => 'inactive@example.com',
-            'password' => Hash::make('secret'),
-            'is_active' => false,
-        ]);
+        $this->makeAdmin('inactive@example.com', false);
 
         $response = $this->from(route('admin.entry'))->post('/admin/login', [
             'email' => 'inactive@example.com',
@@ -142,12 +139,7 @@ class AdminAuthTest extends TestCase
 
     public function test_register_rejects_duplicate_email(): void
     {
-        Administrator::query()->create([
-            'name' => 'Existing',
-            'email' => 'dup@example.com',
-            'password' => Hash::make('secret'),
-            'is_active' => true,
-        ]);
+        $this->makeAdmin('dup@example.com');
 
         $response = $this->from(route('admin.register'))->post('/admin/register', [
             'first_name' => 'Other',

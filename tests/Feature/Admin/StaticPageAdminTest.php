@@ -14,7 +14,7 @@ class StaticPageAdminTest extends TestCase
 
     private function actingAdmin(): Administrator
     {
-        return Administrator::query()->create([
+        return $this->adminWithFullAccess([
             'name' => 'Static Tester',
             'email' => 'static-pages@example.com',
             'password' => Hash::make('secret'),

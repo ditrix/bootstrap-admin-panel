@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Services;
 
+use App\Helpers\BootstrapTableHelper;
 use App\Models\MainMenuItem;
 use App\Services\Admin\MainMenuItemService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -106,7 +107,7 @@ class MainMenuItemServiceTest extends TestCase
 
         $html = $this->service()->buildParentOptionsHtml($nodesMeta);
 
-        $this->assertStringContainsString('<option value="0">', $html);
+        $this->assertMatchesRegularExpression('/<option[^>]*value="0"[^>]*>/', $html);
         $this->assertStringContainsString('Root', $html);
     }
 
@@ -155,7 +156,7 @@ class MainMenuItemServiceTest extends TestCase
     {
         $query = MainMenuItem::query();
 
-        $castType = \App\Helpers\BootstrapTableHelper::stringCastType($query);
+        $castType = BootstrapTableHelper::stringCastType($query);
 
         // The test suite always runs on SQLite
         $this->assertSame('TEXT', $castType);

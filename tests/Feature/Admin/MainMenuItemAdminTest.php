@@ -14,7 +14,7 @@ class MainMenuItemAdminTest extends TestCase
 
     private function actingAdmin(): Administrator
     {
-        return Administrator::query()->create([
+        return $this->adminWithFullAccess([
             'name' => 'Menu Tester',
             'email' => 'main-menu@example.com',
             'password' => Hash::make('secret'),
@@ -32,7 +32,7 @@ class MainMenuItemAdminTest extends TestCase
         $response->assertOk()
             ->assertViewIs('admin.pages.main-menu.index')
             ->assertViewHas('tree')
-            ->assertViewHas('nodesMeta');
+            ->assertViewHas('mainMenuMetaForJs');
     }
 
     public function test_main_menu_index_requires_auth(): void
@@ -128,15 +128,15 @@ class MainMenuItemAdminTest extends TestCase
         ]);
 
         $response = $this->actingAs($admin, 'admin')
-            ->putJson(route('admin.main-menu.update', $node), [
+            ->put(route('admin.main-menu.update', $node), [
                 'parent_id' => 0,
                 'title' => 'Item updated',
                 'slug' => 'item-upd',
                 'is_active' => false,
             ]);
 
-        $response->assertOk()
-            ->assertJsonPath('message', __('Menu item updated.'));
+        $response->assertRedirect(route('admin.main-menu.index'))
+            ->assertSessionHas('success', __('Menu item updated.'));
         $node->refresh();
         $this->assertSame('Item updated', $node->title);
     }
