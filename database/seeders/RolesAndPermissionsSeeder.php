@@ -38,6 +38,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
         $managerRole->syncPermissions(
             Permission::query()->where('guard_name', self::GUARD)->whereIn('name', [
+                AdminPermission::DASHBOARD_VIEW,
                 AdminPermission::STATIC_PAGES_MANAGE,
                 AdminPermission::CATEGORY_TREE_MANAGE,
                 AdminPermission::BANNERS_MANAGE,

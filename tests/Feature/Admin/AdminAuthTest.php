@@ -116,7 +116,7 @@ class AdminAuthTest extends TestCase
             'password' => 'Password1!',
         ]);
 
-        $login->assertRedirect(route('admin.static-pages.index'));
+        $login->assertRedirect(route('admin.dashboard'));
         $this->assertAuthenticatedAs(
             Administrator::query()->where('email', 'newuser@example.com')->first(),
             'admin'

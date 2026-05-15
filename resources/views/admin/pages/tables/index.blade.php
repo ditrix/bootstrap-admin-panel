@@ -10,15 +10,6 @@
             <li class="breadcrumb-item active">{{ __('Tables') }}</li>
         </ol>
         <div class="card mb-4">
-            <div class="card-body">
-                Bootstrap Table loads rows from the server as JSON (<code>total</code> / <code>rows</code>). Shared helpers
-                (for example <code>adminBootstrapTableDelete</code>) live in
-                <code>resources/themes/admin/assets/js/admin-bootstrap-table.js</code> and are loaded via Vite with the
-                <code>admin/partials/bootstrap-table-widget</code> partial. See
-                <a target="_blank" href="https://bootstrap-table.com/">bootstrap-table documentation</a>.
-            </div>
-        </div>
-        <div class="card mb-4">
             <div class="card-header">
                 <i class="fas fa-table me-1"></i>
                 Employees (server-side)

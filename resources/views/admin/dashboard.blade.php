@@ -11,39 +11,15 @@
         <div class="row">
             @foreach ($cards as $card)
                 <div class="col-xl-3 col-md-6">
-                    <div class="card bg-{{ $card['variant'] }} text-white mb-4">
+                    <div class="card admin-dashboard-summary-card text-body mb-4">
                         <div class="card-body">{{ $card['label'] }}</div>
                         <div class="card-footer d-flex align-items-center justify-content-between">
-                            <a class="small text-white stretched-link" href="{{ $card['href'] }}">View Details</a>
-                            <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                            <a class="small stretched-link" href="{{ $card['href'] }}">View Details</a>
+                            <div class="small text-body-secondary"><i class="fas fa-angle-right"></i></div>
                         </div>
                     </div>
                 </div>
             @endforeach
-        </div>
-        <div class="card mb-4">
-            <div class="card-header">
-                <i class="fas fa-table me-1"></i>
-                Employees (server-side)
-            </div>
-            <div class="card-body">
-                @include('admin.partials.bootstrap-table-widget', [
-                    'tableId' => $tableId,
-                    'dataUrl' => $dataUrl,
-                    'pageSize' => 10,
-                    'columns' => [
-                        ['field' => 'id', 'title' => 'ID', 'sortable' => true],
-                        ['field' => 'name', 'title' => 'Name', 'sortable' => true],
-                        ['field' => 'position', 'title' => 'Position', 'sortable' => true],
-                        ['field' => 'office', 'title' => 'Office', 'sortable' => true],
-                        ['field' => 'age', 'title' => 'Age', 'sortable' => true],
-                        ['field' => 'start_date', 'title' => 'Start date', 'sortable' => true],
-                        ['field' => 'salary', 'title' => 'Salary', 'sortable' => true],
-                        ['field' => 'created_at', 'title' => 'Created at', 'sortable' => true],
-                        ['field' => 'updated_at', 'title' => 'Updated at', 'sortable' => true],
-                    ],
-                ])
-            </div>
         </div>
     </div>
 @endsection

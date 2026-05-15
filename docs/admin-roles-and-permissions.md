@@ -16,7 +16,7 @@
 | `name` в БД | Описание |
 |-------------|----------|
 | **`admin`** | Все permissions |
-| **`manager`** | Только контент: static pages, category tree, banners, employees (таблица) |
+| **`manager`** | **Dashboard** (`dashboard.view`) и контент: static pages, category tree, banners, employees (таблица) |
 
 Учётные записи после полного сидинга (см. порядок в `Database\Seeders\DatabaseSeeder`):
 
