@@ -36,3 +36,4 @@
 - 2026-05-12 — FilePond баннеров: `storeAsFile` + `instantUpload: false` для multipart и сохранения `image_path` → [../../diary/2026/05/2026-05-12-banners-crud.md#01JBANSTOREFILE20260512]
 - 2026-05-14 — Баннеры: плейсхолдер `asset('static/banners/no-image.jpg')` (не `public/admin/…`) → [../../diary/2026/05/2026-05-12-banners-crud.md#01JBANNOPUBLICADMIN20260514]
 - 2026-05-14 — Баннеры: превью без картинки — URL из темы через Vite → [../../diary/2026/05/2026-05-12-banners-crud.md#01JBANIMGVITE20260514]
+- 2026-05-15 — `dashboard.blade.php`: только ряд карточек-сводок, без виджета Employees bootstrap-table → [../../diary/2026/05/2026-05-15-dashboard-card.md#01JDASHCARD20260515]

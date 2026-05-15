@@ -41,9 +41,7 @@ class AdminPagesTest extends TestCase
 
         $response->assertOk()
             ->assertViewIs('admin.dashboard')
-            ->assertViewHas('cards')
-            ->assertViewHas('tableId')
-            ->assertViewHas('dataUrl');
+            ->assertViewHas('cards');
     }
 
     public function test_tables_page_renders_with_bootstrap_table_config(): void

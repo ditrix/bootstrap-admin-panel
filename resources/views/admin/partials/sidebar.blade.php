@@ -23,6 +23,12 @@
                     {{ __('Static pages') }}
                 </a>
             @endcan
+            @can('category_tree.manage')
+            <a class="nav-link {{ $activeSidebar === 'category-tree' ? 'active' : '' }}" href="{{ route('admin.category-tree.index') }}">
+                <div class="sb-nav-link-icon"><i class="fas fa-sitemap"></i></div>
+                {{ __('Category Tree') }}
+            </a>
+            @endcan            
             @can('banners.manage')
                 <a class="nav-link {{ $activeSidebar === 'banners' ? 'active' : '' }}" href="{{ route('admin.banners.index') }}">
                     <div class="sb-nav-link-icon"><i class="fas fa-image"></i></div>
@@ -32,15 +38,9 @@
             @can('employees.manage')
                 <a class="nav-link {{ $activeSidebar === 'tables' ? 'active' : '' }}" href="{{ route('admin.tables.index') }}">
                     <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                    {{ __('Tables') }}
+                    {{ __('Employees') }}
                 </a>
-            @endcan
-            @can('category_tree.manage')
-                <a class="nav-link {{ $activeSidebar === 'category-tree' ? 'active' : '' }}" href="{{ route('admin.category-tree.index') }}">
-                    <div class="sb-nav-link-icon"><i class="fas fa-sitemap"></i></div>
-                    {{ __('Category Tree') }}
-                </a>
-            @endcan
+            @endcan            
             @canany(['seo_redirects.manage', 'main_menu.manage', 'users.manage', 'permissions.view'])
                 <a class="nav-link{{ $settingsMenuOpen ? '' : ' collapsed' }}" href="#" data-bs-toggle="collapse" data-bs-target="#collapseSettings" aria-expanded="{{ $settingsMenuOpen ? 'true' : 'false' }}" aria-controls="collapseSettings">
                     <div class="sb-nav-link-icon"><i class="fas fa-cog"></i></div>

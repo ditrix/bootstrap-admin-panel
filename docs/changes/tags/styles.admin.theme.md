@@ -17,3 +17,4 @@
 - 2026-04-26 — `_category-tree.scss`: `ct-node-actions`, `ct-active` → [../../diary/2026/04/2026-04-26-catalog-tree-crud.md#01JCTREE20260426CRUD]
 - 2026-04-26 — `blocks/_main-menu.scss` (mm-list, mm-node, …), импорт в `app.scss` → [../../diary/2026/04/2026-04-26-configuration-module.md#01JCFGMOD20260426]
 - 2026-04-29 — `app.scss`: комментарий о порядке импортов; JS Bootstrap темы — `assets/js/app.js` → [../../diary/2026/04/2026-04-29-bootstrap-local.md#01JBSTRP5VITE20260429]
+- 2026-05-15 — `_admin-ui.scss`: `.admin-dashboard-summary-card` с `background-color: var(--bs-card-cap-bg)` → [../../diary/2026/05/2026-05-15-dashboard-card.md#01JDASHCARD20260515]
