@@ -26,15 +26,10 @@ git clone git@github.com:ditrix/bootstrap-admin-panel.git
 cd bootstrap-admin-panel
 ```
 
-### 2. Встановити залежності Composer (без Docker)
+### 2. Встановити залежності Composer
 
 ```bash
-docker run --rm \
-    -u "$(id -u):$(id -g)" \
-    -v "$(pwd):/var/www/html" \
-    -w /var/www/html \
-    laravelsail/php82-composer:latest \
-    composer install --ignore-platform-reqs
+composer install --dev
 ```
 
 ### 3. Налаштувати оточення
@@ -82,6 +77,7 @@ DB_PASSWORD=password
 
 ```bash
 ./vendor/bin/sail artisan key:generate
+./vendor/bin/sail artisan storage:link
 ```
 
 ### 6. Виконати міграції та наповнити базу демо-даними
@@ -103,35 +99,14 @@ DB_PASSWORD=password
 | Пункти головного меню | 10 |
 | SEO-редиректи | 10 |
 
-### 7. Створити символічне посилання для сховища
+### 7. Встановити фронтенд-залежності та зібрати ресурси
 
 ```bash
-./vendor/bin/sail artisan storage:link
+npm install
+npm run dev
 ```
 
-### 8. Встановити фронтенд-залежності та зібрати ресурси
-
-**Розробка (hot reload):**
-
-```bash
-./vendor/bin/sail npm install
-./vendor/bin/sail npm run dev
-```
-
-**Production-збірка:**
-
-```bash
-./vendor/bin/sail npm run build
-```
-
-> Якщо `vite build` завершується помилкою `Cannot find module '@rollup/rollup-linux-...'`, виконайте:
-> ```bash
-> rm -rf node_modules
-> ./vendor/bin/sail npm install
-> ./vendor/bin/sail npm run build
-> ```
-
-### 9. Очистити кеші (необов'язково)
+### 8. Очистити кеші (необов'язково)
 
 ```bash
 ./vendor/bin/sail artisan cache:clear

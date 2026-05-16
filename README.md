@@ -26,15 +26,10 @@ git clone git@github.com:ditrix/bootstrap-admin-panel.git
 cd bootstrap-admin-panel
 ```
 
-### 2. Install Composer dependencies (without Docker)
+### 2. Install Composer dependencies
 
 ```bash
-docker run --rm \
-    -u "$(id -u):$(id -g)" \
-    -v "$(pwd):/var/www/html" \
-    -w /var/www/html \
-    laravelsail/php82-composer:latest \
-    composer install --ignore-platform-reqs
+composer install --dev
 ```
 
 ### 3. Configure environment
@@ -82,6 +77,7 @@ DB_PASSWORD=password
 
 ```bash
 ./vendor/bin/sail artisan key:generate
+./vendor/bin/sail artisan storage:link
 ```
 
 ### 6. Run migrations and seed demo data
@@ -103,35 +99,14 @@ This runs all migrations in a **single pass** and populates the database with de
 | Main Menu Items | 10 |
 | SEO Redirects | 10 |
 
-### 7. Create storage symlink
+### 7. Install frontend dependencies and build assets
 
 ```bash
-./vendor/bin/sail artisan storage:link
+npm install
+npm run dev
 ```
 
-### 8. Install frontend dependencies and build assets
-
-**Development (hot reload):**
-
-```bash
-./vendor/bin/sail npm install
-./vendor/bin/sail npm run dev
-```
-
-**Production build:**
-
-```bash
-./vendor/bin/sail npm run build
-```
-
-> If `vite build` fails with `Cannot find module '@rollup/rollup-linux-...'`, run:
-> ```bash
-> rm -rf node_modules
-> ./vendor/bin/sail npm install
-> ./vendor/bin/sail npm run build
-> ```
-
-### 9. Clear caches (optional)
+### 8. Clear caches (optional)
 
 ```bash
 ./vendor/bin/sail artisan cache:clear
