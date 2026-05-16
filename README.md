@@ -1,46 +1,54 @@
-## Laraver admin
+# Bootstrap Admin Panel
 
-based on html maket (https://github.com/startbootstrap/startbootstrap-sb-admin)
+A Laravel-based admin panel built on the [SB Admin](https://github.com/startbootstrap/startbootstrap-sb-admin) Bootstrap template. The project was developed using **vibecoding** methodologies — iterative AI-assisted development with structured prompting and automated code review.
 
-### Installation
+> **Technical documentation:** [technical_documentation.md](technical_documentation.md)
 
-### 1. Clone Repository
+---
+
+## Requirements
+
+| Tool | Version |
+|------|---------|
+| Docker & Docker Compose | latest |
+| Git | any |
+
+Everything else (PHP, Composer, Node.js, MySQL) runs inside Docker via Laravel Sail.
+
+---
+
+## Quick Start
+
+### 1. Clone the repository
 
 ```bash
 git clone git@github.com:ditrix/bootstrap-admin-panel.git
+cd bootstrap-admin-panel
 ```
 
-### 2. Install Composer
-
-
-### 3. Install Docker
-
-
-### 4. Install Laravel Sail
-
-
-
-### 5. Configure Environment
-
-
-
-#### 5.1 Copy Environment File
-
-Copy `.env.example` to the `.env`
-
-#### 5.2 Configure Basic Settings
-
-After copying `.env.example` → `.env`, check **Sail-specific** variables at the top of the file (`APP_PORT`, `VITE_PORT`, `WWWGROUP`, `WWWUSER`, `DB_HOST=mysql`, …). On Linux/macOS, match your UID/GID if permission issues appear:
+### 2. Install Composer dependencies
 
 ```bash
-id -u   # → WWWUSER
-id -g   # → WWWGROUP
+composer install --dev
 ```
 
-The template already includes the essentials:
+### 3. Configure environment
+
+```bash
+cp .env.example .env
+```
+
+Open `.env` and verify the following variables. On Linux, match `WWWUSER` and `WWWGROUP` to your own UID/GID:
+
+```bash
+id -u   # → WWWUSER value
+id -g   # → WWWGROUP value
+```
+
+Default values that work out of the box:
 
 ```env
-APP_NAME="Admin"
+APP_NAME="Admin Panel"
 APP_ENV=local
 APP_DEBUG=true
 APP_URL=http://localhost
@@ -59,60 +67,46 @@ DB_USERNAME=sail
 DB_PASSWORD=password
 ```
 
-### 6. Setup Docker Environment
+### 4. Start containers
 
-#### 6.1 Prepare Docker Compose Configuration
+```bash
+./vendor/bin/sail up -d
+```
 
-#### 6.2 Build Docker Containers
+### 5. Generate application key
 
-#### 6.3 Start Docker Containers
+```bash
+./vendor/bin/sail artisan key:generate
+./vendor/bin/sail artisan storage:link
+```
 
-## Database
-
-### 7. Import Database
-
-#### 7.1 Run Migrations with test dats
+### 6. Run migrations and seed demo data
 
 ```bash
 ./vendor/bin/sail artisan migrate --seed
 ```
 
+This runs all migrations in a **single pass** and populates the database with demo records:
 
-#### 7.2 Run Migrations
+| Entity | Records |
+|--------|---------|
+| Administrator (admin) | `admin@mail.com` / `password` |
+| Administrator (manager) | `manager@mail.com` / `password` |
+| Static Pages | 5 |
+| Banners | 2 |
+| Category Tree nodes | 20 |
+| Employees | 50 |
+| Main Menu Items | 10 |
+| SEO Redirects | 10 |
 
-If you need to run additional migrations:
-
-```bash
-./vendor/bin/sail artisan migrate
-```
-
-#### 7.3 Generate Application Key
-
-```bash
-./vendor/bin/sail artisan key:generate
-```
-#### 7.4 Generate Storage Link
-
-```bash        
-./vendor/bin/sail artisan storage:link
-```
-
-#### 7.5 Install Frontend Dependencies
+### 7. Install frontend dependencies and build assets
 
 ```bash
-./vendor/bin/sail npm install
-./vendor/bin/sail npm run dev
+npm install
+npm run dev
 ```
 
-Production build (also run inside Sail so Rollup picks the Linux binaries):
-
-```bash
-./vendor/bin/sail npm run build
-```
-
-If `vite build` fails with `Cannot find module '@rollup/rollup-linux-...'`, pull the latest `package.json` / `package-lock.json` (root `optionalDependencies` pin Rollup natives for npm’s optional-deps bug), then `rm -rf node_modules` and `./vendor/bin/sail npm install` again.
-
-#### 7.6 Clear Caches
+### 8. Clear caches (optional)
 
 ```bash
 ./vendor/bin/sail artisan cache:clear
@@ -120,9 +114,37 @@ If `vite build` fails with `Cannot find module '@rollup/rollup-linux-...'`, pull
 ./vendor/bin/sail artisan route:clear
 ```
 
-##### Access to admin dashboard #####
+---
 
-log: admin@mail.com
+## Access
 
-pass: password
+| URL | Credentials |
+|-----|------------|
+| `http://localhost/admin` | `admin@mail.com` / `password` |
 
+---
+
+## Daily Workflow
+
+```bash
+# Start
+./vendor/bin/sail up -d
+
+# Stop
+./vendor/bin/sail down
+
+# Reset database
+./vendor/bin/sail artisan migrate:fresh --seed
+
+# Artisan commands
+./vendor/bin/sail artisan <command>
+
+# Run tests
+./vendor/bin/sail artisan test
+```
+
+---
+
+## License
+
+MIT
