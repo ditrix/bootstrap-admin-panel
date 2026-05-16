@@ -26,6 +26,6 @@ class DatabaseSeeder extends Seeder
 
         $this->call(ConfigurationModuleSeeder::class);
 
-        Employee::factory(75)->create();
+        Employee::factory(50)->create();
     }
 }

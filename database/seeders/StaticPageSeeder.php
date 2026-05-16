@@ -10,7 +10,7 @@ class StaticPageSeeder extends Seeder
     public function run(): void
     {
         StaticPage::factory()
-            ->count(22)
+            ->count(5)
             ->create();
     }
 }

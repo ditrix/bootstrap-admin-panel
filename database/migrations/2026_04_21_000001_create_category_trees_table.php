@@ -13,6 +13,9 @@ return new class extends Migration
             $table->unsignedBigInteger('parent_id')->default(0)->index();
             $table->integer('sort_no')->default(0)->index();
             $table->string('title');
+            $table->string('slug')->nullable()->unique();
+            $table->text('description')->nullable();
+            $table->longText('content')->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
