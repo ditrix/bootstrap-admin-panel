@@ -6,6 +6,9 @@ use App\View\Composers\AdminLayoutComposer;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
+/**
+ * Application-wide bootstrapping: view composers, shared config, etc.
+ */
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -24,8 +27,7 @@ class AppServiceProvider extends ServiceProvider
         View::composer(
             [
                 'admin.layouts.sb-admin',
-                'admin.layouts.sb-admin-static',
-                'admin.layout-sidenav-light',
+                'admin.pages.*',
             ],
             AdminLayoutComposer::class
         );

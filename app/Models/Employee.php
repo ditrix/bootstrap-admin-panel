@@ -6,6 +6,9 @@ use Database\Factories\EmployeeFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Demo employee row for datatables examples (name, salary, office, dates).
+ */
 class Employee extends Model
 {
     /** @use HasFactory<EmployeeFactory> */

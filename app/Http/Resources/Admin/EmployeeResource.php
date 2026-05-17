@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
+ * JSON row for admin employees table (formatted salary and dates).
+ *
  * @mixin Employee
  */
 class EmployeeResource extends JsonResource
@@ -25,8 +27,8 @@ class EmployeeResource extends JsonResource
             'age' => $this->age,
             'start_date' => $this->start_date?->format('Y/m/d'),
             'salary' => SalaryHelper::formatUsd($this->salary),
-            'created_at' => $this->created_at?->toIso8601String(),
-            'updated_at' => $this->updated_at?->toIso8601String(),
+            'created_at' => $this->created_at?->format('d.m.Y'),
+            'updated_at' => $this->updated_at?->format('d.m.Y'),
         ];
     }
 }

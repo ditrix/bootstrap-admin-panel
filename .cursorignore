@@ -1,0 +1,75 @@
+# --- System / OS ---
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.bak
+
+# --- Laravel Core ---
+/vendor/
+/node_modules/
+/bootstrap/cache/*
+/storage/framework/
+/storage/logs/
+/storage/app/public/
+.env
+.env.backup
+.env.production
+/public/storage
+/public/hot
+package-lock.json
+composer.lock
+
+# --- Build Artifacts (Compiled files) ---
+# Ignore compiled output to force AI to focus on SCSS/JS source files
+/public/build/
+/public/mix-manifest.json
+/public/manifest.json
+/public/css/*.css.map
+/public/js/*.js.map
+# If these folders only contain minified results:
+/public/themes/admin/css/
+/public/themes/frontend/css/
+
+# --- Database ---
+*.sql
+*.sqlite
+*.gz
+
+# --- Assets / Media ---
+# Ignore heavy media in the mockup folder, but keep HTML/CSS/JS
+# .cursor/maket/**/*.jpg
+# .cursor/maket/**/*.jpeg
+# .cursor/maket/**/*.png
+# .cursor/maket/**/*.gif
+# .cursor/maket/**/*.svg
+# .cursor/maket/**/*.pdf
+# .cursor/maket/**/*.woff
+# .cursor/maket/**/*.woff2
+# .cursor/maket/**/*.ttf
+
+# --- Cursor Specific ---
+# NEVER ignore .cursor/rules or .cursor/skills!
+# The AI must always have access to your "Contracts."
+.cursor/cache/
+.cursor/index/
+
+
+# Явно разрешаем важные папки Cursor (на всякий случай)
+!.cursor/
+!.cursor/**
+!.cursor/rules/**
+!.cursor/skills/**
+!.cursor/promts/**
+!.cursor/tasks/**
+!.cursor/workflow.mdc
+
+# --- Logs & Temp ---
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.phpunit.result.cache# macOS - никогда не коммитим
+.DS_Store
+**/.DS_Store

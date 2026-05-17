@@ -5,7 +5,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <title>@yield('title', 'SB Admin')</title>
-        <link href="{{ \App\Helpers\AdminHelper::maketAsset('css/styles.css') }}" rel="stylesheet" />
+        @vite('resources/themes/admin/assets/css/app.scss')
         <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
     </head>
     <body class="bg-primary">
@@ -30,8 +30,7 @@
                 </footer>
             </div>
         </div>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-        <script src="{{ \App\Helpers\AdminHelper::maketAsset('js/scripts.js') }}"></script>
+        @vite(['resources/themes/admin/assets/js/app.js'])
         @stack('scripts')
     </body>
 </html>

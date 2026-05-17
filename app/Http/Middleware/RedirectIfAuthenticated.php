@@ -3,11 +3,15 @@
 namespace App\Http\Middleware;
 
 use App\Providers\RouteServiceProvider;
+use App\Support\AdminHomeRedirect;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Redirect authenticated users away from guest-only routes (`admin` uses dashboard home).
+ */
 class RedirectIfAuthenticated
 {
     /**
@@ -22,7 +26,7 @@ class RedirectIfAuthenticated
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
                 if ($guard === 'admin') {
-                    return redirect()->route('admin.dashboard');
+                    return redirect()->to(AdminHomeRedirect::url());
                 }
 
                 return redirect(RouteServiceProvider::HOME);

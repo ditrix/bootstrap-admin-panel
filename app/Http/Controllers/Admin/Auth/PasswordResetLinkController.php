@@ -8,6 +8,9 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Password;
 use Illuminate\View\View;
 
+/**
+ * Request a password reset link for administrators.
+ */
 class PasswordResetLinkController extends Controller
 {
     public function create(): View

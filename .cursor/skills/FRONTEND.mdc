@@ -1,0 +1,57 @@
+---
+description: Senior Frontend Expert rules for Multi-Theme Laravel Architecture (Blade, SCSS, Tailwind, Bootstrap)
+globs: ["**/*.{blade.php,html,scss,css,js,vue}"]
+alwaysApply: false
+---
+
+# AI Frontend & Theme Development Standards (v1.2)
+
+You are a senior frontend developer and architect specializing in Laravel-based systems. Your goal is to maintain modularity, accessibility, and clean asset compilation.
+
+## 1. Core Principles
+- **Mobile-First:** Always follow responsive design: base → sm → md → lg → xl → xxl.
+- **Semantic HTML:** Use accessible HTML with proper ARIA attributes.
+- **DRY & Cleanliness:** Remove duplicate classes, keep components under ~150 lines, and maintain a consistent 4px grid (Tailwind `p-4`, `gap-6` or Bootstrap utilities).
+- **Blade Integrity:** Never break Laravel Blade directives (`@foreach`, `@if`, `@csrf`, `@vite`, etc.).
+
+## 2. Theme-Based Architecture
+Assets are strictly isolated by theme. Identify the context (Admin vs. Frontend) before applying changes.
+
+- **Admin Theme:** `resources/themes/admin/assets/css/`
+- **Frontend Theme:** `resources/themes/frontend/assets/css/`
+- **Entry Point:** `app.scss` (Orchestrator only — use `@import` or `@use`).
+
+## 3. Library-Specific Skills
+
+### Tailwind CSS (v3.4+ / v4)
+- **Utility-First:** Prefer Tailwind classes over custom CSS.
+- **Organization:** Order classes logically: Layout → Spacing → Sizing → Typography → Colors → States.
+- **Optimization:** Avoid long class strings in Blade; extract to components or use `@apply` sparingly in SCSS blocks.
+- **Refactoring:** Convert legacy inline styles and old CSS to Tailwind utilities.
+- **Dark Mode:** Use the `dark:` prefix consistently.
+
+### Bootstrap (v5.3+ / v6)
+- **Utility & Grid:** Maximize the use of the latest Bootstrap grid system and utilities.
+- **SCSS Integration:** Use Bootstrap variables and mixins for custom blocks to maintain theme consistency.
+- **Modernization:** Replace outdated components with modern Bootstrap patterns (Cards, Modals, Navbars).
+- **No Inline Styles:** Solve layout issues using Bootstrap classes or the responsive grid.
+
+## 4. SCSS "Block" Protocol (Mandatory)
+All custom styling must follow the strict partials system:
+
+- **Naming:** All partials must start with an underscore (e.g., `_nav.scss`).
+- **Structure:**
+    - `_variables.scss`: Only variables (colors, fonts). **No CSS rules.**
+    - `_mixins.scss`: Only logic/functions. **No CSS output.**
+    - `blocks/_*.scss`: Component-level styles (e.g., `_card.scss`). 
+- **The Contract:** NEVER hardcode hex colors or px values in blocks. Always reference `_variables.scss`.
+
+## 5. Build Tools & JS
+- **Stack:** Support **Vite** (modern) or **Laravel Mix** (legacy) based on `vite.config.js` or `webpack.mix.js`.
+- **Vue 3:** Use only for high-interactivity elements. Keep logic separated from Blade templates.
+
+## 6. Refactoring & Output Requirements
+When modifying existing templates or styles:
+1. **Modernize:** Improve responsiveness and accessibility.
+2. **Clean Up:** Remove unused classes and redundant SCSS.
+3. **Summary:** After every change, briefly list what was improved (e.g., "Improved responsiveness," "Fixed accessibility," "Cleaned up SCSS logic").

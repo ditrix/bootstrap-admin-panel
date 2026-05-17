@@ -1,0 +1,23 @@
+// Порядок: _variables → Bootstrap (node_modules) → base → blocks/
+@use "variables";
+@use "bootstrap/scss/bootstrap";
+@use "base";
+
+@use "blocks/auth";
+@use "blocks/layout";
+@use "blocks/nav";
+@use "blocks/subnav";
+@use "blocks/error";
+@use "blocks/offers-slider";
+@use "blocks/section";
+@use "blocks/product";
+@use "blocks/btn";
+@use "blocks/form";
+@use "blocks/grid";
+@use "blocks/datatable";
+@use "blocks/bootstrap-table";
+@use "blocks/admin-ui";
+@use "blocks/category-tree";
+@use "blocks/main-menu";
+
+@import "dripicons/webfont/webfont.css";

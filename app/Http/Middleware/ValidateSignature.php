@@ -4,6 +4,9 @@ namespace App\Http\Middleware;
 
 use Illuminate\Routing\Middleware\ValidateSignature as Middleware;
 
+/**
+ * Signed URL validation (ignored query params list).
+ */
 class ValidateSignature extends Middleware
 {
     /**

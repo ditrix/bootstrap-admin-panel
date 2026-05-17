@@ -21,6 +21,7 @@ class AdministratorFactory extends Factory
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => Hash::make('password'),
+            'is_active' => true,
             'remember_token' => Str::random(10),
         ];
     }

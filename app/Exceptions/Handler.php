@@ -5,6 +5,9 @@ namespace App\Exceptions;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 
+/**
+ * Global HTTP exception handler (validation flash exclusions, reporting hooks).
+ */
 class Handler extends ExceptionHandler
 {
     /**

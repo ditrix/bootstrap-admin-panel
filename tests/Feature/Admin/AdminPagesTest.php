@@ -2,21 +2,34 @@
 
 namespace Tests\Feature\Admin;
 
+use App\Authorization\AdminRole;
 use App\Models\Administrator;
+use Database\Seeders\RolesAndPermissionsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 class AdminPagesTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->seed(RolesAndPermissionsSeeder::class);
+    }
+
     private function actingAdmin(): Administrator
     {
+        $role = Role::findByName(AdminRole::ADMIN, 'admin');
+
         return Administrator::query()->create([
             'name' => 'Page Tester',
             'email' => 'pages@example.com',
             'password' => Hash::make('secret'),
+            'is_active' => true,
+            'role_id' => $role->getKey(),
         ]);
     }
 
@@ -28,32 +41,22 @@ class AdminPagesTest extends TestCase
 
         $response->assertOk()
             ->assertViewIs('admin.dashboard')
-            ->assertViewHas('cards')
-            ->assertViewHas('dashboardEmployees');
+            ->assertViewHas('cards');
     }
 
-    public function test_tables_page_renders_with_employees(): void
+    public function test_tables_page_renders_with_bootstrap_table_config(): void
     {
         $admin = $this->actingAdmin();
 
-        $response = $this->actingAs($admin, 'admin')->get(route('admin.tables'));
+        $response = $this->actingAs($admin, 'admin')->get(route('admin.tables.index'));
 
         $response->assertOk()
-            ->assertViewIs('admin.tables')
-            ->assertViewHas('employees');
+            ->assertViewIs('admin.pages.tables.index')
+            ->assertViewHas('tableId')
+            ->assertViewHas('dataUrl');
     }
 
-    public function test_forms_page_renders(): void
-    {
-        $admin = $this->actingAdmin();
-
-        $response = $this->actingAs($admin, 'admin')->get(route('admin.forms'));
-
-        $response->assertOk()
-            ->assertViewIs('admin.forms');
-    }
-
-    public function test_admin_employees_api_returns_json_resource(): void
+    public function test_admin_employees_table_api_returns_bootstrap_table_payload(): void
     {
         $admin = $this->actingAdmin();
 
@@ -61,7 +64,8 @@ class AdminPagesTest extends TestCase
 
         $response->assertOk()
             ->assertJsonStructure([
-                'data',
+                'total',
+                'rows',
             ]);
     }
 }

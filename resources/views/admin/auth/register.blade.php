@@ -9,9 +9,6 @@
                 <div class="card shadow-lg border-0 rounded-lg mt-5">
                     <div class="card-header"><h3 class="text-center font-weight-light my-4">Create Account</h3></div>
                     <div class="card-body">
-                        @if (session('status'))
-                            <div class="alert alert-info mb-3">{{ session('status') }}</div>
-                        @endif
                         <form method="post" action="{{ route('admin.register.store') }}">
                             @csrf
                             <div class="row mb-3">

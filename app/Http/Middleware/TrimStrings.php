@@ -4,6 +4,9 @@ namespace App\Http\Middleware;
 
 use Illuminate\Foundation\Http\Middleware\TrimStrings as Middleware;
 
+/**
+ * Trims string input except sensitive password fields.
+ */
 class TrimStrings extends Middleware
 {
     /**

@@ -1,0 +1,16 @@
+@use "variables" as *;
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    font-family: $admin-font-family;
+    color: $admin-text-color;
+    background-color: $admin-bg-color;
+}
+
+a {
+    color: $admin-link-color;
+}

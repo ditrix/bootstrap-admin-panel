@@ -5,6 +5,9 @@ namespace App\Http\Middleware;
 use Illuminate\Http\Middleware\TrustProxies as Middleware;
 use Illuminate\Http\Request;
 
+/**
+ * Trusted proxy headers for deployments behind load balancers.
+ */
 class TrustProxies extends Middleware
 {
     /**

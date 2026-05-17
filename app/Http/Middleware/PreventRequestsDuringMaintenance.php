@@ -4,6 +4,9 @@ namespace App\Http\Middleware;
 
 use Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance as Middleware;
 
+/**
+ * URIs still reachable while `php artisan down` maintenance mode is active.
+ */
 class PreventRequestsDuringMaintenance extends Middleware
 {
     /**

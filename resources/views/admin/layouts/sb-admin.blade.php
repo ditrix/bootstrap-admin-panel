@@ -2,7 +2,6 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         @include('admin.partials.head')
-        @stack('head')
     </head>
     <body class="sb-nav-fixed">
         @include('admin.partials.topnav')
@@ -17,8 +16,12 @@
                 @include('admin.partials.footer')
             </div>
         </div>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-        <script src="{{ \App\Helpers\AdminHelper::maketAsset('js/scripts.js') }}"></script>
+        @include('admin.partials.ui-shell')
+        @vite([
+            'resources/themes/admin/assets/js/app.js',
+            'resources/themes/admin/assets/js/sb-admin-scripts.js',
+        ])
+        @include('admin.partials.admin-ui-flash')
         @stack('scripts')
     </body>
 </html>

@@ -2,37 +2,37 @@
 
 namespace App\Services\Admin;
 
+use App\Models\Banner;
+use App\Models\CategoryTree;
 use App\Models\Employee;
+use App\Models\StaticPage;
 
+/**
+ * Builds summary metrics and links for the admin dashboard.
+ */
 class AdminDashboardService
 {
     /**
-     * @return array<int, array{label: string, variant: string, href: string}>
+     * @return array<int, array{label: string, href: string}>
      */
     public function summaryCards(): array
     {
-        $count = Employee::query()->count();
-
         return [
             [
-                'label' => 'Primary Card',
-                'variant' => 'primary',
-                'href' => route('admin.tables'),
+                'label' => StaticPage::query()->count().' Static Pages',
+                'href' => route('admin.static-pages.index'),
             ],
             [
-                'label' => 'Warning Card',
-                'variant' => 'warning',
-                'href' => route('admin.charts'),
+                'label' => Banner::query()->count().' Banners',
+                'href' => route('admin.banners.index'),
             ],
             [
-                'label' => 'Employees',
-                'variant' => 'success',
-                'href' => route('admin.tables'),
+                'label' => Employee::query()->count().' Tables',
+                'href' => route('admin.tables.index'),
             ],
             [
-                'label' => $count.' records',
-                'variant' => 'danger',
-                'href' => route('admin.tables'),
+                'label' => CategoryTree::query()->count().' Category Tree',
+                'href' => route('admin.category-tree.index'),
             ],
         ];
     }

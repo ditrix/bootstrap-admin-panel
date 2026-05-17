@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\ValidationRule;
 
+/**
+ * Validates admin login credentials and exposes {@see authenticate()} for the login controller.
+ */
 class LoginRequest extends FormRequest
 {
     public function authorize(): bool
@@ -32,7 +35,10 @@ class LoginRequest extends FormRequest
     public function authenticate(): void
     {
         if (! Auth::guard('admin')->attempt(
-            $this->only('email', 'password'),
+            array_merge(
+                $this->only('email', 'password'),
+                ['is_active' => true],
+            ),
             $this->boolean('remember')
         )) {
             throw ValidationException::withMessages([

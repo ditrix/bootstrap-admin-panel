@@ -4,8 +4,24 @@ import laravel from 'laravel-vite-plugin';
 export default defineConfig({
     plugins: [
         laravel({
-            input: ['resources/css/app.css', 'resources/js/app.js'],
+            input: [
+                'resources/themes/admin/assets/css/app.scss',
+                'resources/themes/admin/assets/js/app.js',
+                'resources/themes/admin/assets/js/admin-bootstrap-table.js',
+                'resources/themes/admin/assets/js/sb-admin-scripts.js',
+                'resources/themes/admin/assets/img/no-image.jpg',
+            ],
             refresh: true,
         }),
     ],
+    server: {
+        host: '0.0.0.0',
+        port: 5173,
+        hmr: {
+            host: 'localhost',
+        },
+        watch: {
+            usePolling: true,
+        },
+    },
 });

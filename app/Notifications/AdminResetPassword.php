@@ -5,6 +5,9 @@ namespace App\Notifications;
 use Illuminate\Auth\Notifications\ResetPassword as IlluminateResetPassword;
 use Illuminate\Contracts\Auth\CanResetPassword;
 
+/**
+ * Password reset notification for administrators (admin-named reset route parameters).
+ */
 class AdminResetPassword extends IlluminateResetPassword
 {
     /**

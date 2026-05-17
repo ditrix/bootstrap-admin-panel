@@ -1,0 +1,66 @@
+@props([
+    'tableId' => 'bootstrap-table',
+    'dataUrl' => '',
+    'pageSize' => 10,
+    'pagination' => true,
+    'search' => true,
+    'serverSidePagination' => true,
+    'columns' => [],
+    'actionsFormatter' => null,
+    'actionsTitle' => __('Actions'),
+])
+
+<div class="admin-bootstrap-table">
+    <div
+        id="admin-bootstrap-table-i18n"
+        class="d-none"
+        aria-hidden="true"
+        data-delete-confirm="{{ __('Delete this record?') }}"
+        data-fallback-done="{{ __('Done.') }}"
+        data-fallback-failed="{{ __('Request failed.') }}"
+    ></div>
+<table
+    id="{{ $tableId }}"
+    data-toggle="table"
+    data-url="{{ $dataUrl }}"
+    data-pagination="{{ $pagination ? 'true' : 'false' }}"
+    data-side-pagination="{{ $serverSidePagination ? 'server' : 'client' }}"
+    data-page-size="{{ $pageSize }}"
+    data-page-list="[10, 25, 50, 100]"
+    data-search="{{ $search ? 'true' : 'false' }}"
+    data-show-refresh="false"
+    data-show-search-clear-button="true"
+    data-show-button-icons="false"
+    class="admin-bootstrap-table__grid"
+>
+    <thead>
+        <tr>
+            @foreach ($columns as $column)
+                <th
+                    data-field="{{ $column['field'] }}"
+                    @if (! empty($column['sortable']))
+                        data-sortable="true"
+                    @endif
+                    @if (! empty($column['formatter']))
+                        data-formatter="{{ $column['formatter'] }}"
+                    @endif
+                    @if (($column['escape'] ?? true) === false)
+                        data-escape="false"
+                    @endif
+                >
+                    {{ $column['title'] }}
+                </th>
+            @endforeach
+            @if ($actionsFormatter !== null && $actionsFormatter !== '')
+                <th data-field="actions" data-formatter="{{ $actionsFormatter }}">{{ $actionsTitle }}</th>
+            @endif
+        </tr>
+    </thead>
+</table>
+</div>
+
+@pushOnce('scripts', 'bootstrap-table-cdn')
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.1/dist/bootstrap-table.min.js"></script>
+    @vite(['resources/themes/admin/assets/js/admin-bootstrap-table.js'])
+@endPushOnce

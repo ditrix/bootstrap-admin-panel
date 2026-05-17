@@ -6,6 +6,9 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationRule;
 
+/**
+ * Validates the password reset submission (broker token gate).
+ */
 class NewPasswordRequest extends FormRequest
 {
     public function authorize(): bool

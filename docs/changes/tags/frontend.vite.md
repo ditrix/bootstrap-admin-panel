@@ -1,0 +1,16 @@
+# Изменения: frontend.vite
+
+- 2026-03-30 — Добавлен SCSS input `resources/themes/admin/assets/css/app.scss` в `vite.config.js` → [../../diary/2026/03/2026-03-30-main.md#01J0SCSS20260330]
+- 2026-03-30 — В SCSS-пайплайн подключен Bootstrap из `node_modules` для сборки базового UI слоя → [../../diary/2026/03/2026-03-30-main.md#01J0SCSSBLOCKS20260330]
+- 2026-04-06 — Vite input `resources/themes/admin/assets/js/sb-admin-scripts.js` (переключатель сайдбара SB Admin) → [../../diary/2026/04/2026-04-06-codeclean.md#01JSBADMSCRIPTS20260406]
+- 2026-04-06 — Vite input `admin-chart-demos.js` (демо графиков Chart.js 2.x, глобальный `Chart` с CDN) → [../../diary/2026/04/2026-04-06-codeclean.md#01JMAKETRMV20260406]
+- 2026-04-06 — Merge `code_clean` → `development` → [../../diary/2026/04/2026-04-06-codeclean.md#01JMRGDEV20260406]
+- 2026-04-06 — Бандл `sb-admin-scripts.js` включает `admin-ui.js` (notify + modal) → [../../diary/2026/04/2026-04-06-modals_alers.md#01JNOTIFYALR20260406]
+- 2026-04-07 — Merge `modals_alers` → `development` → [../../diary/2026/04/2026-04-07-development.md#01JMRGMODALS20260407]
+- 2026-04-07 — Документация: `public/hot` и отсутствие стилей при выключенном Vite dev-сервере → [../../diary/2026/04/2026-04-07-development.md#01JVITEHOTRUN20260407]
+- 2026-04-06 — `admin-bootstrap-table.js`: строки confirm/fallback из Blade data-атрибутов виджета → [../../diary/2026/04/2026-04-06-review_refactoring.md#01JCRREFVIEW20260406]
+- 2026-04-06 — Merge `review_refactoring` → `development` (fast-forward): code review и hardening удаления в bootstrap-table → [../../diary/2026/04/2026-04-06-development.md#01JMRGREVREFDEV20260406]
+- 2026-04-01 — Добавлены JS entrypoints админки из `resources/views/admin/assets/js/*` и Blade подключен на `@vite` → [../../diary/2026/04/2026-04-01-architecture_js_scripts.md#20260401T165100RIGA]
+- 2026-04-01 — Установлен `jquery` через Sail и подключен в Vite admin entrypoint → [../../diary/2026/04/2026-04-01-architecture_js_scripts.md#20260401T171900RIGA]
+- 2026-04-29 — Vite input `resources/themes/admin/assets/js/app.js` (Bootstrap npm, `window.bootstrap`) → [../../diary/2026/04/2026-04-29-bootstrap-local.md#01JBSTRP5VITE20260429]
+- 2026-05-14 — Entry `resources/themes/admin/assets/img/no-image.jpg` (плейсхолдер баннеров) → [../../diary/2026/05/2026-05-12-banners-crud.md#01JBANIMGVITE20260514]

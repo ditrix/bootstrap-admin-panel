@@ -3,19 +3,19 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Services\Admin\EmployeeListingService;
+use App\Models\Employee;
 use Illuminate\View\View;
 
+/**
+ * Employees bootstrap-table listing ({@see Employee} JSON API).
+ */
 class TablesController extends Controller
 {
-    public function __construct(
-        private EmployeeListingService $employeeListingService,
-    ) {}
-
     public function index(): View
     {
-        return view('admin.tables', [
-            'employees' => $this->employeeListingService->orderedForDataTable(),
+        return view('admin.pages.tables.index', [
+            'tableId' => 'employees-bootstrap-table',
+            'dataUrl' => route('admin.api.employees'),
         ]);
     }
 }
