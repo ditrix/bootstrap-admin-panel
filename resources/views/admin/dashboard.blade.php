@@ -1,6 +1,6 @@
 @extends('admin.layouts.sb-admin')
 
-@section('title', 'Dashboard - SB Admin')
+@section('title', 'Dashboard - Vibe Admin')
 
 @section('content')
     <div class="container-fluid px-4">

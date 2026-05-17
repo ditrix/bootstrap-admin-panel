@@ -6,6 +6,16 @@ A Laravel-based admin panel built on the [SB Admin](https://github.com/startboot
 
 ---
 
+## Features
+
+- Drag-and-drop tree structures
+- CRUD operations
+- WYSIWYG editor
+- Roles and permissions
+- Log viewer
+
+---
+
 ## Requirements
 
 | Tool | Version |
