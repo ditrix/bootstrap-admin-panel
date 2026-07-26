@@ -2,7 +2,7 @@
 
 Laravel-адмін-панель на основі шаблону [SB Admin](https://github.com/startbootstrap/startbootstrap-sb-admin). Проєкт розроблено з використанням методик **vibecoding** — ітеративної AI-асистованої розробки зі структурованими промптами та автоматизованим code review.
 
-> **Технічна документація:** [technical_documentation.md](technical_documentation.md)
+> **Технічна документація:** [TECH-DOCUMENTATION-UA.md](TECH-DOCUMENTATION-UA.md) · [TECH-DOCUMENTATION-EN.md](TECH-DOCUMENTATION-EN.md)
 
 ---
 

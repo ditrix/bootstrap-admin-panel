@@ -2,7 +2,7 @@
 
 A Laravel-based admin panel built on the [SB Admin](https://github.com/startbootstrap/startbootstrap-sb-admin) Bootstrap template. The project was developed using **vibecoding** methodologies — iterative AI-assisted development with structured prompting and automated code review.
 
-> **Technical documentation:** [technical_documentation.md](technical_documentation.md)
+> **Technical documentation:** [TECH-DOCUMENTATION-EN.md](TECH-DOCUMENTATION-EN.md) · [TECH-DOCUMENTATION-UA.md](TECH-DOCUMENTATION-UA.md)
 
 ---
 
